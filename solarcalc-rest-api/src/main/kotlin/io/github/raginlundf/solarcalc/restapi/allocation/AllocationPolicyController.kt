@@ -5,8 +5,10 @@ import io.github.raginlundf.solarcalc.domain.models.repository.AllocationPolicyR
 import io.github.raginlundf.solarcalc.domain.models.repository.EnergyProfileRepository
 import io.github.raginlundf.solarcalc.domain.models.repository.TenantRepository
 import io.github.raginlundf.solarcalc.restapi.error.ResourceNotFoundException
+import io.github.raginlundf.solarcalc.restapi.security.SolarcalcScopes
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -27,12 +29,14 @@ class AllocationPolicyController(
 ) {
 
     @GetMapping
+    @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_POLICIES_READ}')")
     fun list(@PathVariable tenantId: Long, @PathVariable profileId: Long): List<AllocationPolicyResponse> {
         requireProfile(tenantId, profileId)
         return policyRepository.findAllByTenantIdAndEnergyProfileId(tenantId, profileId).map { it.toResponse() }
     }
 
     @GetMapping("/{policyId}")
+    @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_POLICIES_READ}')")
     fun get(
         @PathVariable tenantId: Long,
         @PathVariable profileId: Long,
@@ -45,6 +49,7 @@ class AllocationPolicyController(
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_POLICIES_WRITE}')")
     fun create(
         @PathVariable tenantId: Long,
         @PathVariable profileId: Long,
@@ -67,6 +72,7 @@ class AllocationPolicyController(
     }
 
     @PutMapping("/{policyId}")
+    @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_POLICIES_WRITE}')")
     fun update(
         @PathVariable tenantId: Long,
         @PathVariable profileId: Long,
@@ -85,6 +91,7 @@ class AllocationPolicyController(
 
     @DeleteMapping("/{policyId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_POLICIES_WRITE}')")
     fun delete(
         @PathVariable tenantId: Long,
         @PathVariable profileId: Long,

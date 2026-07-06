@@ -6,9 +6,11 @@ import io.github.raginlundf.solarcalc.domain.models.repository.MonthlyEnergyInpu
 import io.github.raginlundf.solarcalc.domain.models.repository.TenantRepository
 import io.github.raginlundf.solarcalc.restapi.error.ApiError
 import io.github.raginlundf.solarcalc.restapi.error.ResourceNotFoundException
+import io.github.raginlundf.solarcalc.restapi.security.SolarcalcScopes
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -29,12 +31,14 @@ class MonthlyEnergyInputController(
 ) {
 
     @GetMapping
+    @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_INPUTS_READ}')")
     fun list(@PathVariable tenantId: Long, @PathVariable profileId: Long): List<MonthlyEnergyInputResponse> {
         requireProfile(tenantId, profileId)
         return inputRepository.findAllByTenantIdAndEnergyProfileId(tenantId, profileId).map { it.toResponse() }
     }
 
     @GetMapping("/{inputId}")
+    @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_INPUTS_READ}')")
     fun get(
         @PathVariable tenantId: Long,
         @PathVariable profileId: Long,
@@ -46,6 +50,7 @@ class MonthlyEnergyInputController(
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_INPUTS_WRITE}')")
     fun create(
         @PathVariable tenantId: Long,
         @PathVariable profileId: Long,
@@ -63,7 +68,10 @@ class MonthlyEnergyInputController(
                 ApiError(
                     code = "MONTHLY_INPUT_FEED_IN_EXCEEDS_GENERATION",
                     message = "Feed-in exceeds generated electricity.",
-                    details = mapOf("generationKwh" to request.generationKwh, "feedInKwh" to request.feedInKwh),
+                    details = mapOf(
+                        "generationKwh" to request.generationKwh.toPlainString(),
+                        "feedInKwh" to request.feedInKwh.toString(),
+                    ),
                 ),
             )
         }
@@ -87,6 +95,7 @@ class MonthlyEnergyInputController(
     }
 
     @PutMapping("/{inputId}")
+    @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_INPUTS_WRITE}')")
     fun update(
         @PathVariable tenantId: Long,
         @PathVariable profileId: Long,
@@ -102,7 +111,10 @@ class MonthlyEnergyInputController(
                 ApiError(
                     code = "MONTHLY_INPUT_FEED_IN_EXCEEDS_GENERATION",
                     message = "Feed-in exceeds generated electricity.",
-                    details = mapOf("generationKwh" to request.generationKwh, "feedInKwh" to request.feedInKwh),
+                    details = mapOf(
+                        "generationKwh" to request.generationKwh.toPlainString(),
+                        "feedInKwh" to request.feedInKwh.toString(),
+                    ),
                 ),
             )
         }
@@ -114,6 +126,7 @@ class MonthlyEnergyInputController(
 
     @DeleteMapping("/{inputId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_INPUTS_WRITE}')")
     fun delete(
         @PathVariable tenantId: Long,
         @PathVariable profileId: Long,

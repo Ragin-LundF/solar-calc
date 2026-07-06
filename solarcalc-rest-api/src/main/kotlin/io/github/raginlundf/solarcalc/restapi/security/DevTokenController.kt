@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import java.time.Instant
+import kotlinx.serialization.Serializable
 
 @RestController
 @RequestMapping("/api/dev")
@@ -31,6 +32,12 @@ class DevTokenController(private val jwtEncoder: JwtEncoder) {
                     SolarcalcScopes.TENANTS_WRITE,
                     SolarcalcScopes.PROFILES_READ,
                     SolarcalcScopes.PROFILES_WRITE,
+                    SolarcalcScopes.INPUTS_READ,
+                    SolarcalcScopes.INPUTS_WRITE,
+                    SolarcalcScopes.PRICES_READ,
+                    SolarcalcScopes.PRICES_WRITE,
+                    SolarcalcScopes.POLICIES_READ,
+                    SolarcalcScopes.POLICIES_WRITE,
                     SolarcalcScopes.CALCULATIONS_READ,
                 ),
             )
@@ -42,4 +49,5 @@ class DevTokenController(private val jwtEncoder: JwtEncoder) {
     }
 }
 
+@Serializable
 data class DevTokenResponse(val token: String, val tenantId: Long, val expiresInSeconds: Long)

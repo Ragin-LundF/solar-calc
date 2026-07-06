@@ -1,9 +1,15 @@
+@file:UseSerializers(BigDecimalSerializer::class)
+
 package io.github.raginlundf.solarcalc.restapi.tenant
 
 import io.github.raginlundf.solarcalc.domain.models.tenant.HeatingReferenceType
+import io.github.raginlundf.solarcalc.restapi.serialization.BigDecimalSerializer
 import jakarta.validation.constraints.NotBlank
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.UseSerializers
 import java.math.BigDecimal
 
+@Serializable
 data class TenantResponse(
     val id: Long,
     val name: String,
@@ -21,6 +27,7 @@ data class TenantResponse(
     val defaultIceEfficiencyL100km: BigDecimal?,
 )
 
+@Serializable
 data class CreateTenantRequest(
     @field:NotBlank val name: String,
     val locale: String = "de",
@@ -37,6 +44,7 @@ data class CreateTenantRequest(
     val defaultIceEfficiencyL100km: BigDecimal? = null,
 )
 
+@Serializable
 data class UpdateTenantRequest(
     @field:NotBlank val name: String,
     val locale: String = "de",

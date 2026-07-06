@@ -4,8 +4,10 @@ import io.github.raginlundf.solarcalc.domain.models.profile.EnergyProfile
 import io.github.raginlundf.solarcalc.domain.models.repository.EnergyProfileRepository
 import io.github.raginlundf.solarcalc.domain.models.repository.TenantRepository
 import io.github.raginlundf.solarcalc.restapi.error.ResourceNotFoundException
+import io.github.raginlundf.solarcalc.restapi.security.SolarcalcScopes
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -25,12 +27,14 @@ class EnergyProfileController(
 ) {
 
     @GetMapping
+    @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_PROFILES_READ}')")
     fun list(@PathVariable tenantId: Long): List<EnergyProfileResponse> {
         requireTenantExists(tenantId)
         return profileRepository.findAllByTenantId(tenantId).map { it.toResponse() }
     }
 
     @GetMapping("/{profileId}")
+    @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_PROFILES_READ}')")
     fun get(@PathVariable tenantId: Long, @PathVariable profileId: Long): EnergyProfileResponse {
         return profileRepository.findByIdAndTenantId(profileId, tenantId)?.toResponse()
             ?: throw ResourceNotFoundException("Profile $profileId not found for tenant $tenantId")
@@ -38,6 +42,7 @@ class EnergyProfileController(
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_PROFILES_WRITE}')")
     fun create(
         @PathVariable tenantId: Long,
         @Valid @RequestBody request: CreateEnergyProfileRequest,
@@ -53,6 +58,7 @@ class EnergyProfileController(
     }
 
     @PutMapping("/{profileId}")
+    @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_PROFILES_WRITE}')")
     fun update(
         @PathVariable tenantId: Long,
         @PathVariable profileId: Long,
@@ -67,6 +73,7 @@ class EnergyProfileController(
 
     @DeleteMapping("/{profileId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_PROFILES_WRITE}')")
     fun delete(@PathVariable tenantId: Long, @PathVariable profileId: Long) {
         val profile = profileRepository.findByIdAndTenantId(profileId, tenantId)
             ?: throw ResourceNotFoundException("Profile $profileId not found for tenant $tenantId")

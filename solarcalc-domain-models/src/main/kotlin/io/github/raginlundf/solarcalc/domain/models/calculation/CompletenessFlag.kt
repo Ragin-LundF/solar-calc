@@ -1,5 +1,8 @@
 package io.github.raginlundf.solarcalc.domain.models.calculation
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 enum class CompletenessFlag {
     COMPLETE,
     MISSING_ELECTRICITY_PRICE,

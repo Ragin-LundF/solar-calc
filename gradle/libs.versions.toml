@@ -83,6 +83,7 @@ spring-security-web = { module = "org.springframework.security:spring-security-w
 spring-security-config = { module = "org.springframework.security:spring-security-config" }
 spring-security-oauth2-jose = { module = "org.springframework.security:spring-security-oauth2-jose" }
 spring-security-oauth2-resource-server = { module = "org.springframework.security:spring-security-oauth2-resource-server" }
+spring-security-test = { module = "org.springframework.security:spring-security-test" }
 aspectjweaver = { module = "org.aspectj:aspectjweaver" }
 #
 # ── Jackson (versionless — governed by bom-jackson) ───────────────────────────

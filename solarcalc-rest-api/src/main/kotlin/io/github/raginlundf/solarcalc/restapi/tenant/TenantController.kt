@@ -3,8 +3,10 @@ package io.github.raginlundf.solarcalc.restapi.tenant
 import io.github.raginlundf.solarcalc.domain.models.repository.TenantRepository
 import io.github.raginlundf.solarcalc.domain.models.tenant.Tenant
 import io.github.raginlundf.solarcalc.restapi.error.ResourceNotFoundException
+import io.github.raginlundf.solarcalc.restapi.security.SolarcalcScopes
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -23,11 +25,13 @@ class TenantController(
 ) {
 
     @GetMapping
+    @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_TENANTS_READ}')")
     fun list(): List<TenantResponse> {
         return tenantRepository.findAll().map { it.toResponse() }
     }
 
     @GetMapping("/{tenantId}")
+    @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_TENANTS_READ}')")
     fun get(@PathVariable tenantId: Long): TenantResponse {
         return tenantRepository.findById(tenantId).orElseThrow {
             ResourceNotFoundException("Tenant $tenantId not found")
@@ -36,6 +40,7 @@ class TenantController(
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_TENANTS_WRITE}')")
     fun create(@Valid @RequestBody request: CreateTenantRequest): TenantResponse {
         val tenant = Tenant().apply {
             name = request.name
@@ -56,6 +61,7 @@ class TenantController(
     }
 
     @PutMapping("/{tenantId}")
+    @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_TENANTS_WRITE}')")
     fun update(@PathVariable tenantId: Long, @Valid @RequestBody request: UpdateTenantRequest): TenantResponse {
         val tenant = tenantRepository.findById(tenantId).orElseThrow {
             ResourceNotFoundException("Tenant $tenantId not found")
@@ -81,6 +87,7 @@ class TenantController(
 
     @DeleteMapping("/{tenantId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_TENANTS_WRITE}')")
     fun delete(@PathVariable tenantId: Long) {
         if (!tenantRepository.existsById(tenantId)) {
             throw ResourceNotFoundException("Tenant $tenantId not found")

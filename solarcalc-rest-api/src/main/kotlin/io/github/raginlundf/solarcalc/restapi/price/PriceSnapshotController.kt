@@ -5,8 +5,10 @@ import io.github.raginlundf.solarcalc.domain.models.repository.EnergyProfileRepo
 import io.github.raginlundf.solarcalc.domain.models.repository.PriceSnapshotRepository
 import io.github.raginlundf.solarcalc.domain.models.repository.TenantRepository
 import io.github.raginlundf.solarcalc.restapi.error.ResourceNotFoundException
+import io.github.raginlundf.solarcalc.restapi.security.SolarcalcScopes
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -27,12 +29,14 @@ class PriceSnapshotController(
 ) {
 
     @GetMapping
+    @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_PRICES_READ}')")
     fun list(@PathVariable tenantId: Long, @PathVariable profileId: Long): List<PriceSnapshotResponse> {
         requireProfile(tenantId, profileId)
         return priceRepository.findAllByTenantIdAndEnergyProfileId(tenantId, profileId).map { it.toResponse() }
     }
 
     @GetMapping("/{priceId}")
+    @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_PRICES_READ}')")
     fun get(
         @PathVariable tenantId: Long,
         @PathVariable profileId: Long,
@@ -45,6 +49,7 @@ class PriceSnapshotController(
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_PRICES_WRITE}')")
     fun create(
         @PathVariable tenantId: Long,
         @PathVariable profileId: Long,
@@ -65,6 +70,7 @@ class PriceSnapshotController(
     }
 
     @PutMapping("/{priceId}")
+    @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_PRICES_WRITE}')")
     fun update(
         @PathVariable tenantId: Long,
         @PathVariable profileId: Long,
@@ -81,6 +87,7 @@ class PriceSnapshotController(
 
     @DeleteMapping("/{priceId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_PRICES_WRITE}')")
     fun delete(
         @PathVariable tenantId: Long,
         @PathVariable profileId: Long,

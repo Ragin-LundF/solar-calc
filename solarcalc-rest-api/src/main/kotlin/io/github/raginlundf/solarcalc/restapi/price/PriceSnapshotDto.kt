@@ -1,7 +1,13 @@
+@file:UseSerializers(BigDecimalSerializer::class)
+
 package io.github.raginlundf.solarcalc.restapi.price
 
+import io.github.raginlundf.solarcalc.restapi.serialization.BigDecimalSerializer
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.UseSerializers
 import java.math.BigDecimal
 
+@Serializable
 data class PriceSnapshotResponse(
     val id: Long,
     val tenantId: Long,
@@ -17,6 +23,7 @@ data class PriceSnapshotResponse(
     val iceEfficiencyL100km: BigDecimal?,
 )
 
+@Serializable
 data class UpsertPriceSnapshotRequest(
     val period: String? = null,
     val electricityPrice: BigDecimal? = null,

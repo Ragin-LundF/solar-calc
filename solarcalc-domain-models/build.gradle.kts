@@ -2,10 +2,12 @@ plugins {
     id("solarcalc.common-conventions")
     id("org.jetbrains.kotlin.plugin.jpa")
     id("com.google.devtools.ksp")
+    alias(libs.plugins.kotlin.serialization)
 }
 
 dependencies {
     implementation(project(":solarcalc-kotlin-extensions"))
+    api(libs.kotlinx.serialization.json)
 
     implementation(libs.database.hibernate.core)
     implementation(libs.spring.context)
