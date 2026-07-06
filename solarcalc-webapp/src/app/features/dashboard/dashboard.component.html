@@ -8,12 +8,19 @@
     </z-card>
   } @else {
     <div class="flex gap-2 items-end">
-      <div class="flex-1">
-        <label class="block text-sm mb-1">{{ 'monthlyInput.period' | translate }}</label>
+      <div>
+        <label class="block text-sm mb-1">{{ 'dashboard.startDate' | translate }}</label>
         <input
-          type="text"
-          [(ngModel)]="period"
-          placeholder="2025-01"
+          type="date"
+          [(ngModel)]="startDate"
+          class="w-full border border-input rounded-md px-3 py-2 text-sm bg-background"
+        />
+      </div>
+      <div>
+        <label class="block text-sm mb-1">{{ 'dashboard.endDate' | translate }}</label>
+        <input
+          type="date"
+          [(ngModel)]="endDate"
           class="w-full border border-input rounded-md px-3 py-2 text-sm bg-background"
         />
       </div>

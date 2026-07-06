@@ -36,17 +36,25 @@ export class DashboardComponent {
   readonly loading = signal(false);
   readonly result = signal<CalculationResultDto | null>(null);
   readonly error = signal<string | null>(null);
-  period = '';
+  startDate = '';
+  endDate = '';
 
   calculate(): void {
     const pid = this.state.profileId();
-    if (!pid || !this.period) return;
+    if (!pid) return;
 
     this.loading.set(true);
     this.result.set(null);
     this.error.set(null);
 
-    this.api.get<CalculationResultDto>(`/profiles/${pid}/calculations/${this.period}`).subscribe({
+    const params = new URLSearchParams();
+    if (this.startDate) params.set('startDate', this.startDate);
+    if (this.endDate) params.set('endDate', this.endDate);
+    const qs = params.toString();
+
+    const path = qs ? `/profiles/${pid}/calculations?${qs}` : `/profiles/${pid}/calculations`;
+
+    this.api.get<CalculationResultDto>(path).subscribe({
       next: r => { this.result.set(r); this.loading.set(false); },
       error: () => { this.error.set('common.error'); this.loading.set(false); },
     });

@@ -30,7 +30,6 @@ data class CalculationResult(
     val wallboxAllocatedKwh: BigDecimal?,
     val wallboxGridKwh: BigDecimal?,
     val wallboxElectricitySavings: BigDecimal?,
-    val wallboxPetrolSavings: BigDecimal?,
 
     // Totals
     val totalElectricitySavings: BigDecimal?,

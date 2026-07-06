@@ -52,8 +52,8 @@ export class MonthlyInputComponent implements OnInit {
     if (pid) this.loadInputs(pid);
   }
 
-  private loadInputs(profileId: number): void {
-    this.api.get<MonthlyInputDto[]>(`/profiles/${profileId}/monthly-inputs`).subscribe({
+  private loadInputs(profileUuid: string): void {
+    this.api.get<MonthlyInputDto[]>(`/profiles/${profileUuid}/monthly-inputs`).subscribe({
       next: data => this.inputs.set(data),
     });
   }

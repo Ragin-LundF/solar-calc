@@ -6,8 +6,8 @@ import io.github.raginlundf.solarcalc.dtos.profile.UpdateEnergyProfileRequest
 
 interface ProfileDomainController {
     fun list(): List<EnergyProfileResponse>
-    fun get(profileId: Long): EnergyProfileResponse
-    fun create(request: CreateEnergyProfileRequest): EnergyProfileResponse
-    fun update(profileId: Long, request: UpdateEnergyProfileRequest): EnergyProfileResponse
-    fun delete(profileId: Long)
+    fun get(profileUuid: String): EnergyProfileResponse
+    fun create(request: CreateEnergyProfileRequest, username: String): EnergyProfileResponse
+    fun update(profileUuid: String, request: UpdateEnergyProfileRequest): EnergyProfileResponse
+    fun delete(profileUuid: String)
 }

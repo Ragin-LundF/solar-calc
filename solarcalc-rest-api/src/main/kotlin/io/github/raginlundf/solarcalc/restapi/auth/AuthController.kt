@@ -1,5 +1,6 @@
 package io.github.raginlundf.solarcalc.restapi.auth
 
+import io.github.raginlundf.logging.annotations.LogDuration
 import io.github.raginlundf.solarcalc.domain.services.auth.AuthDomainController
 import io.github.raginlundf.solarcalc.dtos.auth.ErrorResponse
 import io.github.raginlundf.solarcalc.dtos.auth.LoginRequest
@@ -19,6 +20,7 @@ class AuthController(
     private val authDomainController: AuthDomainController,
 ) {
 
+    @LogDuration
     @PostMapping("/register")
     fun register(@RequestBody request: RegisterRequest): ResponseEntity<Any> {
         return try {
@@ -29,6 +31,7 @@ class AuthController(
         }
     }
 
+    @LogDuration
     @PostMapping("/login")
     fun login(@RequestBody request: LoginRequest): ResponseEntity<Any> {
         return try {

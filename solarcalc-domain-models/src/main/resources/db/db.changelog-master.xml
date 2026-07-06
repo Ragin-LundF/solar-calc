@@ -14,5 +14,6 @@
     <include file="changelog/changes/0006-create-allocation-policy.xml" relativeToChangelogFile="true" />
     <include file="changelog/changes/0007-create-calculation-run.xml" relativeToChangelogFile="true" />
     <include file="changelog/changes/0008-create-calculation-result.xml" relativeToChangelogFile="true" />
+    <include file="changelog/changes/0010-add-profile-uuid.xml" relativeToChangelogFile="true" />
 
 </databaseChangeLog>

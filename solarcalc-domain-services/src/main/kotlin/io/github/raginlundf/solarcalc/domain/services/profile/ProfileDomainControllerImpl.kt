@@ -2,6 +2,7 @@ package io.github.raginlundf.solarcalc.domain.services.profile
 
 import io.github.raginlundf.solarcalc.domain.models.profile.EnergyProfile
 import io.github.raginlundf.solarcalc.domain.models.repository.EnergyProfileRepository
+import io.github.raginlundf.solarcalc.domain.models.repository.UserRepository
 import io.github.raginlundf.solarcalc.dtos.error.ResourceNotFoundException
 import io.github.raginlundf.solarcalc.dtos.profile.CreateEnergyProfileRequest
 import io.github.raginlundf.solarcalc.dtos.profile.EnergyProfileResponse
@@ -12,21 +13,25 @@ import java.time.LocalDateTime
 @Service
 class ProfileDomainControllerImpl(
     private val profileRepository: EnergyProfileRepository,
+    private val userRepository: UserRepository,
 ) : ProfileDomainController {
 
     override fun list(): List<EnergyProfileResponse> {
         return profileRepository.findAll().map { it.toResponse() }
     }
 
-    override fun get(profileId: Long): EnergyProfileResponse {
-        val profile = profileRepository.findById(profileId).orElseThrow {
-            ResourceNotFoundException("Profile $profileId not found")
-        }
+    override fun get(profileUuid: String): EnergyProfileResponse {
+        val profile = profileRepository.findByUuid(profileUuid)
+            ?: throw ResourceNotFoundException("Profile $profileUuid not found")
         return profile.toResponse()
     }
 
-    override fun create(request: CreateEnergyProfileRequest): EnergyProfileResponse {
+    override fun create(request: CreateEnergyProfileRequest, username: String): EnergyProfileResponse {
+        val user = userRepository.findByUsername(username).orElseThrow {
+            ResourceNotFoundException("User $username not found")
+        }
         val profile = EnergyProfile().apply {
+            this.user = user
             name = request.name
             hasWallbox = request.hasWallbox
             hasHeatPump = request.hasHeatPump
@@ -36,16 +41,13 @@ class ProfileDomainControllerImpl(
             defaultPetrolPrice = request.defaultPetrolPrice
             defaultOilReferenceCost = request.defaultOilReferenceCost
             defaultGasReferenceCost = request.defaultGasReferenceCost
-            defaultEvEfficiencyKwh100km = request.defaultEvEfficiencyKwh100km
-            defaultIceEfficiencyL100km = request.defaultIceEfficiencyL100km
         }
         return profileRepository.save(profile).toResponse()
     }
 
-    override fun update(profileId: Long, request: UpdateEnergyProfileRequest): EnergyProfileResponse {
-        val profile = profileRepository.findById(profileId).orElseThrow {
-            ResourceNotFoundException("Profile $profileId not found")
-        }
+    override fun update(profileUuid: String, request: UpdateEnergyProfileRequest): EnergyProfileResponse {
+        val profile = profileRepository.findByUuid(profileUuid)
+            ?: throw ResourceNotFoundException("Profile $profileUuid not found")
         profile.name = request.name
         profile.hasWallbox = request.hasWallbox
         profile.hasHeatPump = request.hasHeatPump
@@ -55,23 +57,20 @@ class ProfileDomainControllerImpl(
         profile.defaultPetrolPrice = request.defaultPetrolPrice
         profile.defaultOilReferenceCost = request.defaultOilReferenceCost
         profile.defaultGasReferenceCost = request.defaultGasReferenceCost
-        profile.defaultEvEfficiencyKwh100km = request.defaultEvEfficiencyKwh100km
-        profile.defaultIceEfficiencyL100km = request.defaultIceEfficiencyL100km
         profile.updatedAt = LocalDateTime.now()
         return profileRepository.save(profile).toResponse()
     }
 
-    override fun delete(profileId: Long) {
-        val profile = profileRepository.findById(profileId).orElseThrow {
-            ResourceNotFoundException("Profile $profileId not found")
-        }
+    override fun delete(profileUuid: String) {
+        val profile = profileRepository.findByUuid(profileUuid)
+            ?: throw ResourceNotFoundException("Profile $profileUuid not found")
         profileRepository.delete(profile)
     }
 }
 
 private fun EnergyProfile.toResponse(): EnergyProfileResponse {
     return EnergyProfileResponse(
-        id = id!!,
+        id = uuid,
         name = name,
         hasWallbox = hasWallbox,
         hasHeatPump = hasHeatPump,
@@ -81,7 +80,5 @@ private fun EnergyProfile.toResponse(): EnergyProfileResponse {
         defaultPetrolPrice = defaultPetrolPrice,
         defaultOilReferenceCost = defaultOilReferenceCost,
         defaultGasReferenceCost = defaultGasReferenceCost,
-        defaultEvEfficiencyKwh100km = defaultEvEfficiencyKwh100km,
-        defaultIceEfficiencyL100km = defaultIceEfficiencyL100km,
     )
 }

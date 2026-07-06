@@ -1,7 +1,10 @@
 package io.github.raginlundf.solarcalc.domain.services.calculation
 
+import io.github.raginlundf.solarcalc.domain.models.allocation.AllocationPolicy
 import io.github.raginlundf.solarcalc.domain.models.calculation.CalculationResult as CalculationResultEntity
 import io.github.raginlundf.solarcalc.domain.models.calculation.CalculationRun
+import io.github.raginlundf.solarcalc.domain.models.input.MonthlyEnergyInput
+import io.github.raginlundf.solarcalc.domain.models.profile.EnergyProfile
 import io.github.raginlundf.solarcalc.domain.models.repository.AllocationPolicyRepository
 import io.github.raginlundf.solarcalc.domain.models.repository.CalculationResultRepository
 import io.github.raginlundf.solarcalc.domain.models.repository.CalculationRunRepository
@@ -13,6 +16,8 @@ import io.github.raginlundf.solarcalc.dtos.error.ResourceNotFoundException
 import io.github.raginlundf.solarcalc.domain.services.price.PriceResolver
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 @Service
 class CalculationDomainControllerImpl(
@@ -26,12 +31,20 @@ class CalculationDomainControllerImpl(
 ) : CalculationDomainController {
 
     @Transactional
-    override fun calculate(profileId: Long, period: String): CalculationResponse {
-        val ctx = resolveContext(profileId = profileId, period = period)
+    override fun calculate(
+        profileUuid: String,
+        startDate: LocalDate?,
+        endDate: LocalDate?,
+    ): CalculationResponse {
+        val profile = profileRepository.findByUuid(profileUuid)
+            ?: throw ResourceNotFoundException("Profile $profileUuid not found")
+
+        val period = resolvePeriod(profileId = profile.id!!, startDate = startDate, endDate = endDate)
+        val ctx = resolveContext(profile = profile, period = period)
         val prices = priceResolver.resolve(ctx.profile, period)
 
         val calcInput = CalculationInput(
-            energyProfileId = profileId,
+            energyProfileId = profile.id!!,
             period = period,
             hasWallbox = ctx.profile.hasWallbox,
             hasHeatPump = ctx.profile.hasHeatPump,
@@ -72,7 +85,6 @@ class CalculationDomainControllerImpl(
             wallboxAllocatedKwh = result.wallboxAllocatedKwh
             wallboxGridKwh = result.wallboxGridKwh
             wallboxElectricitySavings = result.wallboxElectricitySavings
-            wallboxPetrolSavings = result.wallboxPetrolSavings
             unallocatedKwh = result.unallocatedKwh
             totalElectricitySavings = result.totalElectricitySavings
             completenessFlags = result.completeness.flags
@@ -81,12 +93,21 @@ class CalculationDomainControllerImpl(
         return result.toResponse(calculationRunId = run.id)
     }
 
-    override fun compareScenarios(profileId: Long, period: String, request: ScenarioComparisonRequest): List<CalculationResponse> {
-        val ctx = resolveContext(profileId = profileId, period = period)
+    override fun compareScenarios(
+        profileUuid: String,
+        startDate: LocalDate?,
+        endDate: LocalDate?,
+        request: ScenarioComparisonRequest
+    ): List<CalculationResponse> {
+        val profile = profileRepository.findByUuid(profileUuid)
+            ?: throw ResourceNotFoundException("Profile $profileUuid not found")
+
+        val period = resolvePeriod(profileId = profile.id!!, startDate = startDate, endDate = endDate)
+        val ctx = resolveContext(profile = profile, period = period)
         val prices = priceResolver.resolve(ctx.profile, period)
 
         val baseInput = CalculationInput(
-            energyProfileId = profileId,
+            energyProfileId = profile.id!!,
             period = period,
             hasWallbox = ctx.profile.hasWallbox,
             hasHeatPump = ctx.profile.hasHeatPump,
@@ -106,25 +127,33 @@ class CalculationDomainControllerImpl(
         return calculationService.compareScenarios(baseInput, request.scenarios).map { it.toResponse() }
     }
 
+    private fun resolvePeriod(profileId: Long, startDate: LocalDate?, endDate: LocalDate?): String {
+        val date = startDate ?: endDate
+        if (date != null) {
+            return date.format(DateTimeFormatter.ofPattern("yyyy-MM"))
+        }
+        val inputs = inputRepository.findAllByEnergyProfileId(energyProfileId = profileId)
+        val latest = inputs.maxByOrNull { it.period }
+            ?: throw ResourceNotFoundException("No monthly inputs found for profile $profileId")
+        return latest.period
+    }
+
     private data class CalcContext(
-        val profile: io.github.raginlundf.solarcalc.domain.models.profile.EnergyProfile,
-        val input: io.github.raginlundf.solarcalc.domain.models.input.MonthlyEnergyInput,
-        val policy: io.github.raginlundf.solarcalc.domain.models.allocation.AllocationPolicy,
+        val profile: EnergyProfile,
+        val input: MonthlyEnergyInput,
+        val policy: AllocationPolicy,
     )
 
-    private fun resolveContext(profileId: Long, period: String): CalcContext {
-        val profile = findOrThrow("Profile $profileId not found") {
-            profileRepository.findById(profileId).orElse(null)
-        }
-        val input = findOrThrow("No monthly input for period $period") {
+    private fun resolveContext(profile: EnergyProfile, period: String): CalcContext {
+        val input = findOrThrow(message = "No monthly input for period $period") {
             inputRepository.findByEnergyProfileIdAndPeriod(
-                energyProfileId = profileId,
+                energyProfileId = profile.id!!,
                 period = period,
             )
         }
-        val policy = findOrThrow("No default allocation policy for profile $profileId") {
+        val policy = findOrThrow(message = "No default allocation policy for profile ${profile.uuid}") {
             policyRepository.findByEnergyProfileIdAndIsDefaultTrue(
-                energyProfileId = profileId,
+                energyProfileId = profile.id!!,
             )
         }
         return CalcContext(profile = profile, input = input, policy = policy)
@@ -154,7 +183,6 @@ private fun CalculationResult.toResponse(calculationRunId: Long? = null): Calcul
         wallboxAllocatedKwh = wallboxAllocatedKwh,
         wallboxGridKwh = wallboxGridKwh,
         wallboxElectricitySavings = wallboxElectricitySavings,
-        wallboxPetrolSavings = wallboxPetrolSavings,
         totalElectricitySavings = totalElectricitySavings,
         completenessFlags = completeness.flags,
     )

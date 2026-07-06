@@ -11,7 +11,7 @@ import java.math.BigDecimal
 
 @Serializable
 data class EnergyProfileResponse(
-    val id: Long,
+    val id: String,
     val name: String,
     val hasWallbox: Boolean,
     val hasHeatPump: Boolean,

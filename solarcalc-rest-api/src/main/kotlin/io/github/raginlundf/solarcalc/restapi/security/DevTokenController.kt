@@ -1,5 +1,6 @@
 package io.github.raginlundf.solarcalc.restapi.security
 
+import io.github.raginlundf.logging.annotations.LogDuration
 import org.springframework.context.annotation.Profile
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm
 import org.springframework.security.oauth2.jwt.JwsHeader
@@ -17,6 +18,7 @@ import kotlinx.serialization.Serializable
 @Profile("local")
 class DevTokenController(private val jwtEncoder: JwtEncoder) {
 
+    @LogDuration
     @PostMapping("/token")
     fun issueToken(): DevTokenResponse {
         val claims = JwtClaimsSet.builder()

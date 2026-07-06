@@ -5,9 +5,9 @@ import io.github.raginlundf.solarcalc.dtos.allocation.CreateAllocationPolicyRequ
 import io.github.raginlundf.solarcalc.dtos.allocation.UpdateAllocationPolicyRequest
 
 interface AllocationPolicyDomainController {
-    fun list(profileId: Long): List<AllocationPolicyResponse>
-    fun get(profileId: Long, policyId: Long): AllocationPolicyResponse
-    fun create(profileId: Long, request: CreateAllocationPolicyRequest): AllocationPolicyResponse
-    fun update(profileId: Long, policyId: Long, request: UpdateAllocationPolicyRequest): AllocationPolicyResponse
-    fun delete(profileId: Long, policyId: Long)
+    fun list(profileUuid: String): List<AllocationPolicyResponse>
+    fun get(profileUuid: String, policyId: Long): AllocationPolicyResponse
+    fun create(profileUuid: String, request: CreateAllocationPolicyRequest): AllocationPolicyResponse
+    fun update(profileUuid: String, policyId: Long, request: UpdateAllocationPolicyRequest): AllocationPolicyResponse
+    fun delete(profileUuid: String, policyId: Long)
 }

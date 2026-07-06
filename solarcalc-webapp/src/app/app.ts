@@ -21,7 +21,7 @@ export class App {
     { route: '/profile-settings', labelKey: 'navigation.profileSettings', icon: '⚙️' },
     { route: '/prices', labelKey: 'navigation.prices', icon: '💶' },
     { route: '/allocation-policy', labelKey: 'navigation.allocationPolicy', icon: '🔀' },
-    { route: '/scenarios', labelKey: 'navigation.scenarioComparison', icon: '🔬' },
+
   ];
 
   constructor() {

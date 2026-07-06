@@ -13,7 +13,7 @@ import java.math.BigDecimal
 @Serializable
 data class MonthlyEnergyInputResponse(
     val id: Long,
-    val energyProfileId: Long,
+    val energyProfileUuid: String,
     val period: String,
     val consumptionKwh: BigDecimal,
     val generationKwh: BigDecimal,

@@ -10,7 +10,7 @@ import java.math.BigDecimal
 @Serializable
 data class PriceSnapshotResponse(
     val id: Long,
-    val energyProfileId: Long,
+    val energyProfileUuid: String,
     val period: String?,
     val electricityPrice: BigDecimal?,
     val feedInTariff: BigDecimal?,

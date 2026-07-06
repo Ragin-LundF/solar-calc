@@ -1,5 +1,6 @@
 package io.github.raginlundf.solarcalc.restapi.price
 
+import io.github.raginlundf.logging.annotations.LogDuration
 import io.github.raginlundf.solarcalc.domain.services.price.PriceSnapshotDomainController
 import io.github.raginlundf.solarcalc.dtos.price.PriceSnapshotResponse
 import io.github.raginlundf.solarcalc.dtos.price.UpsertPriceSnapshotRequest
@@ -18,53 +19,58 @@ import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/api/v1/profiles/{profileId}/prices")
+@RequestMapping("/api/v1/profiles/{profileUuid}/prices")
 class PriceSnapshotController(
     private val priceSnapshotDomainController: PriceSnapshotDomainController,
 ) {
 
+    @LogDuration
     @GetMapping
     @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_PRICES_READ}')")
-    fun list(@PathVariable profileId: Long): List<PriceSnapshotResponse> {
-        return priceSnapshotDomainController.list(profileId = profileId)
+    fun list(@PathVariable profileUuid: String): List<PriceSnapshotResponse> {
+        return priceSnapshotDomainController.list(profileUuid = profileUuid)
     }
 
+    @LogDuration
     @GetMapping("/{priceId}")
     @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_PRICES_READ}')")
     fun get(
-        @PathVariable profileId: Long,
+        @PathVariable profileUuid: String,
         @PathVariable priceId: Long,
     ): PriceSnapshotResponse {
-        return priceSnapshotDomainController.get(profileId = profileId, priceId = priceId)
+        return priceSnapshotDomainController.get(profileUuid = profileUuid, priceId = priceId)
     }
 
+    @LogDuration
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_PRICES_WRITE}')")
     fun create(
-        @PathVariable profileId: Long,
+        @PathVariable profileUuid: String,
         @Valid @RequestBody request: UpsertPriceSnapshotRequest,
     ): PriceSnapshotResponse {
-        return priceSnapshotDomainController.create(profileId = profileId, request = request)
+        return priceSnapshotDomainController.create(profileUuid = profileUuid, request = request)
     }
 
+    @LogDuration
     @PutMapping("/{priceId}")
     @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_PRICES_WRITE}')")
     fun update(
-        @PathVariable profileId: Long,
+        @PathVariable profileUuid: String,
         @PathVariable priceId: Long,
         @Valid @RequestBody request: UpsertPriceSnapshotRequest,
     ): PriceSnapshotResponse {
-        return priceSnapshotDomainController.update(profileId = profileId, priceId = priceId, request = request)
+        return priceSnapshotDomainController.update(profileUuid = profileUuid, priceId = priceId, request = request)
     }
 
+    @LogDuration
     @DeleteMapping("/{priceId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_PRICES_WRITE}')")
     fun delete(
-        @PathVariable profileId: Long,
+        @PathVariable profileUuid: String,
         @PathVariable priceId: Long,
     ) {
-        priceSnapshotDomainController.delete(profileId = profileId, priceId = priceId)
+        priceSnapshotDomainController.delete(profileUuid = profileUuid, priceId = priceId)
     }
 }

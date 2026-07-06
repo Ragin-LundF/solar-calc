@@ -1,5 +1,6 @@
 package io.github.raginlundf.solarcalc.restapi.input
 
+import io.github.raginlundf.logging.annotations.LogDuration
 import io.github.raginlundf.solarcalc.domain.services.input.DuplicateInputException
 import io.github.raginlundf.solarcalc.domain.services.input.MonthlyEnergyInputDomainController
 import io.github.raginlundf.solarcalc.dtos.error.ApiError
@@ -21,30 +22,33 @@ import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/api/v1/profiles/{profileId}/monthly-inputs")
+@RequestMapping("/api/v1/profiles/{profileUuid}/monthly-inputs")
 class MonthlyEnergyInputController(
     private val monthlyEnergyInputDomainController: MonthlyEnergyInputDomainController,
 ) {
 
+    @LogDuration
     @GetMapping
     @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_INPUTS_READ}')")
-    fun list(@PathVariable profileId: Long): List<MonthlyEnergyInputResponse> {
-        return monthlyEnergyInputDomainController.list(profileId = profileId)
+    fun list(@PathVariable profileUuid: String): List<MonthlyEnergyInputResponse> {
+        return monthlyEnergyInputDomainController.list(profileUuid = profileUuid)
     }
 
+    @LogDuration
     @GetMapping("/{inputId}")
     @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_INPUTS_READ}')")
     fun get(
-        @PathVariable profileId: Long,
+        @PathVariable profileUuid: String,
         @PathVariable inputId: Long,
     ): MonthlyEnergyInputResponse {
-        return monthlyEnergyInputDomainController.get(profileId = profileId, inputId = inputId)
+        return monthlyEnergyInputDomainController.get(profileUuid = profileUuid, inputId = inputId)
     }
 
+    @LogDuration
     @PostMapping
     @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_INPUTS_WRITE}')")
     fun create(
-        @PathVariable profileId: Long,
+        @PathVariable profileUuid: String,
         @Valid @RequestBody request: UpsertMonthlyEnergyInputRequest,
     ): ResponseEntity<Any> {
         val feedInKwh = request.feedInKwh
@@ -63,7 +67,7 @@ class MonthlyEnergyInputController(
 
         return try {
             val result = monthlyEnergyInputDomainController.create(
-                profileId = profileId,
+                profileUuid = profileUuid,
                 request = request,
             )
             ResponseEntity.status(HttpStatus.CREATED).body(result as Any)
@@ -77,10 +81,11 @@ class MonthlyEnergyInputController(
         }
     }
 
+    @LogDuration
     @PutMapping("/{inputId}")
     @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_INPUTS_WRITE}')")
     fun update(
-        @PathVariable profileId: Long,
+        @PathVariable profileUuid: String,
         @PathVariable inputId: Long,
         @Valid @RequestBody request: UpsertMonthlyEnergyInputRequest,
     ): ResponseEntity<Any> {
@@ -99,20 +104,21 @@ class MonthlyEnergyInputController(
         }
 
         val result = monthlyEnergyInputDomainController.update(
-            profileId = profileId,
+            profileUuid = profileUuid,
             inputId = inputId,
             request = request,
         )
         return ResponseEntity.ok(result as Any)
     }
 
+    @LogDuration
     @DeleteMapping("/{inputId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_INPUTS_WRITE}')")
     fun delete(
-        @PathVariable profileId: Long,
+        @PathVariable profileUuid: String,
         @PathVariable inputId: Long,
     ) {
-        monthlyEnergyInputDomainController.delete(profileId = profileId, inputId = inputId)
+        monthlyEnergyInputDomainController.delete(profileUuid = profileUuid, inputId = inputId)
     }
 }

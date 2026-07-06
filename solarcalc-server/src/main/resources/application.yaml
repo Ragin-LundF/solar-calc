@@ -64,3 +64,5 @@ management:
   endpoint:
     health:
       show-details: always
+logging:
+  config: "classpath:log4j2.xml"

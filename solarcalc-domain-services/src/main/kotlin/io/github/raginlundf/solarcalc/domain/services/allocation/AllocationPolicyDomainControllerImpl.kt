@@ -1,6 +1,7 @@
 package io.github.raginlundf.solarcalc.domain.services.allocation
 
 import io.github.raginlundf.solarcalc.domain.models.allocation.AllocationPolicy
+import io.github.raginlundf.solarcalc.domain.models.profile.EnergyProfile
 import io.github.raginlundf.solarcalc.domain.models.repository.AllocationPolicyRepository
 import io.github.raginlundf.solarcalc.domain.models.repository.EnergyProfileRepository
 import io.github.raginlundf.solarcalc.dtos.allocation.AllocationPolicyResponse
@@ -16,22 +17,21 @@ class AllocationPolicyDomainControllerImpl(
     private val policyRepository: AllocationPolicyRepository,
 ) : AllocationPolicyDomainController {
 
-    override fun list(profileId: Long): List<AllocationPolicyResponse> {
-        requireProfile(profileId = profileId)
-        return policyRepository.findAllByEnergyProfileId(energyProfileId = profileId).map { it.toResponse() }
+    override fun list(profileUuid: String): List<AllocationPolicyResponse> {
+        val profile = requireProfile(profileUuid = profileUuid)
+        return policyRepository.findAllByEnergyProfileId(energyProfileId = profile.id!!).map { it.toResponse() }
     }
 
-    override fun get(profileId: Long, policyId: Long): AllocationPolicyResponse {
-        requireProfile(profileId = profileId)
+    override fun get(profileUuid: String, policyId: Long): AllocationPolicyResponse {
+        requireProfile(profileUuid = profileUuid)
         return policyRepository.findById(policyId).orElseThrow {
             ResourceNotFoundException("AllocationPolicy $policyId not found")
         }.toResponse()
     }
 
-    override fun create(profileId: Long, request: CreateAllocationPolicyRequest): AllocationPolicyResponse {
-        val profile = profileRepository.findById(profileId).orElseThrow {
-            ResourceNotFoundException("Profile $profileId not found")
-        }
+    override fun create(profileUuid: String, request: CreateAllocationPolicyRequest): AllocationPolicyResponse {
+        val profile = profileRepository.findByUuid(profileUuid)
+            ?: throw ResourceNotFoundException("Profile $profileUuid not found")
 
         val policy = AllocationPolicy().apply {
             this.energyProfile = profile
@@ -42,8 +42,12 @@ class AllocationPolicyDomainControllerImpl(
         return policyRepository.save(policy).toResponse()
     }
 
-    override fun update(profileId: Long, policyId: Long, request: UpdateAllocationPolicyRequest): AllocationPolicyResponse {
-        requireProfile(profileId = profileId)
+    override fun update(
+        profileUuid: String,
+        policyId: Long,
+        request: UpdateAllocationPolicyRequest
+    ): AllocationPolicyResponse {
+        requireProfile(profileUuid = profileUuid)
         val policy = policyRepository.findById(policyId).orElseThrow {
             ResourceNotFoundException("AllocationPolicy $policyId not found")
         }
@@ -54,25 +58,24 @@ class AllocationPolicyDomainControllerImpl(
         return policyRepository.save(policy).toResponse()
     }
 
-    override fun delete(profileId: Long, policyId: Long) {
-        requireProfile(profileId = profileId)
+    override fun delete(profileUuid: String, policyId: Long) {
+        requireProfile(profileUuid = profileUuid)
         val policy = policyRepository.findById(policyId).orElseThrow {
             ResourceNotFoundException("AllocationPolicy $policyId not found")
         }
         policyRepository.delete(policy)
     }
 
-    private fun requireProfile(profileId: Long) {
-        profileRepository.findById(profileId).orElseThrow {
-            ResourceNotFoundException("Profile $profileId not found")
-        }
+    private fun requireProfile(profileUuid: String): EnergyProfile {
+        return profileRepository.findByUuid(profileUuid)
+            ?: throw ResourceNotFoundException("Profile $profileUuid not found")
     }
 }
 
 private fun AllocationPolicy.toResponse(): AllocationPolicyResponse {
     return AllocationPolicyResponse(
         id = id!!,
-        energyProfileId = energyProfileId!!,
+        energyProfileUuid = energyProfile?.uuid ?: "",
         name = name,
         priorityOrder = priorityOrder,
         isDefault = isDefault,

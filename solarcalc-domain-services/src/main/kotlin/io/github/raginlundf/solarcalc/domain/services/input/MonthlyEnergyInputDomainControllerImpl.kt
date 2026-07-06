@@ -1,6 +1,7 @@
 package io.github.raginlundf.solarcalc.domain.services.input
 
 import io.github.raginlundf.solarcalc.domain.models.input.MonthlyEnergyInput
+import io.github.raginlundf.solarcalc.domain.models.profile.EnergyProfile
 import io.github.raginlundf.solarcalc.domain.models.repository.EnergyProfileRepository
 import io.github.raginlundf.solarcalc.domain.models.repository.MonthlyEnergyInputRepository
 import io.github.raginlundf.solarcalc.dtos.error.ResourceNotFoundException
@@ -16,25 +17,24 @@ class MonthlyEnergyInputDomainControllerImpl(
     private val inputRepository: MonthlyEnergyInputRepository,
 ) : MonthlyEnergyInputDomainController {
 
-    override fun list(profileId: Long): List<MonthlyEnergyInputResponse> {
-        requireProfile(profileId = profileId)
-        return inputRepository.findAllByEnergyProfileId(energyProfileId = profileId).map { it.toResponse() }
+    override fun list(profileUuid: String): List<MonthlyEnergyInputResponse> {
+        val profile = requireProfile(profileUuid = profileUuid)
+        return inputRepository.findAllByEnergyProfileId(energyProfileId = profile.id!!).map { it.toResponse() }
     }
 
-    override fun get(profileId: Long, inputId: Long): MonthlyEnergyInputResponse {
-        requireProfile(profileId = profileId)
+    override fun get(profileUuid: String, inputId: Long): MonthlyEnergyInputResponse {
+        requireProfile(profileUuid = profileUuid)
         return inputRepository.findById(inputId).orElseThrow {
             ResourceNotFoundException("MonthlyInput $inputId not found")
         }.toResponse()
     }
 
-    override fun create(profileId: Long, request: UpsertMonthlyEnergyInputRequest): MonthlyEnergyInputResponse {
-        val profile = profileRepository.findById(profileId).orElseThrow {
-            ResourceNotFoundException("Profile $profileId not found")
-        }
+    override fun create(profileUuid: String, request: UpsertMonthlyEnergyInputRequest): MonthlyEnergyInputResponse {
+        val profile = profileRepository.findByUuid(profileUuid)
+            ?: throw ResourceNotFoundException("Profile $profileUuid not found")
 
         val existing = inputRepository.findByEnergyProfileIdAndPeriod(
-            energyProfileId = profileId,
+            energyProfileId = profile.id!!,
             period = request.period,
         )
         if (existing != null) {
@@ -48,8 +48,12 @@ class MonthlyEnergyInputDomainControllerImpl(
         return inputRepository.save(input).toResponse()
     }
 
-    override fun update(profileId: Long, inputId: Long, request: UpsertMonthlyEnergyInputRequest): MonthlyEnergyInputResponse {
-        requireProfile(profileId = profileId)
+    override fun update(
+        profileUuid: String,
+        inputId: Long,
+        request: UpsertMonthlyEnergyInputRequest
+    ): MonthlyEnergyInputResponse {
+        requireProfile(profileUuid = profileUuid)
         val input = inputRepository.findById(inputId).orElseThrow {
             ResourceNotFoundException("MonthlyInput $inputId not found")
         }
@@ -58,18 +62,17 @@ class MonthlyEnergyInputDomainControllerImpl(
         return inputRepository.save(input).toResponse()
     }
 
-    override fun delete(profileId: Long, inputId: Long) {
-        requireProfile(profileId = profileId)
+    override fun delete(profileUuid: String, inputId: Long) {
+        requireProfile(profileUuid = profileUuid)
         val input = inputRepository.findById(inputId).orElseThrow {
             ResourceNotFoundException("MonthlyInput $inputId not found")
         }
         inputRepository.delete(input)
     }
 
-    private fun requireProfile(profileId: Long) {
-        profileRepository.findById(profileId).orElseThrow {
-            ResourceNotFoundException("Profile $profileId not found")
-        }
+    private fun requireProfile(profileUuid: String): EnergyProfile {
+        return profileRepository.findByUuid(profileUuid)
+            ?: throw ResourceNotFoundException("Profile $profileUuid not found")
     }
 }
 
@@ -94,7 +97,7 @@ private fun MonthlyEnergyInput.applyRequest(request: UpsertMonthlyEnergyInputReq
 private fun MonthlyEnergyInput.toResponse(): MonthlyEnergyInputResponse {
     return MonthlyEnergyInputResponse(
         id = id!!,
-        energyProfileId = energyProfileId!!,
+        energyProfileUuid = energyProfile?.uuid ?: "",
         period = period,
         consumptionKwh = consumptionKwh,
         generationKwh = generationKwh,

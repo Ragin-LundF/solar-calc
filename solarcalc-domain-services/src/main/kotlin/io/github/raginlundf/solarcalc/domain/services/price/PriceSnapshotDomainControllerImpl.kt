@@ -1,6 +1,7 @@
 package io.github.raginlundf.solarcalc.domain.services.price
 
 import io.github.raginlundf.solarcalc.domain.models.price.PriceSnapshot
+import io.github.raginlundf.solarcalc.domain.models.profile.EnergyProfile
 import io.github.raginlundf.solarcalc.domain.models.repository.EnergyProfileRepository
 import io.github.raginlundf.solarcalc.domain.models.repository.PriceSnapshotRepository
 import io.github.raginlundf.solarcalc.dtos.error.ResourceNotFoundException
@@ -15,22 +16,21 @@ class PriceSnapshotDomainControllerImpl(
     private val priceRepository: PriceSnapshotRepository,
 ) : PriceSnapshotDomainController {
 
-    override fun list(profileId: Long): List<PriceSnapshotResponse> {
-        requireProfile(profileId = profileId)
-        return priceRepository.findAllByEnergyProfileId(energyProfileId = profileId).map { it.toResponse() }
+    override fun list(profileUuid: String): List<PriceSnapshotResponse> {
+        val profile = requireProfile(profileUuid = profileUuid)
+        return priceRepository.findAllByEnergyProfileId(energyProfileId = profile.id!!).map { it.toResponse() }
     }
 
-    override fun get(profileId: Long, priceId: Long): PriceSnapshotResponse {
-        requireProfile(profileId = profileId)
+    override fun get(profileUuid: String, priceId: Long): PriceSnapshotResponse {
+        requireProfile(profileUuid = profileUuid)
         return priceRepository.findById(priceId).orElseThrow {
             ResourceNotFoundException("PriceSnapshot $priceId not found")
         }.toResponse()
     }
 
-    override fun create(profileId: Long, request: UpsertPriceSnapshotRequest): PriceSnapshotResponse {
-        val profile = profileRepository.findById(profileId).orElseThrow {
-            ResourceNotFoundException("Profile $profileId not found")
-        }
+    override fun create(profileUuid: String, request: UpsertPriceSnapshotRequest): PriceSnapshotResponse {
+        val profile = profileRepository.findByUuid(profileUuid)
+            ?: throw ResourceNotFoundException("Profile $profileUuid not found")
 
         val snapshot = PriceSnapshot().apply {
             this.energyProfile = profile
@@ -39,8 +39,8 @@ class PriceSnapshotDomainControllerImpl(
         return priceRepository.save(snapshot).toResponse()
     }
 
-    override fun update(profileId: Long, priceId: Long, request: UpsertPriceSnapshotRequest): PriceSnapshotResponse {
-        requireProfile(profileId = profileId)
+    override fun update(profileUuid: String, priceId: Long, request: UpsertPriceSnapshotRequest): PriceSnapshotResponse {
+        requireProfile(profileUuid = profileUuid)
         val snapshot = priceRepository.findById(priceId).orElseThrow {
             ResourceNotFoundException("PriceSnapshot $priceId not found")
         }
@@ -49,18 +49,17 @@ class PriceSnapshotDomainControllerImpl(
         return priceRepository.save(snapshot).toResponse()
     }
 
-    override fun delete(profileId: Long, priceId: Long) {
-        requireProfile(profileId = profileId)
+    override fun delete(profileUuid: String, priceId: Long) {
+        requireProfile(profileUuid = profileUuid)
         val snapshot = priceRepository.findById(priceId).orElseThrow {
             ResourceNotFoundException("PriceSnapshot $priceId not found")
         }
         priceRepository.delete(snapshot)
     }
 
-    private fun requireProfile(profileId: Long) {
-        profileRepository.findById(profileId).orElseThrow {
-            ResourceNotFoundException("Profile $profileId not found")
-        }
+    private fun requireProfile(profileUuid: String): EnergyProfile {
+        return profileRepository.findByUuid(profileUuid)
+            ?: throw ResourceNotFoundException("Profile $profileUuid not found")
     }
 }
 
@@ -76,7 +75,7 @@ private fun PriceSnapshot.applyRequest(request: UpsertPriceSnapshotRequest) {
 private fun PriceSnapshot.toResponse(): PriceSnapshotResponse {
     return PriceSnapshotResponse(
         id = id!!,
-        energyProfileId = energyProfileId!!,
+        energyProfileUuid = energyProfile?.uuid ?: "",
         period = period,
         electricityPrice = electricityPrice,
         feedInTariff = feedInTariff,

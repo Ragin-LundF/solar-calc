@@ -11,6 +11,8 @@ type AllocationCategory = 'HOUSEHOLD' | 'HEAT_PUMP' | 'WALLBOX';
 
 interface AllocationPolicyDto {
   id?: number;
+  energyProfileUuid?: string;
+  name?: string;
   priorityOrder: AllocationCategory[];
 }
 
@@ -75,7 +77,7 @@ export class AllocationPolicyComponent implements OnInit {
 
     this.saving.set(true);
     this.error.set(null);
-    const body: AllocationPolicyDto = { priorityOrder: this.priorityOrder() };
+    const body: AllocationPolicyDto = { name: 'Default', priorityOrder: this.priorityOrder() };
     const id = this.policyId();
     const call = id
       ? this.api.put<AllocationPolicyDto>(`/profiles/${pid}/allocation-policies/${id}`, body)

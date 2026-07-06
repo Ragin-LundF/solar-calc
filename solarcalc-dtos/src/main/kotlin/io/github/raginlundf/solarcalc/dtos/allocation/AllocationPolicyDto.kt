@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class AllocationPolicyResponse(
     val id: Long,
-    val energyProfileId: Long,
+    val energyProfileUuid: String,
     val name: String,
     val priorityOrder: List<AllocationCategory>,
     val isDefault: Boolean,
@@ -16,7 +16,7 @@ data class AllocationPolicyResponse(
 
 @Serializable
 data class CreateAllocationPolicyRequest(
-    @field:NotBlank val name: String,
+    val name: String = "Default",
     @field:NotEmpty val priorityOrder: List<AllocationCategory>,
     val isDefault: Boolean = false,
 )

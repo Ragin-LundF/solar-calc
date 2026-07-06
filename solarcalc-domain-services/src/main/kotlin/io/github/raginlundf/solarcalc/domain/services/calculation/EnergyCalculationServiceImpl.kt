@@ -34,7 +34,6 @@ class EnergyCalculationServiceImpl : EnergyCalculationService {
         val householdGrid = allocation.gridUsage[AllocationCategory.HOUSEHOLD]!!
         val householdSavings = electricityPrice?.let { price -> (householdAllocated * price).scale2() }
 
-        val wallboxDemand = demand[AllocationCategory.WALLBOX] ?: BigDecimal.ZERO
         val hp = computeHeatPump(
             input = input,
             allocated = allocation.allocated,
@@ -46,7 +45,6 @@ class EnergyCalculationServiceImpl : EnergyCalculationService {
             allocated = allocation.allocated,
             gridUsage = allocation.gridUsage,
             electricityPrice = electricityPrice,
-            wallboxDemand = wallboxDemand,
         )
 
         val totalElectricitySavings = if (electricityPrice != null) {
@@ -218,8 +216,7 @@ class EnergyCalculationServiceImpl : EnergyCalculationService {
         input: CalculationInput,
         allocated: Map<AllocationCategory, BigDecimal>,
         gridUsage: Map<AllocationCategory, BigDecimal>,
-        electricityPrice: BigDecimal?,
-        wallboxDemand: BigDecimal,
+        electricityPrice: BigDecimal?
     ): WallboxResult {
         if (!input.hasWallbox) {
             return WallboxResult(

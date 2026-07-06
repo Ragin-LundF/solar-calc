@@ -10,7 +10,7 @@ import { ZardInputDirective } from '@/shared/components/input';
 import { ZardCardComponent } from '@/shared/components/card';
 
 interface ProfileDto {
-  id?: number;
+  id?: string;
   name: string;
 }
 
@@ -56,13 +56,13 @@ export class ProfileSettingsComponent implements OnInit {
     });
   }
 
-  private loadProfile(profileId: number): void {
-    this.api.get<ProfileDto>(`/profiles/${profileId}`).subscribe({
+  private loadProfile(profileUuid: string): void {
+    this.api.get<ProfileDto>(`/profiles/${profileUuid}`).subscribe({
       next: p => this.form.patchValue(p),
     });
   }
 
-  selectProfile(id: number): void {
+  selectProfile(id: string): void {
     this.state.setProfile(id);
     this.loadProfile(id);
     this.saved.set(false);
@@ -76,7 +76,7 @@ export class ProfileSettingsComponent implements OnInit {
     this.error.set(null);
   }
 
-  deleteProfile(id: number, name: string): void {
+  deleteProfile(id: string, name: string): void {
     const confirmed = window.confirm(`Delete profile "${name}"? This will permanently remove all associated data.`);
     if (!confirmed) return;
 

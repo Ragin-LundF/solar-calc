@@ -2,8 +2,19 @@ package io.github.raginlundf.solarcalc.domain.services.calculation
 
 import io.github.raginlundf.solarcalc.dtos.calculation.CalculationResponse
 import io.github.raginlundf.solarcalc.dtos.calculation.ScenarioComparisonRequest
+import java.time.LocalDate
 
 interface CalculationDomainController {
-    fun calculate(profileId: Long, period: String): CalculationResponse
-    fun compareScenarios(profileId: Long, period: String, request: ScenarioComparisonRequest): List<CalculationResponse>
+    fun calculate(
+        profileUuid: String,
+        startDate: LocalDate? = null,
+        endDate: LocalDate? = null,
+    ): CalculationResponse
+
+    fun compareScenarios(
+        profileUuid: String,
+        startDate: LocalDate? = null,
+        endDate: LocalDate? = null,
+        request: ScenarioComparisonRequest,
+    ): List<CalculationResponse>
 }

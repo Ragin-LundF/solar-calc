@@ -7,6 +7,7 @@ plugins {
 dependencies {
     implementation(project(":solarcalc-domain-services"))
     implementation(project(":solarcalc-dtos"))
+    implementation(project(":solarcalc-logging"))
 
     implementation(libs.spring.web)
     implementation(libs.spring.webmvc)

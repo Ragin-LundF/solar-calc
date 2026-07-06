@@ -15,9 +15,11 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
+import jakarta.persistence.PrePersist
 import jakarta.persistence.Table
 import java.math.BigDecimal
 import java.time.LocalDateTime
+import java.util.UUID
 
 @Entity
 @Table(name = "energy_profile")
@@ -26,6 +28,9 @@ class EnergyProfile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
+
+    @Column(nullable = false, unique = true, updatable = false, length = 36)
+    var uuid: String = ""
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
@@ -64,6 +69,13 @@ class EnergyProfile {
 
     @Column(name = "updated_at", nullable = false)
     var updatedAt: LocalDateTime = LocalDateTime.now()
+
+    @PrePersist
+    private fun generateUuid() {
+        if (uuid.isBlank()) {
+            uuid = UUID.randomUUID().toString()
+        }
+    }
 
     override fun equals(other: Any?): Boolean {
         return kotlinEquals(other, arrayOf(EnergyProfile::id))

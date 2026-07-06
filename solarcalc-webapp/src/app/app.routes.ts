@@ -42,11 +42,7 @@ export const routes: Routes = [
         loadComponent: () =>
           import('@/features/allocation-policy/allocation-policy.component').then(m => m.AllocationPolicyComponent),
       },
-      {
-        path: 'scenarios',
-        loadComponent: () =>
-          import('@/features/scenario-comparison/scenario-comparison.component').then(m => m.ScenarioComparisonComponent),
-      },
+
     ],
   },
   {
