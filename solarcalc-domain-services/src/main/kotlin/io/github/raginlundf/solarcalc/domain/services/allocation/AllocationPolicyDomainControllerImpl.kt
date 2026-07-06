@@ -19,14 +19,15 @@ class AllocationPolicyDomainControllerImpl(
 
     override fun list(profileUuid: String): List<AllocationPolicyResponse> {
         val profile = requireProfile(profileUuid = profileUuid)
-        return policyRepository.findAllByEnergyProfileId(energyProfileId = profile.id!!).map { it.toResponse() }
+        return policyRepository.findAllByEnergyProfileId(energyProfileId = profile.id!!)
+            .map { it.toResponse(profileUuid) }
     }
 
     override fun get(profileUuid: String, policyId: Long): AllocationPolicyResponse {
         requireProfile(profileUuid = profileUuid)
         return policyRepository.findById(policyId).orElseThrow {
             ResourceNotFoundException("AllocationPolicy $policyId not found")
-        }.toResponse()
+        }.toResponse(profileUuid)
     }
 
     override fun create(profileUuid: String, request: CreateAllocationPolicyRequest): AllocationPolicyResponse {
@@ -39,7 +40,7 @@ class AllocationPolicyDomainControllerImpl(
             priorityOrder = request.priorityOrder
             isDefault = request.isDefault
         }
-        return policyRepository.save(policy).toResponse()
+        return policyRepository.save(policy).toResponse(profileUuid)
     }
 
     override fun update(
@@ -55,7 +56,7 @@ class AllocationPolicyDomainControllerImpl(
         policy.priorityOrder = request.priorityOrder
         policy.isDefault = request.isDefault
         policy.updatedAt = LocalDateTime.now()
-        return policyRepository.save(policy).toResponse()
+        return policyRepository.save(policy).toResponse(profileUuid)
     }
 
     override fun delete(profileUuid: String, policyId: Long) {
@@ -72,10 +73,10 @@ class AllocationPolicyDomainControllerImpl(
     }
 }
 
-private fun AllocationPolicy.toResponse(): AllocationPolicyResponse {
+private fun AllocationPolicy.toResponse(energyProfileUuid: String): AllocationPolicyResponse {
     return AllocationPolicyResponse(
         id = id!!,
-        energyProfileUuid = energyProfile?.uuid ?: "",
+        energyProfileUuid = energyProfileUuid,
         name = name,
         priorityOrder = priorityOrder,
         isDefault = isDefault,

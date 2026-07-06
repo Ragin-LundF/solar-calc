@@ -37,25 +37,25 @@
       <div class="grid grid-cols-2 gap-4">
         <z-card class="p-4">
           <p class="text-xs text-muted-foreground mb-1">{{ 'calculation.selfConsumptionSavings' | translate }}</p>
-          <p class="text-2xl font-semibold">{{ r.selfConsumptionSavingsEur | number:'1.2-2' }} €</p>
+          <p class="text-2xl font-semibold">{{ (r.householdSavings ?? 0) | number:'1.2-2' }} €</p>
         </z-card>
         <z-card class="p-4">
           <p class="text-xs text-muted-foreground mb-1">{{ 'calculation.feedInRevenue' | translate }}</p>
-          <p class="text-2xl font-semibold">{{ r.feedInRevenueEur | number:'1.2-2' }} €</p>
+          <p class="text-2xl font-semibold">{{ (r.feedInRevenue ?? 0) | number:'1.2-2' }} €</p>
         </z-card>
         <z-card class="p-4">
           <p class="text-xs text-muted-foreground mb-1">{{ 'calculation.heatPumpSavings' | translate }}</p>
-          <p class="text-2xl font-semibold">{{ r.heatPumpSavingsEur | number:'1.2-2' }} €</p>
+          <p class="text-2xl font-semibold">{{ (r.heatPumpElectricitySavings ?? 0) | number:'1.2-2' }} €</p>
         </z-card>
         <z-card class="p-4">
           <p class="text-xs text-muted-foreground mb-1">{{ 'calculation.wallboxSavings' | translate }}</p>
-          <p class="text-2xl font-semibold">{{ r.wallboxSavingsEur | number:'1.2-2' }} €</p>
+          <p class="text-2xl font-semibold">{{ (r.wallboxElectricitySavings ?? 0) | number:'1.2-2' }} €</p>
         </z-card>
       </div>
 
       <z-card class="p-4">
         <p class="text-xs text-muted-foreground mb-1">{{ 'calculation.totalElectricitySavings' | translate }}</p>
-        <p class="text-3xl font-bold">{{ r.totalElectricitySavingsEur | number:'1.2-2' }} €</p>
+        <p class="text-3xl font-bold">{{ (r.totalElectricitySavings ?? 0) | number:'1.2-2' }} €</p>
         <p class="text-xs text-muted-foreground mt-2">
           {{ 'calculation.unallocatedKwh' | translate }}: {{ r.unallocatedKwh | number:'1.1-1' }} kWh
         </p>

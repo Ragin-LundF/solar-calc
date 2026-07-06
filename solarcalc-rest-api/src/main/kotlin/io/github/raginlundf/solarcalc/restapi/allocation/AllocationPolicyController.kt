@@ -60,7 +60,11 @@ class AllocationPolicyController(
         @PathVariable policyId: Long,
         @Valid @RequestBody request: UpdateAllocationPolicyRequest,
     ): AllocationPolicyResponse {
-        return allocationPolicyDomainController.update(profileUuid = profileUuid, policyId = policyId, request = request)
+        return allocationPolicyDomainController.update(
+            profileUuid = profileUuid,
+            policyId = policyId,
+            request = request,
+        )
     }
 
     @LogDuration

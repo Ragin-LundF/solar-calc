@@ -18,14 +18,15 @@ class PriceSnapshotDomainControllerImpl(
 
     override fun list(profileUuid: String): List<PriceSnapshotResponse> {
         val profile = requireProfile(profileUuid = profileUuid)
-        return priceRepository.findAllByEnergyProfileId(energyProfileId = profile.id!!).map { it.toResponse() }
+        return priceRepository.findAllByEnergyProfileId(energyProfileId = profile.id!!)
+            .map { it.toResponse(profileUuid) }
     }
 
     override fun get(profileUuid: String, priceId: Long): PriceSnapshotResponse {
         requireProfile(profileUuid = profileUuid)
         return priceRepository.findById(priceId).orElseThrow {
             ResourceNotFoundException("PriceSnapshot $priceId not found")
-        }.toResponse()
+        }.toResponse(profileUuid)
     }
 
     override fun create(profileUuid: String, request: UpsertPriceSnapshotRequest): PriceSnapshotResponse {
@@ -36,17 +37,21 @@ class PriceSnapshotDomainControllerImpl(
             this.energyProfile = profile
             applyRequest(request)
         }
-        return priceRepository.save(snapshot).toResponse()
+        return priceRepository.save(snapshot).toResponse(profileUuid)
     }
 
-    override fun update(profileUuid: String, priceId: Long, request: UpsertPriceSnapshotRequest): PriceSnapshotResponse {
+    override fun update(
+        profileUuid: String,
+        priceId: Long,
+        request: UpsertPriceSnapshotRequest,
+    ): PriceSnapshotResponse {
         requireProfile(profileUuid = profileUuid)
         val snapshot = priceRepository.findById(priceId).orElseThrow {
             ResourceNotFoundException("PriceSnapshot $priceId not found")
         }
         snapshot.applyRequest(request)
         snapshot.updatedAt = LocalDateTime.now()
-        return priceRepository.save(snapshot).toResponse()
+        return priceRepository.save(snapshot).toResponse(profileUuid)
     }
 
     override fun delete(profileUuid: String, priceId: Long) {
@@ -72,10 +77,10 @@ private fun PriceSnapshot.applyRequest(request: UpsertPriceSnapshotRequest) {
     gasReferenceCost = request.gasReferenceCost
 }
 
-private fun PriceSnapshot.toResponse(): PriceSnapshotResponse {
+private fun PriceSnapshot.toResponse(energyProfileUuid: String): PriceSnapshotResponse {
     return PriceSnapshotResponse(
         id = id!!,
-        energyProfileUuid = energyProfile?.uuid ?: "",
+        energyProfileUuid = energyProfileUuid,
         period = period,
         electricityPrice = electricityPrice,
         feedInTariff = feedInTariff,

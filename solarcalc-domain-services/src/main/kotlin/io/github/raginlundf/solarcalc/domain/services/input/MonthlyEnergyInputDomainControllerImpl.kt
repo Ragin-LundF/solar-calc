@@ -19,14 +19,15 @@ class MonthlyEnergyInputDomainControllerImpl(
 
     override fun list(profileUuid: String): List<MonthlyEnergyInputResponse> {
         val profile = requireProfile(profileUuid = profileUuid)
-        return inputRepository.findAllByEnergyProfileId(energyProfileId = profile.id!!).map { it.toResponse() }
+        return inputRepository.findAllByEnergyProfileId(energyProfileId = profile.id!!)
+            .map { it.toResponse(energyProfileUuid = profileUuid) }
     }
 
     override fun get(profileUuid: String, inputId: Long): MonthlyEnergyInputResponse {
         requireProfile(profileUuid = profileUuid)
         return inputRepository.findById(inputId).orElseThrow {
             ResourceNotFoundException("MonthlyInput $inputId not found")
-        }.toResponse()
+        }.toResponse(energyProfileUuid = profileUuid)
     }
 
     override fun create(profileUuid: String, request: UpsertMonthlyEnergyInputRequest): MonthlyEnergyInputResponse {
@@ -38,14 +39,14 @@ class MonthlyEnergyInputDomainControllerImpl(
             period = request.period,
         )
         if (existing != null) {
-            throw DuplicateInputException("Input for period ${request.period} already exists.")
+            throw DuplicateInputException(message = "Input for period ${request.period} already exists.")
         }
 
         val input = MonthlyEnergyInput().apply {
             this.energyProfile = profile
-            applyRequest(request)
+            applyRequest(request = request)
         }
-        return inputRepository.save(input).toResponse()
+        return inputRepository.save(input).toResponse(energyProfileUuid = profileUuid)
     }
 
     override fun update(
@@ -55,24 +56,24 @@ class MonthlyEnergyInputDomainControllerImpl(
     ): MonthlyEnergyInputResponse {
         requireProfile(profileUuid = profileUuid)
         val input = inputRepository.findById(inputId).orElseThrow {
-            ResourceNotFoundException("MonthlyInput $inputId not found")
+            ResourceNotFoundException(message = "MonthlyInput $inputId not found")
         }
-        input.applyRequest(request)
+        input.applyRequest(request = request)
         input.updatedAt = LocalDateTime.now()
-        return inputRepository.save(input).toResponse()
+        return inputRepository.save(input).toResponse(energyProfileUuid = profileUuid)
     }
 
     override fun delete(profileUuid: String, inputId: Long) {
         requireProfile(profileUuid = profileUuid)
         val input = inputRepository.findById(inputId).orElseThrow {
-            ResourceNotFoundException("MonthlyInput $inputId not found")
+            ResourceNotFoundException(message = "MonthlyInput $inputId not found")
         }
         inputRepository.delete(input)
     }
 
     private fun requireProfile(profileUuid: String): EnergyProfile {
-        return profileRepository.findByUuid(profileUuid)
-            ?: throw ResourceNotFoundException("Profile $profileUuid not found")
+        return profileRepository.findByUuid(uuid = profileUuid)
+            ?: throw ResourceNotFoundException(message = "Profile $profileUuid not found")
     }
 }
 
@@ -94,10 +95,10 @@ private fun MonthlyEnergyInput.applyRequest(request: UpsertMonthlyEnergyInputReq
     heatingReferenceCostOverride = request.heatingReferenceCostOverride
 }
 
-private fun MonthlyEnergyInput.toResponse(): MonthlyEnergyInputResponse {
+private fun MonthlyEnergyInput.toResponse(energyProfileUuid: String): MonthlyEnergyInputResponse {
     return MonthlyEnergyInputResponse(
         id = id!!,
-        energyProfileUuid = energyProfile?.uuid ?: "",
+        energyProfileUuid = energyProfileUuid,
         period = period,
         consumptionKwh = consumptionKwh,
         generationKwh = generationKwh,

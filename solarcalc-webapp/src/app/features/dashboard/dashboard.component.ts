@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -11,15 +11,22 @@ import { ZardBadgeComponent } from '@/shared/components/badge';
 
 interface CalculationResultDto {
   period: string;
-  selfConsumptionSavingsEur: number;
-  feedInRevenueEur: number;
-  heatPumpSavingsEur: number;
-  wallboxSavingsEur: number;
-  totalElectricitySavingsEur: number;
-  allocatedHouseholdKwh: number;
-  allocatedHeatPumpKwh: number;
-  allocatedWallboxKwh: number;
+  calculationRunId?: number;
+  feedInKwh: number;
+  feedInRevenue: number | null;
+  selfConsumptionPoolKwh: number;
   unallocatedKwh: number;
+  householdAllocatedKwh: number | null;
+  householdGridKwh: number | null;
+  householdSavings: number | null;
+  heatPumpAllocatedKwh: number | null;
+  heatPumpGridKwh: number | null;
+  heatPumpElectricitySavings: number | null;
+  heatPumpHeatingReferenceSavings: number | null;
+  wallboxAllocatedKwh: number | null;
+  wallboxGridKwh: number | null;
+  wallboxElectricitySavings: number | null;
+  totalElectricitySavings: number | null;
   completenessFlags: string[];
 }
 
@@ -29,7 +36,7 @@ interface CalculationResultDto {
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './dashboard.component.html',
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit {
   private readonly api = inject(ApiService);
   readonly state = inject(AppStateService);
 
@@ -38,6 +45,10 @@ export class DashboardComponent {
   readonly error = signal<string | null>(null);
   startDate = '';
   endDate = '';
+
+  ngOnInit(): void {
+    if (this.state.profileId()) this.calculate();
+  }
 
   calculate(): void {
     const pid = this.state.profileId();
@@ -56,7 +67,14 @@ export class DashboardComponent {
 
     this.api.get<CalculationResultDto>(path).subscribe({
       next: r => { this.result.set(r); this.loading.set(false); },
-      error: () => { this.error.set('common.error'); this.loading.set(false); },
+      error: err => {
+        this.loading.set(false);
+        if (err.status === 404) {
+          this.error.set('dashboard.noData');
+        } else {
+          this.error.set('common.error');
+        }
+      },
     });
   }
 }
