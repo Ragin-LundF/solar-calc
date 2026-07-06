@@ -47,6 +47,13 @@ Read:
 
 Use `kotlin.test` for function and parameter tests. High coverage is mandatory, but meaningful assertions matter more than line execution.
 
+### Angular frontend (solarcalc-webapp)
+Read:
+
+- `instructions/angular-guidelines.md`
+
+Use this for any change inside `solarcalc-webapp/`: component generation, routing, services, i18n, styling, and testing. Angular 22, TailwindCSS 4, ZardUI primitives, `@ngx-translate`.
+
 ### Static analysis, Detekt, SonarQube, ktlint, formatting
 Read:
 

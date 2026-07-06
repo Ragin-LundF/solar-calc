@@ -57,3 +57,7 @@ Never do any of the following:
 - Reduce production visibility (`private` → `internal`/`public`) just to make testing easier when it worsens the design.
 - Add unused production hooks that exist only for tests.
 - Change production behavior to satisfy a brittle test, unless the behavior change itself is what the task requests.
+
+## Dependencies (Kotlin)
+
+- Do not use starters in any other submodule than the `solarcalc-server`. Use only the required dependency modules to avoid too big dependencies for modules.

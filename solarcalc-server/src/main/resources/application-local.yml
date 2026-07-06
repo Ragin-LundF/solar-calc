@@ -5,3 +5,9 @@ spring:
     url: jdbc:mariadb://localhost:3306/solarcalc
     username: solarcalc
     password: solarcalc
+
+solarcalc:
+  security:
+    jwt:
+      # Dev-only symmetric key — never use in production
+      secret-key: "lasA4qiQVKjInCwy2jvbexup8/mRw54YmYutKBEaLj8="

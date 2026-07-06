@@ -59,10 +59,10 @@ class EnergyCalculationServiceTest {
             baseInput(generation = "600", feedIn = "200", householdKwh = "500"),
         )
 
-        assertEquals(BigDecimal("200"), result.feedInKwh)
-        assertEquals(BigDecimal("400"), result.selfConsumptionPoolKwh)
-        assertEquals(BigDecimal("400"), result.householdAllocatedKwh)
-        assertEquals(BigDecimal("100"), result.householdGridKwh)
+        assertEquals(expected = BigDecimal("200"), actual = result.feedInKwh)
+        assertEquals(expected = BigDecimal("400"), actual = result.selfConsumptionPoolKwh)
+        assertEquals(expected = BigDecimal("400"), actual = result.householdAllocatedKwh)
+        assertEquals(expected = BigDecimal("100"), actual = result.householdGridKwh)
     }
 
     // 2. Allocation priority WALLBOX -> HEAT_PUMP -> HOUSEHOLD
@@ -77,15 +77,19 @@ class EnergyCalculationServiceTest {
                 householdKwh = "200",
                 heatPumpKwh = "100",
                 wallboxKwh = "150",
-                priority = listOf(AllocationCategory.WALLBOX, AllocationCategory.HEAT_PUMP, AllocationCategory.HOUSEHOLD),
+                priority = listOf(
+                    AllocationCategory.WALLBOX,
+                    AllocationCategory.HEAT_PUMP,
+                    AllocationCategory.HOUSEHOLD,
+                ),
             ),
         )
 
-        assertEquals(BigDecimal("150"), result.wallboxAllocatedKwh)
-        assertEquals(BigDecimal("100"), result.heatPumpAllocatedKwh)
-        assertEquals(BigDecimal("50"), result.householdAllocatedKwh)
-        assertEquals(BigDecimal("150"), result.householdGridKwh)
-        assertEquals(BigDecimal("0"), result.unallocatedKwh)
+        assertEquals(expected = BigDecimal("150"), actual = result.wallboxAllocatedKwh)
+        assertEquals(expected = BigDecimal("100"), actual = result.heatPumpAllocatedKwh)
+        assertEquals(expected = BigDecimal("50"), actual = result.householdAllocatedKwh)
+        assertEquals(expected = BigDecimal("150"), actual = result.householdGridKwh)
+        assertEquals(expected = BigDecimal("0"), actual = result.unallocatedKwh)
     }
 
     // 3. Allocation priority HOUSEHOLD -> HEAT_PUMP -> WALLBOX
@@ -100,14 +104,18 @@ class EnergyCalculationServiceTest {
                 householdKwh = "200",
                 heatPumpKwh = "100",
                 wallboxKwh = "150",
-                priority = listOf(AllocationCategory.HOUSEHOLD, AllocationCategory.HEAT_PUMP, AllocationCategory.WALLBOX),
+                priority = listOf(
+                    AllocationCategory.HOUSEHOLD,
+                    AllocationCategory.HEAT_PUMP,
+                    AllocationCategory.WALLBOX,
+                ),
             ),
         )
 
-        assertEquals(BigDecimal("200"), result.householdAllocatedKwh)
-        assertEquals(BigDecimal("100"), result.heatPumpAllocatedKwh)
-        assertEquals(BigDecimal("0"), result.wallboxAllocatedKwh)
-        assertEquals(BigDecimal("150"), result.wallboxGridKwh)
+        assertEquals(expected = BigDecimal("200"), actual = result.householdAllocatedKwh)
+        assertEquals(expected = BigDecimal("100"), actual = result.heatPumpAllocatedKwh)
+        assertEquals(expected = BigDecimal("0"), actual = result.wallboxAllocatedKwh)
+        assertEquals(expected = BigDecimal("150"), actual = result.wallboxGridKwh)
     }
 
     // 4. Tenant without wallbox — wallbox demand is zero regardless of priority
@@ -121,7 +129,7 @@ class EnergyCalculationServiceTest {
             ),
         )
 
-        assertNull(result.wallboxAllocatedKwh)
+        assertNull(actual = result.wallboxAllocatedKwh)
     }
 
     // 5. Tenant without heat pump — heat pump demand is zero
@@ -135,7 +143,7 @@ class EnergyCalculationServiceTest {
             ),
         )
 
-        assertNull(result.heatPumpAllocatedKwh)
+        assertNull(actual = result.heatPumpAllocatedKwh)
     }
 
     // 6. Missing optional prices mark partial results (MISSING_ELECTRICITY_PRICE)
@@ -146,8 +154,8 @@ class EnergyCalculationServiceTest {
         )
 
         assertTrue(CompletenessFlag.MISSING_ELECTRICITY_PRICE in result.completeness.flags)
-        assertNull(result.householdSavings)
-        assertNull(result.totalElectricitySavings)
+        assertNull(actual = result.householdSavings)
+        assertNull(actual = result.totalElectricitySavings)
     }
 
     // 7. Feed-in greater than generation is capped and flagged
@@ -157,8 +165,8 @@ class EnergyCalculationServiceTest {
             baseInput(generation = "300", feedIn = "500", householdKwh = "200"),
         )
 
-        assertEquals(BigDecimal("300"), result.feedInKwh)
-        assertEquals(BigDecimal("0"), result.selfConsumptionPoolKwh)
+        assertEquals(expected = BigDecimal("300"), actual = result.feedInKwh)
+        assertEquals(expected = BigDecimal("0"), actual = result.selfConsumptionPoolKwh)
         assertTrue(CompletenessFlag.ALLOCATION_CAPPED_FEED_IN in result.completeness.flags)
     }
 
@@ -173,12 +181,16 @@ class EnergyCalculationServiceTest {
                 householdKwh = null,
                 heatPumpKwh = "100",
                 wallboxKwh = "80",
-                priority = listOf(AllocationCategory.HOUSEHOLD, AllocationCategory.HEAT_PUMP, AllocationCategory.WALLBOX),
+                priority = listOf(
+                    AllocationCategory.HOUSEHOLD,
+                    AllocationCategory.HEAT_PUMP,
+                    AllocationCategory.WALLBOX,
+                ),
             ),
         )
 
         // derived household = 500 - 100 - 80 = 320
-        assertEquals(BigDecimal("320"), result.householdAllocatedKwh + result.householdGridKwh)
+        assertEquals(expected = BigDecimal("320"), actual = result.householdAllocatedKwh + result.householdGridKwh)
         assertTrue(CompletenessFlag.DERIVED_HOUSEHOLD_CONSUMPTION in result.completeness.flags)
     }
 
@@ -199,13 +211,13 @@ class EnergyCalculationServiceTest {
             ),
         )
 
-        assertNotNull(result.wallboxPetrolSavings)
+        assertNotNull(actual = result.wallboxPetrolSavings)
         // estimatedKm = 100 / 20 * 100 = 500 km
         // petrolLitres = 500 / 100 * 8 = 40 litres
         // petrolCost = 40 * 1.80 = 72.00
         // wallboxGridCost = 0 * 0.30 = 0.00
         // petrolSavings = 72.00 - 0.00 = 72.00
-        assertEquals(BigDecimal("72.00"), result.wallboxPetrolSavings)
+        assertEquals(expected = BigDecimal("72.00"), actual = result.wallboxPetrolSavings)
     }
 
     // 10. Heating oil comparison calculated when reference cost present
@@ -223,11 +235,11 @@ class EnergyCalculationServiceTest {
             ),
         )
 
-        assertNotNull(result.heatPumpHeatingReferenceSavings)
+        assertNotNull(actual = result.heatPumpHeatingReferenceSavings)
         // heatPumpAllocated = 50, heatPumpGrid = 50
         // heatPumpGridCost = 50 * 0.30 = 15.00
         // heatingRefSavings = 120.00 - 15.00 = 105.00
-        assertEquals(BigDecimal("105.00"), result.heatPumpHeatingReferenceSavings)
+        assertEquals(expected = BigDecimal("105.00"), actual = result.heatPumpHeatingReferenceSavings)
     }
 
     // 11. Heating gas comparison (same logic as oil, reuses reference cost field)
@@ -248,7 +260,7 @@ class EnergyCalculationServiceTest {
         // heatPumpAllocated = 100, heatPumpGrid = 0
         // heatPumpGridCost = 0.00
         // heatingRefSavings = 80.00 - 0.00 = 80.00
-        assertEquals(BigDecimal("80.00"), result.heatPumpHeatingReferenceSavings)
+        assertEquals(expected = BigDecimal("80.00"), actual = result.heatPumpHeatingReferenceSavings)
     }
 
     // 12. Total view avoids double counting (electricity savings != petrol savings)
@@ -270,9 +282,9 @@ class EnergyCalculationServiceTest {
 
         // totalElectricitySavings should be householdSavings + wallboxElectricitySavings
         val expectedTotal = (result.householdSavings!! + result.wallboxElectricitySavings!!).setScale(2)
-        assertEquals(expectedTotal, result.totalElectricitySavings)
+        assertEquals(expected = expectedTotal, actual = result.totalElectricitySavings)
 
         // petrolSavings is separate
-        assertNotNull(result.wallboxPetrolSavings)
+        assertNotNull(actual = result.wallboxPetrolSavings)
     }
 }

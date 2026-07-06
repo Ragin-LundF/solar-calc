@@ -1,0 +1,87 @@
+{
+  "navigation": {
+    "dashboard": "Dashboard",
+    "monthlyInput": "Monatliche Eingabe",
+    "profileSettings": "Profil-Einstellungen",
+    "prices": "Preise",
+    "allocationPolicy": "Zuordnungs-Priorität",
+    "scenarioComparison": "Szenario-Vergleich",
+    "tenantSelection": "Mandant wechseln"
+  },
+  "profile": {
+    "name": "Profilname",
+    "hasWallbox": "Wallbox vorhanden",
+    "hasHeatPump": "Wärmepumpe vorhanden",
+    "heatingReferenceType": "Heizungsreferenz",
+    "heatingReferenceType_NONE": "Keine",
+    "heatingReferenceType_OIL": "Heizöl",
+    "heatingReferenceType_GAS": "Erdgas",
+    "defaultElectricityPrice": "Standard-Strompreis (EUR/kWh)",
+    "defaultFeedInTariff": "Standard-Einspeisevergütung (EUR/kWh)",
+    "defaultPetrolPrice": "Standard-Benzinpreis (EUR/L)",
+    "locale": "Sprache",
+    "list": "Profile",
+    "edit": "Profil bearbeiten",
+    "new": "Neues Profil"
+  },
+  "monthlyInput": {
+    "period": "Monat (JJJJ-MM)",
+    "consumptionKwh": "Stromverbrauch gesamt (kWh)",
+    "generationKwh": "PV-Erzeugung (kWh)",
+    "feedInKwh": "Einspeisung (kWh)",
+    "householdConsumptionKwh": "Haushalt-Verbrauch (kWh)",
+    "heatPumpConsumptionKwh": "Wärmepumpe (kWh)",
+    "wallboxConsumptionKwh": "Wallbox (kWh)",
+    "edit": "Eingabe bearbeiten",
+    "new": "Neue Eingabe"
+  },
+  "calculation": {
+    "selfConsumptionSavings": "Eigenverbrauchs-Einsparungen",
+    "feedInRevenue": "Einspeisevergütung",
+    "heatPumpSavings": "Wärmepumpe-Einsparungen",
+    "wallboxSavings": "Wallbox-Einsparungen",
+    "petrolComparison": "Vergleich mit Benzinfahrzeug",
+    "heatingComparison": "Vergleich mit Heizung",
+    "totalElectricitySavings": "Gesamt-Stromeinsparungen",
+    "unallocatedKwh": "Nicht zugeordnete kWh"
+  },
+  "prices": {
+    "electricityPrice": "Strompreis (EUR/kWh)",
+    "feedInTariff": "Einspeisevergütung (EUR/kWh)",
+    "petrolPrice": "Benzinpreis (EUR/L)",
+    "oilReferenceCost": "Heizöl-Referenzkosten (EUR/Monat)",
+    "gasReferenceCost": "Erdgas-Referenzkosten (EUR/Monat)",
+    "evEfficiency": "E-Auto-Verbrauch (kWh/100 km)",
+    "iceEfficiency": "Verbrenner-Verbrauch (L/100 km)",
+    "period": "Gültig für Monat",
+    "defaultPrices": "Standard-Preise"
+  },
+  "allocation": {
+    "HOUSEHOLD": "Haushalt",
+    "HEAT_PUMP": "Wärmepumpe",
+    "WALLBOX": "Wallbox",
+    "priority": "Prioritäts-Reihenfolge"
+  },
+  "validation": {
+    "required": "Pflichtfeld",
+    "invalidPositiveNumber": "Muss eine positive Zahl sein",
+    "invalidPeriod": "Format: JJJJ-MM",
+    "feedInExceedsGeneration": "Einspeisung überschreitet die Erzeugung"
+  },
+  "common": {
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "add": "Hinzufügen",
+    "loading": "Wird geladen...",
+    "error": "Fehler",
+    "success": "Erfolgreich gespeichert",
+    "noTenantSelected": "Kein Mandant ausgewählt. Mandanten-ID in der Seitenleiste eingeben.",
+    "noProfileSelected": "Kein Profil ausgewählt. Zuerst ein Profil in den Profil-Einstellungen anlegen.",
+    "noProfiles": "Noch keine Profile vorhanden.",
+    "noData": "Keine Einträge vorhanden.",
+    "tenantId": "Mandanten-ID",
+    "calculate": "Berechnen"
+  }
+}

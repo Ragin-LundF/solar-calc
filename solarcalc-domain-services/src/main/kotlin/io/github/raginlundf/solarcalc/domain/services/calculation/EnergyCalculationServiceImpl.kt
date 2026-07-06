@@ -10,133 +10,53 @@ import java.math.RoundingMode
 class EnergyCalculationServiceImpl : EnergyCalculationService {
 
     override fun calculate(input: CalculationInput): CalculationResult {
-        return computeResult(input)
+        return computeResult(input = input)
     }
 
     override fun compareScenarios(
         input: CalculationInput,
         priorities: List<List<AllocationCategory>>,
     ): List<CalculationResult> {
-        return priorities.map { priority -> computeResult(input.copy(allocationPriority = priority)) }
+        return priorities.map { priority -> computeResult(input = input.copy(allocationPriority = priority)) }
     }
 
     private fun computeResult(input: CalculationInput): CalculationResult {
         val flags = mutableSetOf<CompletenessFlag>()
+        val (feedInKwh, poolKwh) = computeFeedIn(input = input, flags = flags)
+        val demand = computeDemands(input = input, flags = flags)
+        val allocation = computeAllocation(input = input, demand = demand, poolKwh = poolKwh)
+        checkPriceFlags(input = input, flags = flags)
 
-        // ── Feed-in and pool ────────────────────────────────────────────────────
-        val rawFeedIn = input.feedInKwh.max(BigDecimal.ZERO)
-        val generation = input.generationKwh.max(BigDecimal.ZERO)
-        val feedInCapped = rawFeedIn > generation
-        val feedInKwh = rawFeedIn.min(generation)
-        if (feedInCapped) {
-            flags += CompletenessFlag.ALLOCATION_CAPPED_FEED_IN
-        }
-
-        var poolKwh = (generation - feedInKwh).max(BigDecimal.ZERO)
-
-        // ── Category demand ─────────────────────────────────────────────────────
-        val heatPumpDemand = if (input.hasHeatPump) input.heatPumpConsumptionKwh?.max(BigDecimal.ZERO) ?: BigDecimal.ZERO else BigDecimal.ZERO
-        val wallboxDemand = if (input.hasWallbox) input.wallboxConsumptionKwh?.max(BigDecimal.ZERO) ?: BigDecimal.ZERO else BigDecimal.ZERO
-
-        val householdDemand = if (input.householdConsumptionKwh != null) {
-            input.householdConsumptionKwh.max(BigDecimal.ZERO)
-        } else {
-            flags += CompletenessFlag.DERIVED_HOUSEHOLD_CONSUMPTION
-            (input.consumptionKwh - heatPumpDemand - wallboxDemand).max(BigDecimal.ZERO)
-        }
-
-        val demand = mapOf(
-            AllocationCategory.HOUSEHOLD to householdDemand,
-            AllocationCategory.HEAT_PUMP to heatPumpDemand,
-            AllocationCategory.WALLBOX to wallboxDemand,
-        )
-
-        // ── Priority allocation ─────────────────────────────────────────────────
-        val allocated = mutableMapOf<AllocationCategory, BigDecimal>()
-        val gridUsage = mutableMapOf<AllocationCategory, BigDecimal>()
-
-        for (category in input.allocationPriority) {
-            val categoryDemand = demand[category] ?: BigDecimal.ZERO
-            val allocatedKwh = poolKwh.min(categoryDemand)
-            allocated[category] = allocatedKwh
-            gridUsage[category] = categoryDemand - allocatedKwh
-            poolKwh -= allocatedKwh
-        }
-
-        // Categories not in priority list get no allocation
-        AllocationCategory.entries.forEach { category ->
-            if (!allocated.containsKey(category)) {
-                allocated[category] = BigDecimal.ZERO
-                gridUsage[category] = demand[category] ?: BigDecimal.ZERO
-            }
-        }
-
-        val unallocatedKwh = poolKwh
-
-        // ── Price availability checks ───────────────────────────────────────────
         val electricityPrice = input.electricityPrice
-        if (electricityPrice == null) {
-            flags += CompletenessFlag.MISSING_ELECTRICITY_PRICE
-        }
-        if (input.feedInTariff == null) {
-            flags += CompletenessFlag.MISSING_FEED_IN_TARIFF
-        }
-        if (input.hasWallbox && input.petrolPrice == null) {
-            flags += CompletenessFlag.MISSING_PETROL_PRICE
-        }
-        if (input.hasHeatPump && input.heatingReferenceCost == null) {
-            flags += CompletenessFlag.MISSING_HEATING_REFERENCE_COST
-        }
-
-        // ── Feed-in revenue ─────────────────────────────────────────────────────
         val feedInRevenue = input.feedInTariff?.let { tariff -> (feedInKwh * tariff).scale2() }
 
-        // ── Household ──────────────────────────────────────────────────────────
-        val householdAllocated = allocated[AllocationCategory.HOUSEHOLD]!!
-        val householdGrid = gridUsage[AllocationCategory.HOUSEHOLD]!!
-        val householdSavings = electricityPrice?.let { (householdAllocated * it).scale2() }
+        val householdAllocated = allocation.allocated[AllocationCategory.HOUSEHOLD]!!
+        val householdGrid = allocation.gridUsage[AllocationCategory.HOUSEHOLD]!!
+        val householdSavings = electricityPrice?.let { price -> (householdAllocated * price).scale2() }
 
-        // ── Heat pump ──────────────────────────────────────────────────────────
-        val (heatPumpAllocated, heatPumpGrid, heatPumpElecSavings, heatPumpHeatingSavings) =
-            if (input.hasHeatPump) {
-                val hp = allocated[AllocationCategory.HEAT_PUMP]!!
-                val hpGrid = gridUsage[AllocationCategory.HEAT_PUMP]!!
-                val hpElec = electricityPrice?.let { (hp * it).scale2() }
-                val hpGridCost = electricityPrice?.let { (hpGrid * it).scale2() }
-                val hpHeating = if (hpGridCost != null && input.heatingReferenceCost != null) {
-                    (input.heatingReferenceCost - hpGridCost).scale2()
-                } else null
-                listOf(hp, hpGrid, hpElec, hpHeating)
-            } else {
-                listOf(null, null, null, null)
-            }
+        val wallboxDemand = demand[AllocationCategory.WALLBOX] ?: BigDecimal.ZERO
+        val hp = computeHeatPump(
+            input = input,
+            allocated = allocation.allocated,
+            gridUsage = allocation.gridUsage,
+            electricityPrice = electricityPrice,
+        )
+        val wb = computeWallbox(
+            input = input,
+            allocated = allocation.allocated,
+            gridUsage = allocation.gridUsage,
+            electricityPrice = electricityPrice,
+            wallboxDemand = wallboxDemand,
+        )
 
-        // ── Wallbox ────────────────────────────────────────────────────────────
-        val (wallboxAllocated, wallboxGrid, wallboxElecSavings, wallboxPetrolSavings) =
-            if (input.hasWallbox) {
-                val wb = allocated[AllocationCategory.WALLBOX]!!
-                val wbGrid = gridUsage[AllocationCategory.WALLBOX]!!
-                val wbElec = electricityPrice?.let { (wb * it).scale2() }
-                val wbGridCost = electricityPrice?.let { (wbGrid * it).scale2() }
-                val wbPetrol = computeWallboxPetrolSavings(
-                    wallboxDemandKwh = wallboxDemand,
-                    wallboxGridCost = wbGridCost,
-                    petrolPrice = input.petrolPrice,
-                    evEfficiency = input.evEfficiencyKwh100km,
-                    iceEfficiency = input.iceEfficiencyL100km,
-                )
-                listOf(wb, wbGrid, wbElec, wbPetrol)
-            } else {
-                listOf(null, null, null, null)
-            }
-
-        // ── Totals ─────────────────────────────────────────────────────────────
         val totalElectricitySavings = if (electricityPrice != null) {
-            listOf(householdSavings, heatPumpElecSavings as? BigDecimal, wallboxElecSavings as? BigDecimal)
+            listOf(householdSavings, hp.elecSavings, wb.elecSavings)
                 .filterNotNull()
                 .fold(BigDecimal.ZERO, BigDecimal::add)
                 .scale2()
-        } else null
+        } else {
+            null
+        }
 
         if (flags.isEmpty()) {
             flags += CompletenessFlag.COMPLETE
@@ -147,21 +67,186 @@ class EnergyCalculationServiceImpl : EnergyCalculationService {
             allocationPriority = input.allocationPriority,
             feedInKwh = feedInKwh,
             feedInRevenue = feedInRevenue,
-            selfConsumptionPoolKwh = (generation - feedInKwh).max(BigDecimal.ZERO),
-            unallocatedKwh = unallocatedKwh,
+            selfConsumptionPoolKwh = (input.generationKwh.max(BigDecimal.ZERO) - feedInKwh).max(BigDecimal.ZERO),
+            unallocatedKwh = allocation.unallocatedKwh,
             householdAllocatedKwh = householdAllocated,
             householdGridKwh = householdGrid,
             householdSavings = householdSavings,
-            heatPumpAllocatedKwh = heatPumpAllocated as? BigDecimal,
-            heatPumpGridKwh = heatPumpGrid as? BigDecimal,
-            heatPumpElectricitySavings = heatPumpElecSavings as? BigDecimal,
-            heatPumpHeatingReferenceSavings = heatPumpHeatingSavings as? BigDecimal,
-            wallboxAllocatedKwh = wallboxAllocated as? BigDecimal,
-            wallboxGridKwh = wallboxGrid as? BigDecimal,
-            wallboxElectricitySavings = wallboxElecSavings as? BigDecimal,
-            wallboxPetrolSavings = wallboxPetrolSavings as? BigDecimal,
+            heatPumpAllocatedKwh = hp.allocatedKwh,
+            heatPumpGridKwh = hp.gridKwh,
+            heatPumpElectricitySavings = hp.elecSavings,
+            heatPumpHeatingReferenceSavings = hp.heatingSavings,
+            wallboxAllocatedKwh = wb.allocatedKwh,
+            wallboxGridKwh = wb.gridKwh,
+            wallboxElectricitySavings = wb.elecSavings,
+            wallboxPetrolSavings = wb.petrolSavings,
             totalElectricitySavings = totalElectricitySavings,
             completeness = CalculationCompleteness(flags = flags),
+        )
+    }
+
+    private fun computeFeedIn(
+        input: CalculationInput,
+        flags: MutableSet<CompletenessFlag>,
+    ): Pair<BigDecimal, BigDecimal> {
+        val rawFeedIn = input.feedInKwh.max(BigDecimal.ZERO)
+        val generation = input.generationKwh.max(BigDecimal.ZERO)
+        if (rawFeedIn > generation) {
+            flags += CompletenessFlag.ALLOCATION_CAPPED_FEED_IN
+        }
+        val feedInKwh = rawFeedIn.min(generation)
+        return feedInKwh to (generation - feedInKwh).max(BigDecimal.ZERO)
+    }
+
+    private fun computeDemands(
+        input: CalculationInput,
+        flags: MutableSet<CompletenessFlag>,
+    ): Map<AllocationCategory, BigDecimal> {
+        val heatPumpDemand = if (input.hasHeatPump) {
+            input.heatPumpConsumptionKwh?.max(BigDecimal.ZERO) ?: BigDecimal.ZERO
+        } else {
+            BigDecimal.ZERO
+        }
+        val wallboxDemand = if (input.hasWallbox) {
+            input.wallboxConsumptionKwh?.max(BigDecimal.ZERO) ?: BigDecimal.ZERO
+        } else {
+            BigDecimal.ZERO
+        }
+        val householdDemand = if (input.householdConsumptionKwh != null) {
+            input.householdConsumptionKwh.max(BigDecimal.ZERO)
+        } else {
+            flags += CompletenessFlag.DERIVED_HOUSEHOLD_CONSUMPTION
+            (input.consumptionKwh - heatPumpDemand - wallboxDemand).max(BigDecimal.ZERO)
+        }
+        return mapOf(
+            AllocationCategory.HOUSEHOLD to householdDemand,
+            AllocationCategory.HEAT_PUMP to heatPumpDemand,
+            AllocationCategory.WALLBOX to wallboxDemand,
+        )
+    }
+
+    private data class AllocationResult(
+        val allocated: Map<AllocationCategory, BigDecimal>,
+        val gridUsage: Map<AllocationCategory, BigDecimal>,
+        val unallocatedKwh: BigDecimal,
+    )
+
+    private fun computeAllocation(
+        input: CalculationInput,
+        demand: Map<AllocationCategory, BigDecimal>,
+        poolKwh: BigDecimal,
+    ): AllocationResult {
+        var remaining = poolKwh
+        val allocated = mutableMapOf<AllocationCategory, BigDecimal>()
+        val gridUsage = mutableMapOf<AllocationCategory, BigDecimal>()
+
+        for (category in input.allocationPriority) {
+            val categoryDemand = demand[category] ?: BigDecimal.ZERO
+            val allocatedKwh = remaining.min(categoryDemand)
+            allocated[category] = allocatedKwh
+            gridUsage[category] = categoryDemand - allocatedKwh
+            remaining -= allocatedKwh
+        }
+
+        AllocationCategory.entries.forEach { category ->
+            if (!allocated.containsKey(category)) {
+                allocated[category] = BigDecimal.ZERO
+                gridUsage[category] = demand[category] ?: BigDecimal.ZERO
+            }
+        }
+
+        return AllocationResult(
+            allocated = allocated,
+            gridUsage = gridUsage,
+            unallocatedKwh = remaining,
+        )
+    }
+
+    private fun checkPriceFlags(input: CalculationInput, flags: MutableSet<CompletenessFlag>) {
+        if (input.electricityPrice == null) flags += CompletenessFlag.MISSING_ELECTRICITY_PRICE
+        if (input.feedInTariff == null) flags += CompletenessFlag.MISSING_FEED_IN_TARIFF
+        if (input.hasWallbox && input.petrolPrice == null) flags += CompletenessFlag.MISSING_PETROL_PRICE
+        if (input.hasHeatPump && input.heatingReferenceCost == null) {
+            flags += CompletenessFlag.MISSING_HEATING_REFERENCE_COST
+        }
+    }
+
+    private data class HeatPumpResult(
+        val allocatedKwh: BigDecimal?,
+        val gridKwh: BigDecimal?,
+        val elecSavings: BigDecimal?,
+        val heatingSavings: BigDecimal?,
+    )
+
+    private fun computeHeatPump(
+        input: CalculationInput,
+        allocated: Map<AllocationCategory, BigDecimal>,
+        gridUsage: Map<AllocationCategory, BigDecimal>,
+        electricityPrice: BigDecimal?,
+    ): HeatPumpResult {
+        if (!input.hasHeatPump) {
+            return HeatPumpResult(
+                allocatedKwh = null,
+                gridKwh = null,
+                elecSavings = null,
+                heatingSavings = null,
+            )
+        }
+        val hp = allocated[AllocationCategory.HEAT_PUMP]!!
+        val hpGrid = gridUsage[AllocationCategory.HEAT_PUMP]!!
+        val hpElec = electricityPrice?.let { price -> (hp * price).scale2() }
+        val hpGridCost = electricityPrice?.let { price -> (hpGrid * price).scale2() }
+        val hpHeating = if (hpGridCost != null && input.heatingReferenceCost != null) {
+            (input.heatingReferenceCost - hpGridCost).scale2()
+        } else {
+            null
+        }
+        return HeatPumpResult(
+            allocatedKwh = hp,
+            gridKwh = hpGrid,
+            elecSavings = hpElec,
+            heatingSavings = hpHeating,
+        )
+    }
+
+    private data class WallboxResult(
+        val allocatedKwh: BigDecimal?,
+        val gridKwh: BigDecimal?,
+        val elecSavings: BigDecimal?,
+        val petrolSavings: BigDecimal?,
+    )
+
+    private fun computeWallbox(
+        input: CalculationInput,
+        allocated: Map<AllocationCategory, BigDecimal>,
+        gridUsage: Map<AllocationCategory, BigDecimal>,
+        electricityPrice: BigDecimal?,
+        wallboxDemand: BigDecimal,
+    ): WallboxResult {
+        if (!input.hasWallbox) {
+            return WallboxResult(
+                allocatedKwh = null,
+                gridKwh = null,
+                elecSavings = null,
+                petrolSavings = null,
+            )
+        }
+        val wb = allocated[AllocationCategory.WALLBOX]!!
+        val wbGrid = gridUsage[AllocationCategory.WALLBOX]!!
+        val wbElec = electricityPrice?.let { price -> (wb * price).scale2() }
+        val wbGridCost = electricityPrice?.let { price -> (wbGrid * price).scale2() }
+        val wbPetrol = computeWallboxPetrolSavings(
+            wallboxDemandKwh = wallboxDemand,
+            wallboxGridCost = wbGridCost,
+            petrolPrice = input.petrolPrice,
+            evEfficiency = input.evEfficiencyKwh100km,
+            iceEfficiency = input.iceEfficiencyL100km,
+        )
+        return WallboxResult(
+            allocatedKwh = wb,
+            gridKwh = wbGrid,
+            elecSavings = wbElec,
+            petrolSavings = wbPetrol,
         )
     }
 
@@ -172,12 +257,9 @@ class EnergyCalculationServiceImpl : EnergyCalculationService {
         evEfficiency: BigDecimal?,
         iceEfficiency: BigDecimal?,
     ): BigDecimal? {
-        if (petrolPrice == null || evEfficiency == null || iceEfficiency == null || wallboxGridCost == null) {
-            return null
-        }
-        if (evEfficiency <= BigDecimal.ZERO) {
-            return null
-        }
+        if (petrolPrice == null || evEfficiency == null) return null
+        if (iceEfficiency == null || wallboxGridCost == null) return null
+        if (evEfficiency <= BigDecimal.ZERO) return null
         val estimatedKm = wallboxDemandKwh.divide(evEfficiency, 6, RoundingMode.HALF_UP) * BigDecimal("100")
         val equivalentPetrolLitres = estimatedKm.divide(BigDecimal("100"), 6, RoundingMode.HALF_UP) * iceEfficiency
         val equivalentPetrolCost = (equivalentPetrolLitres * petrolPrice).scale2()

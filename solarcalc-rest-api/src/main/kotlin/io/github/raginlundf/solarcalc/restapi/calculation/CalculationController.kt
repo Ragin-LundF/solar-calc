@@ -102,16 +102,30 @@ class CalculationController(
     )
 
     private fun resolveContext(tenantId: Long, profileId: Long, period: String): CalcContext {
-        val tenant = tenantRepository.findById(tenantId).orElseThrow {
-            ResourceNotFoundException("Tenant $tenantId not found")
+        val tenant = findOrThrow("Tenant $tenantId not found") {
+            tenantRepository.findById(tenantId).orElse(null)
         }
-        profileRepository.findByIdAndTenantId(profileId, tenantId)
-            ?: throw ResourceNotFoundException("Profile $profileId not found for tenant $tenantId")
-        val input = inputRepository.findByTenantIdAndEnergyProfileIdAndPeriod(tenantId, profileId, period)
-            ?: throw ResourceNotFoundException("No monthly input for period $period")
-        val policy = policyRepository.findByTenantIdAndEnergyProfileIdAndIsDefaultTrue(tenantId, profileId)
-            ?: throw ResourceNotFoundException("No default allocation policy for profile $profileId")
+        findOrThrow("Profile $profileId not found for tenant $tenantId") {
+            profileRepository.findByIdAndTenantId(id = profileId, tenantId = tenantId)
+        }
+        val input = findOrThrow("No monthly input for period $period") {
+            inputRepository.findByTenantIdAndEnergyProfileIdAndPeriod(
+                tenantId = tenantId,
+                energyProfileId = profileId,
+                period = period,
+            )
+        }
+        val policy = findOrThrow("No default allocation policy for profile $profileId") {
+            policyRepository.findByTenantIdAndEnergyProfileIdAndIsDefaultTrue(
+                tenantId = tenantId,
+                energyProfileId = profileId,
+            )
+        }
         return CalcContext(tenant = tenant, input = input, policy = policy)
+    }
+
+    private inline fun <T : Any> findOrThrow(message: String, supplier: () -> T?): T {
+        return supplier() ?: throw ResourceNotFoundException(message)
     }
 }
 

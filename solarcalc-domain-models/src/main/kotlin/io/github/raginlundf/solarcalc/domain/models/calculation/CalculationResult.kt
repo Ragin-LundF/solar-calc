@@ -96,14 +96,20 @@ class CalculationResult {
     var createdAt: LocalDateTime = LocalDateTime.now()
 
     override fun equals(other: Any?): Boolean {
-        return kotlinEquals(other, arrayOf(CalculationResult::id))
+        return kotlinEquals(other = other, properties = arrayOf(CalculationResult::id))
     }
 
     override fun hashCode(): Int {
-        return kotlinHashCode(arrayOf(CalculationResult::id))
+        return kotlinHashCode(properties = arrayOf(CalculationResult::id))
     }
 
     override fun toString(): String {
-        return kotlinToString(arrayOf(CalculationResult::id, CalculationResult::calculationRunId, CalculationResult::tenantId))
+        return kotlinToString(
+            properties = arrayOf(
+                CalculationResult::id,
+                CalculationResult::calculationRunId,
+                CalculationResult::tenantId
+            )
+        )
     }
 }

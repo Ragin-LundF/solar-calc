@@ -33,8 +33,13 @@ class PriceSnapshotController(
     }
 
     @GetMapping("/{priceId}")
-    fun get(@PathVariable tenantId: Long, @PathVariable profileId: Long, @PathVariable priceId: Long): PriceSnapshotResponse {
-        return priceRepository.findByIdAndTenantId(priceId, tenantId)?.toResponse()
+    fun get(
+        @PathVariable tenantId: Long,
+        @PathVariable profileId: Long,
+        @PathVariable priceId: Long,
+    ): PriceSnapshotResponse {
+        requireProfile(tenantId = tenantId, profileId = profileId)
+        return priceRepository.findByIdAndTenantId(id = priceId, tenantId = tenantId)?.toResponse()
             ?: throw ResourceNotFoundException("PriceSnapshot $priceId not found for tenant $tenantId")
     }
 
@@ -66,7 +71,8 @@ class PriceSnapshotController(
         @PathVariable priceId: Long,
         @Valid @RequestBody request: UpsertPriceSnapshotRequest,
     ): PriceSnapshotResponse {
-        val snapshot = priceRepository.findByIdAndTenantId(priceId, tenantId)
+        requireProfile(tenantId = tenantId, profileId = profileId)
+        val snapshot = priceRepository.findByIdAndTenantId(id = priceId, tenantId = tenantId)
             ?: throw ResourceNotFoundException("PriceSnapshot $priceId not found for tenant $tenantId")
         snapshot.applyRequest(request)
         snapshot.updatedAt = LocalDateTime.now()
@@ -75,8 +81,13 @@ class PriceSnapshotController(
 
     @DeleteMapping("/{priceId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun delete(@PathVariable tenantId: Long, @PathVariable profileId: Long, @PathVariable priceId: Long) {
-        val snapshot = priceRepository.findByIdAndTenantId(priceId, tenantId)
+    fun delete(
+        @PathVariable tenantId: Long,
+        @PathVariable profileId: Long,
+        @PathVariable priceId: Long,
+    ) {
+        requireProfile(tenantId = tenantId, profileId = profileId)
+        val snapshot = priceRepository.findByIdAndTenantId(id = priceId, tenantId = tenantId)
             ?: throw ResourceNotFoundException("PriceSnapshot $priceId not found for tenant $tenantId")
         priceRepository.delete(snapshot)
     }

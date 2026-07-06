@@ -38,7 +38,10 @@ class EnergyProfileController(
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun create(@PathVariable tenantId: Long, @Valid @RequestBody request: CreateEnergyProfileRequest): EnergyProfileResponse {
+    fun create(
+        @PathVariable tenantId: Long,
+        @Valid @RequestBody request: CreateEnergyProfileRequest,
+    ): EnergyProfileResponse {
         val tenant = tenantRepository.findById(tenantId).orElseThrow {
             ResourceNotFoundException("Tenant $tenantId not found")
         }

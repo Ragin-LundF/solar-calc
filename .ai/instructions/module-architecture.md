@@ -20,12 +20,12 @@ The Solar Calculator (SC) is a multi-module Gradle build with a layered architec
 
 The build is defined in `settings.gradle`.
 
-| Module                      | Responsibility                                                                                                                                                                                                                                           |
-|-----------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `solarcalc-server`          | Spring Boot application. Holds `Application.kt` (entry point), Spring configuration/wiring. Produces the `bootJar`. Contains no business logic.                                                                                                          |
-| `solarcalc-domain-services` | Business logic, orchestration, caching, and the REST interface implementations. Holds the `*DomainController` façade classes (REST Controllers), `@Service`/`@Component` beans by subdomain, Konvert mappers, and cache config. This is the module core. |
-| `solarcalc-domain-models`   | JPA entities, Spring Data repositories, embeddables, and domain enums. QueryDSL Q-types generated via KSP.                                                                                                                                               |
-| `solarcalc-rest-api`        | REST Interfaces and RestControllers + API Models as DTO.                                                                                                                                                                                                 |
+| Module                      | Responsibility                                                                                                                                                                                                                                                                            |
+|-----------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `solarcalc-server`          | Spring Boot application. Holds `Application.kt` (entry point), Spring configuration/wiring, and security config. Produces the `bootJar`. Contains no business logic. Only module that may use Spring Boot starters.                                                                       |
+| `solarcalc-rest-api`        | REST `@RestController` implementations, request/response DTOs, `GlobalExceptionHandler`, and Spring MVC config. Controllers call services from `solarcalc-domain-services`; they never access repositories directly.                                                                      |
+| `solarcalc-domain-services` | Business logic, orchestration, caching. Holds `@Service`/`@Component` beans by subdomain, Konvert mappers, cache config, and domain-specific interfaces. This is the module core. No web or servlet dependencies.                                                                        |
+| `solarcalc-domain-models`   | JPA entities, Spring Data repositories, embeddables, and domain enums. QueryDSL Q-types generated via KSP.                                                                                                                                                                                |
 
 ### Shared infrastructure modules
 
@@ -58,8 +58,15 @@ Rules:
 
 ## REST API layer
 
-- Contains the interfaces, controllers and models as DTO
-- The RestController uses an interface, defined in the `solarcalc-domain-service` to operate with data and business logic. It never can jump directly to `solarcalc-domain-models`.
+- Contains the `@RestController` implementations and request/response DTOs (`*Request`, `*Response`, `*Dto` classes).
+- Controllers call services from `solarcalc-domain-services` and repository/entity types from `solarcalc-domain-models` only via the service layer — never bypass the service to query repositories directly.
+- Exception handling lives in `GlobalExceptionHandler`; do not duplicate error mapping in individual controllers.
+
+## Frontend
+
+- The Angular SPA lives in `solarcalc-webapp/`. It is a standalone Angular 22 app (no NgModules).
+- API calls go through `core/api/ApiService`. Feature components delegate HTTP work to `core/api/` services.
+- See `instructions/angular-guidelines.md` for Angular-specific rules.
 
 ### Caching
 

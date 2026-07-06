@@ -33,8 +33,13 @@ class AllocationPolicyController(
     }
 
     @GetMapping("/{policyId}")
-    fun get(@PathVariable tenantId: Long, @PathVariable profileId: Long, @PathVariable policyId: Long): AllocationPolicyResponse {
-        return policyRepository.findByIdAndTenantId(policyId, tenantId)?.toResponse()
+    fun get(
+        @PathVariable tenantId: Long,
+        @PathVariable profileId: Long,
+        @PathVariable policyId: Long,
+    ): AllocationPolicyResponse {
+        requireProfile(tenantId = tenantId, profileId = profileId)
+        return policyRepository.findByIdAndTenantId(id = policyId, tenantId = tenantId)?.toResponse()
             ?: throw ResourceNotFoundException("AllocationPolicy $policyId not found for tenant $tenantId")
     }
 
@@ -68,7 +73,8 @@ class AllocationPolicyController(
         @PathVariable policyId: Long,
         @Valid @RequestBody request: UpdateAllocationPolicyRequest,
     ): AllocationPolicyResponse {
-        val policy = policyRepository.findByIdAndTenantId(policyId, tenantId)
+        requireProfile(tenantId = tenantId, profileId = profileId)
+        val policy = policyRepository.findByIdAndTenantId(id = policyId, tenantId = tenantId)
             ?: throw ResourceNotFoundException("AllocationPolicy $policyId not found for tenant $tenantId")
         policy.name = request.name
         policy.priorityOrder = request.priorityOrder
@@ -79,8 +85,13 @@ class AllocationPolicyController(
 
     @DeleteMapping("/{policyId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun delete(@PathVariable tenantId: Long, @PathVariable profileId: Long, @PathVariable policyId: Long) {
-        val policy = policyRepository.findByIdAndTenantId(policyId, tenantId)
+    fun delete(
+        @PathVariable tenantId: Long,
+        @PathVariable profileId: Long,
+        @PathVariable policyId: Long,
+    ) {
+        requireProfile(tenantId = tenantId, profileId = profileId)
+        val policy = policyRepository.findByIdAndTenantId(id = policyId, tenantId = tenantId)
             ?: throw ResourceNotFoundException("AllocationPolicy $policyId not found for tenant $tenantId")
         policyRepository.delete(policy)
     }

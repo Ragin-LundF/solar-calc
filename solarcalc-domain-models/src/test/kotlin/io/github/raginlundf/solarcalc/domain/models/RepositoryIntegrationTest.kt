@@ -11,28 +11,30 @@ import io.github.raginlundf.solarcalc.domain.models.repository.TenantRepository
 import io.github.raginlundf.solarcalc.domain.models.tenant.Tenant
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
+import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
-import org.testcontainers.containers.MariaDBContainer
+import org.springframework.test.context.junit.jupiter.SpringExtension
+import org.springframework.transaction.annotation.Transactional
+import org.junit.jupiter.api.extension.ExtendWith
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
+import org.testcontainers.mariadb.MariaDBContainer
 import java.math.BigDecimal
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
-@DataJpaTest
+@ExtendWith(SpringExtension::class)
+@ContextConfiguration(classes = [RepositoryTestConfig::class])
 @Testcontainers
-@AutoConfigureTestDatabase(replace = Replace.NONE)
+@Transactional
 class RepositoryIntegrationTest {
 
     companion object {
         @Container
         @JvmStatic
-        val mariadb = MariaDBContainer<Nothing>("mariadb:11").apply {
+        val mariadb = MariaDBContainer("mariadb:11").apply {
             withDatabaseName("solarcalc_test")
             withUsername("test")
             withPassword("test")
@@ -65,8 +67,8 @@ class RepositoryIntegrationTest {
         val saved = tenantRepository.save(tenant)
         val found = tenantRepository.findById(saved.id!!).orElseThrow()
 
-        assertEquals("Test Tenant", found.name)
-        assertEquals(true, found.hasWallbox)
+        assertEquals(expected = "Test Tenant", actual = found.name)
+        assertEquals(expected = true, actual = found.hasWallbox)
     }
 
     @Test
@@ -83,9 +85,9 @@ class RepositoryIntegrationTest {
             name = "Profile B"
         })
 
-        val results = profileRepository.findAllByTenantId(tenantA.id!!)
-        assertEquals(1, results.size)
-        assertEquals(profileA.id, results.first().id)
+        val results = profileRepository.findAllByTenantId(tenantId = tenantA.id!!)
+        assertEquals(expected = 1, actual = results.size)
+        assertEquals(expected = profileA.id, actual = results.first().id)
     }
 
     @Test
@@ -110,8 +112,8 @@ class RepositoryIntegrationTest {
             period = "2024-06",
         )
 
-        assertNotNull(found)
-        assertEquals("2024-06", found.period)
+        assertNotNull(actual = found)
+        assertEquals(expected = "2024-06", actual = found.period)
     }
 
     @Test
@@ -143,15 +145,22 @@ class RepositoryIntegrationTest {
             this.tenant = tenant
             energyProfile = profile
             name = "Wallbox first"
-            priorityOrder = listOf(AllocationCategory.WALLBOX, AllocationCategory.HEAT_PUMP, AllocationCategory.HOUSEHOLD)
+            priorityOrder = listOf(
+                AllocationCategory.WALLBOX,
+                AllocationCategory.HEAT_PUMP,
+                AllocationCategory.HOUSEHOLD,
+            )
             isDefault = true
         })
 
-        val found = policyRepository.findByTenantIdAndEnergyProfileIdAndIsDefaultTrue(tenant.id!!, profile.id!!)
-        assertNotNull(found)
+        val found = policyRepository.findByTenantIdAndEnergyProfileIdAndIsDefaultTrue(
+            tenantId = tenant.id!!,
+            energyProfileId = profile.id!!
+        )
+        assertNotNull(actual = found)
         assertEquals(
-            listOf(AllocationCategory.WALLBOX, AllocationCategory.HEAT_PUMP, AllocationCategory.HOUSEHOLD),
-            found.priorityOrder,
+            expected = listOf(AllocationCategory.WALLBOX, AllocationCategory.HEAT_PUMP, AllocationCategory.HOUSEHOLD),
+            actual = found.priorityOrder,
         )
     }
 }

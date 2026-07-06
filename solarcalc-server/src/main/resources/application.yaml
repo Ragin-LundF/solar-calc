@@ -51,6 +51,11 @@ spring:
   liquibase:
     change-log: classpath:db/db.changelog-master.xml
 
+solarcalc:
+  security:
+    jwt:
+      secret-key: ${SOLARCALC_JWT_SECRET}
+
 management:
   endpoints:
     web:

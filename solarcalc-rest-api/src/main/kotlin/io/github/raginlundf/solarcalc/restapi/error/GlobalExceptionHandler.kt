@@ -22,11 +22,13 @@ class GlobalExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException::class)
     fun handleNotFound(ex: ResourceNotFoundException): ResponseEntity<ApiError> {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiError(code = "NOT_FOUND", message = ex.message ?: "Not found"))
+        val error = ApiError(code = "NOT_FOUND", message = ex.message ?: "Not found")
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error)
     }
 
     @ExceptionHandler(TenantAccessDeniedException::class)
     fun handleTenantAccess(ex: TenantAccessDeniedException): ResponseEntity<ApiError> {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ApiError(code = "TENANT_ACCESS_DENIED", message = ex.message ?: "Access denied"))
+        val error = ApiError(code = "TENANT_ACCESS_DENIED", message = ex.message ?: "Access denied")
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error)
     }
 }

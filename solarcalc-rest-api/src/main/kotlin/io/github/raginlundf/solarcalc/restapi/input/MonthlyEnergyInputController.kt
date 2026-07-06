@@ -40,7 +40,8 @@ class MonthlyEnergyInputController(
         @PathVariable profileId: Long,
         @PathVariable inputId: Long,
     ): MonthlyEnergyInputResponse {
-        return inputRepository.findByIdAndTenantId(inputId, tenantId)?.toResponse()
+        requireProfile(tenantId = tenantId, profileId = profileId)
+        return inputRepository.findByIdAndTenantId(id = inputId, tenantId = tenantId)?.toResponse()
             ?: throw ResourceNotFoundException("MonthlyInput $inputId not found for tenant $tenantId")
     }
 
@@ -70,7 +71,10 @@ class MonthlyEnergyInputController(
         val existing = inputRepository.findByTenantIdAndEnergyProfileIdAndPeriod(tenantId, profileId, request.period)
         if (existing != null) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(
-                ApiError(code = "MONTHLY_INPUT_ALREADY_EXISTS", message = "Input for period ${request.period} already exists."),
+                ApiError(
+                    code = "MONTHLY_INPUT_ALREADY_EXISTS",
+                    message = "Input for period ${request.period} already exists.",
+                ),
             )
         }
 
@@ -89,7 +93,8 @@ class MonthlyEnergyInputController(
         @PathVariable inputId: Long,
         @Valid @RequestBody request: UpsertMonthlyEnergyInputRequest,
     ): ResponseEntity<Any> {
-        val input = inputRepository.findByIdAndTenantId(inputId, tenantId)
+        requireProfile(tenantId = tenantId, profileId = profileId)
+        val input = inputRepository.findByIdAndTenantId(id = inputId, tenantId = tenantId)
             ?: throw ResourceNotFoundException("MonthlyInput $inputId not found for tenant $tenantId")
 
         if (request.feedInKwh != null && request.feedInKwh > request.generationKwh) {
@@ -109,8 +114,13 @@ class MonthlyEnergyInputController(
 
     @DeleteMapping("/{inputId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun delete(@PathVariable tenantId: Long, @PathVariable profileId: Long, @PathVariable inputId: Long) {
-        val input = inputRepository.findByIdAndTenantId(inputId, tenantId)
+    fun delete(
+        @PathVariable tenantId: Long,
+        @PathVariable profileId: Long,
+        @PathVariable inputId: Long,
+    ) {
+        requireProfile(tenantId = tenantId, profileId = profileId)
+        val input = inputRepository.findByIdAndTenantId(id = inputId, tenantId = tenantId)
             ?: throw ResourceNotFoundException("MonthlyInput $inputId not found for tenant $tenantId")
         inputRepository.delete(input)
     }

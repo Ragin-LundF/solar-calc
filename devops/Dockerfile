@@ -16,7 +16,6 @@ COPY solarcalc-rest-api ./solarcalc-rest-api
 COPY solarcalc-kotlin-extensions ./solarcalc-kotlin-extensions
 COPY solarcalc-logging ./solarcalc-logging
 COPY solarcalc-server ./solarcalc-server
-# ponytail: dist path depends on angular.json outputPath — adjust if SSR is disabled
 COPY --from=webapp-build /workspace/solarcalc-webapp/dist/solarcalc-webapp/browser ./solarcalc-server/src/main/resources/static
 RUN ./gradlew :solarcalc-server:bootJar --no-daemon
 

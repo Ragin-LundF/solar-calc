@@ -9,18 +9,20 @@ dependencies {
 
     implementation(libs.database.hibernate.core)
     implementation(libs.spring.context)
-    implementation(libs.spring.data.jpa)
+    api(libs.spring.data.jpa)
 
     implementation(libs.database.liquibase.core)
 
-    implementation(libs.database.querydsl.jpa.spring)
-    implementation(libs.database.querydsl.kotlin)
+    api(libs.database.querydsl.jpa.spring)
+    api(libs.database.querydsl.kotlin)
     ksp(libs.database.querydsl.ksp.codegen)
 
-    testImplementation(libs.spring.boot.starter.test)
-    testImplementation(libs.spring.boot.starter.data.jpa)
+    testImplementation(libs.spring.test)
+    testImplementation(libs.testing.junit.jupiter)
+    testImplementation(libs.testing.kotlin.test.junit5)
     testImplementation(libs.testing.testcontainers.mariadb)
     testImplementation(libs.testing.testcontainers.junit.jupiter)
+    testRuntimeOnly(libs.testing.junit.platform.launcher)
     testRuntimeOnly(libs.database.mariadb.java.client)
     testRuntimeOnly(libs.database.tomcat.jdbc)
 }

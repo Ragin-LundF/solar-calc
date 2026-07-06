@@ -63,6 +63,8 @@ spring-boot-starter-actuator = { module = "org.springframework.boot:spring-boot-
 spring-boot-starter-cache = { module = "org.springframework.boot:spring-boot-starter-cache" }
 spring-boot-starter-liquibase = { module = "org.springframework.boot:spring-boot-starter-liquibase" }
 spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test" }
+spring-boot-test = { module = "org.springframework.boot:spring-boot-test" }
+spring-boot-test-autoconfigure = { module = "org.springframework.boot:spring-boot-test-autoconfigure" }
 spring-boot-resttestclient = { module = "org.springframework.boot:spring-boot-resttestclient" }
 spring-boot-starter-restclient-test = { module = "org.springframework.boot:spring-boot-starter-restclient-test" }
 spring-boot-configuration-processor = { module = "org.springframework.boot:spring-boot-configuration-processor" }
@@ -80,6 +82,7 @@ spring-security-core = { module = "org.springframework.security:spring-security-
 spring-security-web = { module = "org.springframework.security:spring-security-web" }
 spring-security-config = { module = "org.springframework.security:spring-security-config" }
 spring-security-oauth2-jose = { module = "org.springframework.security:spring-security-oauth2-jose" }
+spring-security-oauth2-resource-server = { module = "org.springframework.security:spring-security-oauth2-resource-server" }
 aspectjweaver = { module = "org.aspectj:aspectjweaver" }
 #
 # ── Jackson (versionless — governed by bom-jackson) ───────────────────────────
@@ -131,8 +134,8 @@ caching-caffeine = { module = "com.github.ben-manes.caffeine:caffeine", version.
 #
 # ── Testing ───────────────────────────────────────────────────────────────────
 # ── TestContainers (versionless — governed by bom-testcontainers) ─────────────
-testing-testcontainers-mariadb = { module = "org.testcontainers:testcontainers-mariadb" }
-testing-testcontainers-junit-jupiter = { module = "org.testcontainers:testcontainers", version.ref = "testcontainers" }
+testing-testcontainers-mariadb = { module = "org.testcontainers:testcontainers-mariadb", version.ref = "testcontainers" }
+testing-testcontainers-junit-jupiter = { module = "org.testcontainers:testcontainers-junit-jupiter", version.ref = "testcontainers" }
 #
 # ── JUnit (versionless — governed by bom-junit) ───────────────────────────────
 testing-junit-jupiter = { module = "org.junit.jupiter:junit-jupiter" }

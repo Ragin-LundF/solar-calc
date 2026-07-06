@@ -2,6 +2,7 @@ package io.github.raginlundf.solarcalc.domain.services.price
 
 import io.github.raginlundf.solarcalc.domain.models.price.PriceSnapshot
 import io.github.raginlundf.solarcalc.domain.models.repository.PriceSnapshotRepository
+import io.github.raginlundf.solarcalc.domain.models.tenant.HeatingReferenceType
 import io.github.raginlundf.solarcalc.domain.models.tenant.Tenant
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
@@ -20,25 +21,54 @@ class PriceResolver(
     private val priceSnapshotRepository: PriceSnapshotRepository,
 ) {
 
-    /**
-     * Resolves prices for a given period using precedence:
-     * monthly override -> profile default -> tenant default
-     */
     fun resolve(tenant: Tenant, tenantId: Long, energyProfileId: Long, period: String): ResolvedPrices {
         val monthlyOverride = priceSnapshotRepository
-            .findByTenantIdAndEnergyProfileIdAndPeriod(tenantId, energyProfileId, period)
+            .findByTenantIdAndEnergyProfileIdAndPeriod(
+                tenantId = tenantId,
+                energyProfileId = energyProfileId,
+                period = period,
+            )
         val profileDefault = priceSnapshotRepository
-            .findByTenantIdAndEnergyProfileIdAndPeriodIsNull(tenantId, energyProfileId)
+            .findByTenantIdAndEnergyProfileIdAndPeriodIsNull(
+                tenantId = tenantId,
+                energyProfileId = energyProfileId,
+            )
 
-        fun <T> resolve(monthly: T?, profile: T?, tenant: T?): T? = monthly ?: profile ?: tenant
+        fun <T> pick(monthly: T?, profile: T?, default: T?): T? {
+            return monthly ?: profile ?: default
+        }
 
         return ResolvedPrices(
-            electricityPrice = resolve(monthlyOverride?.electricityPrice, profileDefault?.electricityPrice, tenant.defaultElectricityPrice),
-            feedInTariff = resolve(monthlyOverride?.feedInTariff, profileDefault?.feedInTariff, tenant.defaultFeedInTariff),
-            petrolPrice = resolve(monthlyOverride?.petrolPrice, profileDefault?.petrolPrice, tenant.defaultPetrolPrice),
-            evEfficiencyKwh100km = resolve(monthlyOverride?.evEfficiencyKwh100km, profileDefault?.evEfficiencyKwh100km, tenant.defaultEvEfficiencyKwh100km),
-            iceEfficiencyL100km = resolve(monthlyOverride?.iceEfficiencyL100km, profileDefault?.iceEfficiencyL100km, tenant.defaultIceEfficiencyL100km),
-            heatingReferenceCost = resolveHeatingReference(monthlyOverride, profileDefault, tenant),
+            electricityPrice = pick(
+                monthly = monthlyOverride?.electricityPrice,
+                profile = profileDefault?.electricityPrice,
+                default = tenant.defaultElectricityPrice,
+            ),
+            feedInTariff = pick(
+                monthly = monthlyOverride?.feedInTariff,
+                profile = profileDefault?.feedInTariff,
+                default = tenant.defaultFeedInTariff,
+            ),
+            petrolPrice = pick(
+                monthly = monthlyOverride?.petrolPrice,
+                profile = profileDefault?.petrolPrice,
+                default = tenant.defaultPetrolPrice,
+            ),
+            evEfficiencyKwh100km = pick(
+                monthly = monthlyOverride?.evEfficiencyKwh100km,
+                profile = profileDefault?.evEfficiencyKwh100km,
+                default = tenant.defaultEvEfficiencyKwh100km,
+            ),
+            iceEfficiencyL100km = pick(
+                monthly = monthlyOverride?.iceEfficiencyL100km,
+                profile = profileDefault?.iceEfficiencyL100km,
+                default = tenant.defaultIceEfficiencyL100km,
+            ),
+            heatingReferenceCost = resolveHeatingReference(
+                monthly = monthlyOverride,
+                profile = profileDefault,
+                tenant = tenant,
+            ),
         )
     }
 
@@ -48,11 +78,11 @@ class PriceResolver(
         tenant: Tenant,
     ): BigDecimal? {
         return when (tenant.heatingReferenceType) {
-            io.github.raginlundf.solarcalc.domain.models.tenant.HeatingReferenceType.OIL ->
+            HeatingReferenceType.OIL ->
                 monthly?.oilReferenceCost ?: profile?.oilReferenceCost ?: tenant.defaultOilReferenceCost
-            io.github.raginlundf.solarcalc.domain.models.tenant.HeatingReferenceType.GAS ->
+            HeatingReferenceType.GAS ->
                 monthly?.gasReferenceCost ?: profile?.gasReferenceCost ?: tenant.defaultGasReferenceCost
-            io.github.raginlundf.solarcalc.domain.models.tenant.HeatingReferenceType.NONE -> null
+            HeatingReferenceType.NONE -> null
         }
     }
 }
