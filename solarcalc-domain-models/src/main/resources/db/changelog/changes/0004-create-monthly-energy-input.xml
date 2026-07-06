@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        logicalFilePath="0004-create-monthly-energy-input.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="0004-create-monthly-energy-input" author="solarcalc">
+        <createTable tableName="monthly_energy_input">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="tenant_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_monthly_input_tenant"
+                             references="tenant(id)" />
+            </column>
+            <column name="energy_profile_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_monthly_input_profile"
+                             references="energy_profile(id)" />
+            </column>
+            <column name="period" type="VARCHAR(7)">
+                <constraints nullable="false" />
+            </column>
+            <column name="consumption_kwh" type="DECIMAL(12,3)">
+                <constraints nullable="false" />
+            </column>
+            <column name="generation_kwh" type="DECIMAL(12,3)">
+                <constraints nullable="false" />
+            </column>
+            <column name="feed_in_kwh" type="DECIMAL(12,3)" />
+            <column name="household_consumption_kwh" type="DECIMAL(12,3)" />
+            <column name="heat_pump_consumption_kwh" type="DECIMAL(12,3)" />
+            <column name="wallbox_consumption_kwh" type="DECIMAL(12,3)" />
+            <column name="electricity_price_override" type="DECIMAL(12,6)" />
+            <column name="feed_in_tariff_override" type="DECIMAL(12,6)" />
+            <column name="petrol_price_override" type="DECIMAL(12,6)" />
+            <column name="ev_efficiency_override_kwh_100km" type="DECIMAL(8,2)" />
+            <column name="ice_efficiency_override_l_100km" type="DECIMAL(8,2)" />
+            <column name="heating_reference_cost_override" type="DECIMAL(12,2)" />
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false" />
+            </column>
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+
+        <addUniqueConstraint
+                tableName="monthly_energy_input"
+                columnNames="tenant_id, energy_profile_id, period"
+                constraintName="uq_monthly_input_tenant_profile_period" />
+
+        <createIndex tableName="monthly_energy_input" indexName="idx_monthly_input_tenant_profile">
+            <column name="tenant_id" />
+            <column name="energy_profile_id" />
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

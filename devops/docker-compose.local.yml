@@ -1,0 +1,15 @@
+services:
+  solarcalc-db:
+    image: mariadb:11
+    environment:
+      MARIADB_DATABASE: solarcalc
+      MARIADB_USER: solarcalc
+      MARIADB_PASSWORD: solarcalc
+      MARIADB_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
+    volumes:
+      - solarcalc-db-data:/var/lib/mysql
+
+volumes:
+  solarcalc-db-data:

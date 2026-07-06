@@ -1,0 +1,15 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Solarcalc Local DB" type="docker-deploy" factoryName="docker-compose.yml">
+    <deployment type="docker-compose.yml">
+      <settings>
+        <option name="sourceFilePath" value="$PROJECT_DIR$/devops/docker-compose.local.yml" />
+        <option name="services">
+          <list>
+            <option value="solarcalc-db" />
+          </list>
+        </option>
+      </settings>
+    </deployment>
+    <method v="2" />
+  </configuration>
+</component>

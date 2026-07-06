@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        logicalFilePath="0005-create-price-snapshot.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="0005-create-price-snapshot" author="solarcalc">
+        <createTable tableName="price_snapshot">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="tenant_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_price_snapshot_tenant"
+                             references="tenant(id)" />
+            </column>
+            <column name="energy_profile_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_price_snapshot_profile"
+                             references="energy_profile(id)" />
+            </column>
+            <!-- null period means tenant/profile default; non-null is a monthly override -->
+            <column name="period" type="VARCHAR(7)" />
+            <column name="electricity_price" type="DECIMAL(12,6)" />
+            <column name="feed_in_tariff" type="DECIMAL(12,6)" />
+            <column name="petrol_price" type="DECIMAL(12,6)" />
+            <column name="oil_reference_cost" type="DECIMAL(12,2)" />
+            <column name="gas_reference_cost" type="DECIMAL(12,2)" />
+            <column name="ev_efficiency_kwh_100km" type="DECIMAL(8,2)" />
+            <column name="ice_efficiency_l_100km" type="DECIMAL(8,2)" />
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false" />
+            </column>
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+
+        <createIndex tableName="price_snapshot" indexName="idx_price_snapshot_tenant_profile_period">
+            <column name="tenant_id" />
+            <column name="energy_profile_id" />
+            <column name="period" />
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

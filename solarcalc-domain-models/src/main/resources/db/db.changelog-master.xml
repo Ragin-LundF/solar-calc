@@ -7,5 +7,12 @@
     https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
     <include file="changelog/changes/0001-init-table.xml" relativeToChangelogFile="true" />
+    <include file="changelog/changes/0002-create-tenant.xml" relativeToChangelogFile="true" />
+    <include file="changelog/changes/0003-create-energy-profile.xml" relativeToChangelogFile="true" />
+    <include file="changelog/changes/0004-create-monthly-energy-input.xml" relativeToChangelogFile="true" />
+    <include file="changelog/changes/0005-create-price-snapshot.xml" relativeToChangelogFile="true" />
+    <include file="changelog/changes/0006-create-allocation-policy.xml" relativeToChangelogFile="true" />
+    <include file="changelog/changes/0007-create-calculation-run.xml" relativeToChangelogFile="true" />
+    <include file="changelog/changes/0008-create-calculation-result.xml" relativeToChangelogFile="true" />
 
 </databaseChangeLog>

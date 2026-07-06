@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        logicalFilePath="0008-create-calculation-result.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="0008-create-calculation-result" author="solarcalc">
+        <createTable tableName="calculation_result">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="calculation_run_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_calculation_result_run"
+                             references="calculation_run(id)" />
+            </column>
+            <column name="tenant_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_calculation_result_tenant"
+                             references="tenant(id)" />
+            </column>
+            <column name="feed_in_kwh" type="DECIMAL(12,3)">
+                <constraints nullable="false" />
+            </column>
+            <column name="feed_in_revenue" type="DECIMAL(12,2)" />
+            <column name="self_consumption_pool_kwh" type="DECIMAL(12,3)">
+                <constraints nullable="false" />
+            </column>
+            <column name="household_allocated_kwh" type="DECIMAL(12,3)" />
+            <column name="household_grid_kwh" type="DECIMAL(12,3)" />
+            <column name="household_savings" type="DECIMAL(12,2)" />
+            <column name="heat_pump_allocated_kwh" type="DECIMAL(12,3)" />
+            <column name="heat_pump_grid_kwh" type="DECIMAL(12,3)" />
+            <column name="heat_pump_electricity_savings" type="DECIMAL(12,2)" />
+            <column name="heat_pump_heating_reference_savings" type="DECIMAL(12,2)" />
+            <column name="wallbox_allocated_kwh" type="DECIMAL(12,3)" />
+            <column name="wallbox_grid_kwh" type="DECIMAL(12,3)" />
+            <column name="wallbox_electricity_savings" type="DECIMAL(12,2)" />
+            <column name="wallbox_petrol_savings" type="DECIMAL(12,2)" />
+            <column name="unallocated_kwh" type="DECIMAL(12,3)">
+                <constraints nullable="false" />
+            </column>
+            <column name="total_electricity_savings" type="DECIMAL(12,2)" />
+            <!-- Comma-separated completeness flags -->
+            <column name="completeness_flags" type="VARCHAR(500)">
+                <constraints nullable="false" />
+            </column>
+            <!-- Immutable: no updated_at -->
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+
+        <createIndex tableName="calculation_result" indexName="idx_calculation_result_run_id">
+            <column name="calculation_run_id" />
+        </createIndex>
+        <createIndex tableName="calculation_result" indexName="idx_calculation_result_tenant_id">
+            <column name="tenant_id" />
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

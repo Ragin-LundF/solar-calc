@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        logicalFilePath="0002-create-tenant.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="0002-create-tenant" author="solarcalc">
+        <createTable tableName="tenant">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="locale" type="VARCHAR(10)" defaultValue="de">
+                <constraints nullable="false" />
+            </column>
+            <column name="provider_label" type="VARCHAR(255)" />
+            <column name="has_wallbox" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false" />
+            </column>
+            <column name="has_heat_pump" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false" />
+            </column>
+            <column name="heating_reference_type" type="VARCHAR(10)" defaultValue="NONE">
+                <constraints nullable="false" />
+            </column>
+            <column name="default_electricity_price" type="DECIMAL(12,6)" />
+            <column name="default_feed_in_tariff" type="DECIMAL(12,6)" />
+            <column name="default_petrol_price" type="DECIMAL(12,6)" />
+            <column name="default_oil_reference_cost" type="DECIMAL(12,2)" />
+            <column name="default_gas_reference_cost" type="DECIMAL(12,2)" />
+            <column name="default_ev_efficiency_kwh_100km" type="DECIMAL(8,2)" />
+            <column name="default_ice_efficiency_l_100km" type="DECIMAL(8,2)" />
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false" />
+            </column>
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

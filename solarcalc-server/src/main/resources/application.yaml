@@ -15,9 +15,9 @@ spring:
     virtual:
       enabled: true
   datasource:
-    url: jdbc:mariadb://localhost:3306/kcs
-    username: kcs
-    password: kcs
+    url: jdbc:mariadb://localhost:3306/solarcalc
+    username: solarcalc
+    password: solarcalc
     driver-class-name: org.mariadb.jdbc.Driver
     type: org.apache.tomcat.jdbc.pool.DataSource
     tomcat:

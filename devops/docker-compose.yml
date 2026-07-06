@@ -1,0 +1,29 @@
+services:
+  solarcalc-app:
+    build:
+      context: ..
+      dockerfile: devops/Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:mariadb://solarcalc-db:3306/solarcalc
+      SPRING_DATASOURCE_USERNAME: solarcalc
+      SPRING_DATASOURCE_PASSWORD: solarcalc
+    depends_on:
+      - solarcalc-db
+
+  solarcalc-db:
+    image: mariadb:11
+    environment:
+      MARIADB_DATABASE: solarcalc
+      MARIADB_USER: solarcalc
+      MARIADB_PASSWORD: solarcalc
+      MARIADB_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
+    volumes:
+      - solarcalc-db-data:/var/lib/mysql
+
+volumes:
+  solarcalc-db-data:

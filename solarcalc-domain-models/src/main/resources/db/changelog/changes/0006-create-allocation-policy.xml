@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        logicalFilePath="0006-create-allocation-policy.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="0006-create-allocation-policy" author="solarcalc">
+        <createTable tableName="allocation_policy">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="tenant_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_allocation_policy_tenant"
+                             references="tenant(id)" />
+            </column>
+            <column name="energy_profile_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_allocation_policy_profile"
+                             references="energy_profile(id)" />
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false" />
+            </column>
+            <!-- Stored as comma-separated ordered enum values: HOUSEHOLD,HEAT_PUMP,WALLBOX -->
+            <column name="priority_order" type="VARCHAR(100)">
+                <constraints nullable="false" />
+            </column>
+            <column name="is_default" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false" />
+            </column>
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+
+        <createIndex tableName="allocation_policy" indexName="idx_allocation_policy_tenant_profile">
+            <column name="tenant_id" />
+            <column name="energy_profile_id" />
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,38 @@
+{
+  "input": {
+    "tenantId": 1,
+    "energyProfileId": 1,
+    "period": "2024-07",
+    "hasWallbox": true,
+    "hasHeatPump": true,
+    "consumptionKwh": "800.000",
+    "generationKwh": "600.000",
+    "feedInKwh": "100.000",
+    "householdConsumptionKwh": "500.000",
+    "heatPumpConsumptionKwh": "150.000",
+    "wallboxConsumptionKwh": "150.000",
+    "electricityPrice": "0.300000",
+    "feedInTariff": "0.080000",
+    "petrolPrice": "1.80",
+    "evEfficiencyKwh100km": "20.00",
+    "iceEfficiencyL100km": "7.00",
+    "heatingReferenceCost": "90.00",
+    "allocationPriority": ["WALLBOX", "HEAT_PUMP", "HOUSEHOLD"]
+  },
+  "expected": {
+    "feedInKwh": "100.000",
+    "selfConsumptionPoolKwh": "500.000",
+    "wallboxAllocatedKwh": "150.000",
+    "wallboxGridKwh": "0.000",
+    "wallboxElectricitySavings": "45.00",
+    "heatPumpAllocatedKwh": "150.000",
+    "heatPumpGridKwh": "0.000",
+    "heatPumpElectricitySavings": "45.00",
+    "heatPumpHeatingReferenceSavings": "90.00",
+    "householdAllocatedKwh": "200.000",
+    "householdGridKwh": "300.000",
+    "householdSavings": "60.00",
+    "unallocatedKwh": "0.000",
+    "totalElectricitySavings": "150.00"
+  }
+}
