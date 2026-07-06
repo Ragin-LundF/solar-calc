@@ -14,18 +14,19 @@ Use this file for module boundaries, package layout, adapters, the REST input la
 
 ## Goal
 
-The Solar Calculator (SC) is a multi-module Gradle build with a layered architecture so developers can switch between modules without relearning structure. Technical domains are separated into their own Gradle subprojects with explicit, one-directional dependencies.
+The Solar Calculator (SC) is a multi-module Gradle build with a layered architecture, so developers can switch between modules without relearning structure. Technical domains are separated into their own Gradle subprojects with explicit, one-directional dependencies.
 
 ## Modules
 
 The build is defined in `settings.gradle`.
 
-| Module                      | Responsibility                                                                                                                                                                                                                                                                            |
-|-----------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `solarcalc-server`          | Spring Boot application. Holds `Application.kt` (entry point), Spring configuration/wiring, and security config. Produces the `bootJar`. Contains no business logic. Only module that may use Spring Boot starters.                                                                       |
-| `solarcalc-rest-api`        | REST `@RestController` implementations, request/response DTOs, `GlobalExceptionHandler`, and Spring MVC config. Controllers call services from `solarcalc-domain-services`; they never access repositories directly.                                                                      |
-| `solarcalc-domain-services` | Business logic, orchestration, caching. Holds `@Service`/`@Component` beans by subdomain, Konvert mappers, cache config, and domain-specific interfaces. This is the module core. No web or servlet dependencies.                                                                        |
-| `solarcalc-domain-models`   | JPA entities, Spring Data repositories, embeddables, and domain enums. QueryDSL Q-types generated via KSP.                                                                                                                                                                                |
+| Module                      | Responsibility                                                                                                                                                                                                       |
+|-----------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `solarcalc-server`          | Spring Boot application. Holds `Application.kt` (entry point), Spring configuration/wiring, and security config. Produces the `bootJar`. Contains no business logic. Only module that may use Spring Boot starters.  |
+| `solarcalc-dtos`            | REST Models as DTO.Used by `solarcalc-domain-services` and `solarcalc-rest-api`.                                                                                                                                     |
+| `solarcalc-rest-api`        | REST `@RestController` implementations, request/response DTOs, `GlobalExceptionHandler`, and Spring MVC config. Controllers call services from `solarcalc-domain-services`; they never access repositories directly. |
+| `solarcalc-domain-services` | Business logic, orchestration, caching. Holds `@Service`/`@Component` beans by subdomain, Konvert mappers, cache config, and domain-specific interfaces. This is the module core. No web or servlet dependencies.    |
+| `solarcalc-domain-models`   | JPA entities, Spring Data repositories, embeddables, and domain enums. QueryDSL Q-types generated via KSP.                                                                                                           |
 
 ### Shared infrastructure modules
 
@@ -36,11 +37,18 @@ These have no domain knowledge and are depended on widely:
 | `solarcalc-kotlin-extensions` | `kotlinEquals` / `kotlinHashCode` / `kotlinToString` helpers, primarily for Hibernate entities. No dependencies. |
 | `solarcalc-logging`           | Method-logging annotations (`@LogMethod`, `@LogDuration`, `@LogMethodWithParams`) with parameter skip/obfuscation. |
 
+### Frontend modules
+
+| Directory          | Responsibility                                       |
+|--------------------|------------------------------------------------------|
+| `solarcalc-webapp` | Angular frontend with https://zardui.com components. |
+
+
 ## Dependency direction
 
 Actual inter-module dependencies (arrow = "depends on"):
 
-- `solarcalc-server` → `solarcalc-rest-api` → `solarcalc-domain-services` → `solarcalc-domain-models`
+- `solarcalc-server` → `solarcalc-rest-api` (uses `solarcalc-dtos`) → solarcalc-domain-services` (uses also `solarcalc-dtos`) → `solarcalc-domain-models`
 
 Rules:
 

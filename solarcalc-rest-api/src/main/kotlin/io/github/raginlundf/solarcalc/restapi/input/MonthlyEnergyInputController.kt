@@ -33,8 +33,8 @@ class MonthlyEnergyInputController(
     @GetMapping
     @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_INPUTS_READ}')")
     fun list(@PathVariable tenantId: Long, @PathVariable profileId: Long): List<MonthlyEnergyInputResponse> {
-        requireProfile(tenantId, profileId)
-        return inputRepository.findAllByTenantIdAndEnergyProfileId(tenantId, profileId).map { it.toResponse() }
+        requireProfile(profileId = profileId)
+        return inputRepository.findAllByTenantIdAndEnergyProfileId(tenantId = tenantId, energyProfileId = profileId).map { it.toResponse() }
     }
 
     @GetMapping("/{inputId}")
@@ -44,7 +44,7 @@ class MonthlyEnergyInputController(
         @PathVariable profileId: Long,
         @PathVariable inputId: Long,
     ): MonthlyEnergyInputResponse {
-        requireProfile(tenantId = tenantId, profileId = profileId)
+        requireProfile(profileId = profileId)
         return inputRepository.findByIdAndTenantId(id = inputId, tenantId = tenantId)?.toResponse()
             ?: throw ResourceNotFoundException("MonthlyInput $inputId not found for tenant $tenantId")
     }
@@ -59,8 +59,9 @@ class MonthlyEnergyInputController(
         val tenant = tenantRepository.findById(tenantId).orElseThrow {
             ResourceNotFoundException("Tenant $tenantId not found")
         }
-        val profile = profileRepository.findByIdAndTenantId(profileId, tenantId)
-            ?: throw ResourceNotFoundException("Profile $profileId not found for tenant $tenantId")
+        val profile = profileRepository.findById(profileId).orElseThrow {
+            ResourceNotFoundException("Profile $profileId not found")
+        }
 
         // Validate feed-in vs generation
         if (request.feedInKwh != null && request.feedInKwh > request.generationKwh) {
@@ -76,7 +77,7 @@ class MonthlyEnergyInputController(
             )
         }
 
-        val existing = inputRepository.findByTenantIdAndEnergyProfileIdAndPeriod(tenantId, profileId, request.period)
+        val existing = inputRepository.findByTenantIdAndEnergyProfileIdAndPeriod(tenantId = tenantId, energyProfileId = profileId, period = request.period)
         if (existing != null) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(
                 ApiError(
@@ -102,7 +103,7 @@ class MonthlyEnergyInputController(
         @PathVariable inputId: Long,
         @Valid @RequestBody request: UpsertMonthlyEnergyInputRequest,
     ): ResponseEntity<Any> {
-        requireProfile(tenantId = tenantId, profileId = profileId)
+        requireProfile(profileId = profileId)
         val input = inputRepository.findByIdAndTenantId(id = inputId, tenantId = tenantId)
             ?: throw ResourceNotFoundException("MonthlyInput $inputId not found for tenant $tenantId")
 
@@ -132,15 +133,16 @@ class MonthlyEnergyInputController(
         @PathVariable profileId: Long,
         @PathVariable inputId: Long,
     ) {
-        requireProfile(tenantId = tenantId, profileId = profileId)
+        requireProfile(profileId = profileId)
         val input = inputRepository.findByIdAndTenantId(id = inputId, tenantId = tenantId)
             ?: throw ResourceNotFoundException("MonthlyInput $inputId not found for tenant $tenantId")
         inputRepository.delete(input)
     }
 
-    private fun requireProfile(tenantId: Long, profileId: Long) {
-        profileRepository.findByIdAndTenantId(profileId, tenantId)
-            ?: throw ResourceNotFoundException("Profile $profileId not found for tenant $tenantId")
+    private fun requireProfile(profileId: Long) {
+        profileRepository.findById(profileId).orElseThrow {
+            ResourceNotFoundException("Profile $profileId not found")
+        }
     }
 }
 

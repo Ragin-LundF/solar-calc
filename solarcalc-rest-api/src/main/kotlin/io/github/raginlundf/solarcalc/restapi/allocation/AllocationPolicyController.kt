@@ -31,8 +31,8 @@ class AllocationPolicyController(
     @GetMapping
     @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_POLICIES_READ}')")
     fun list(@PathVariable tenantId: Long, @PathVariable profileId: Long): List<AllocationPolicyResponse> {
-        requireProfile(tenantId, profileId)
-        return policyRepository.findAllByTenantIdAndEnergyProfileId(tenantId, profileId).map { it.toResponse() }
+        requireProfile(profileId = profileId)
+        return policyRepository.findAllByTenantIdAndEnergyProfileId(tenantId = tenantId, energyProfileId = profileId).map { it.toResponse() }
     }
 
     @GetMapping("/{policyId}")
@@ -42,7 +42,7 @@ class AllocationPolicyController(
         @PathVariable profileId: Long,
         @PathVariable policyId: Long,
     ): AllocationPolicyResponse {
-        requireProfile(tenantId = tenantId, profileId = profileId)
+        requireProfile(profileId = profileId)
         return policyRepository.findByIdAndTenantId(id = policyId, tenantId = tenantId)?.toResponse()
             ?: throw ResourceNotFoundException("AllocationPolicy $policyId not found for tenant $tenantId")
     }
@@ -58,8 +58,9 @@ class AllocationPolicyController(
         val tenant = tenantRepository.findById(tenantId).orElseThrow {
             ResourceNotFoundException("Tenant $tenantId not found")
         }
-        val profile = profileRepository.findByIdAndTenantId(profileId, tenantId)
-            ?: throw ResourceNotFoundException("Profile $profileId not found for tenant $tenantId")
+        val profile = profileRepository.findById(profileId).orElseThrow {
+            ResourceNotFoundException("Profile $profileId not found")
+        }
 
         val policy = AllocationPolicy().apply {
             this.tenant = tenant
@@ -79,7 +80,7 @@ class AllocationPolicyController(
         @PathVariable policyId: Long,
         @Valid @RequestBody request: UpdateAllocationPolicyRequest,
     ): AllocationPolicyResponse {
-        requireProfile(tenantId = tenantId, profileId = profileId)
+        requireProfile(profileId = profileId)
         val policy = policyRepository.findByIdAndTenantId(id = policyId, tenantId = tenantId)
             ?: throw ResourceNotFoundException("AllocationPolicy $policyId not found for tenant $tenantId")
         policy.name = request.name
@@ -97,15 +98,16 @@ class AllocationPolicyController(
         @PathVariable profileId: Long,
         @PathVariable policyId: Long,
     ) {
-        requireProfile(tenantId = tenantId, profileId = profileId)
+        requireProfile(profileId = profileId)
         val policy = policyRepository.findByIdAndTenantId(id = policyId, tenantId = tenantId)
             ?: throw ResourceNotFoundException("AllocationPolicy $policyId not found for tenant $tenantId")
         policyRepository.delete(policy)
     }
 
-    private fun requireProfile(tenantId: Long, profileId: Long) {
-        profileRepository.findByIdAndTenantId(profileId, tenantId)
-            ?: throw ResourceNotFoundException("Profile $profileId not found for tenant $tenantId")
+    private fun requireProfile(profileId: Long) {
+        profileRepository.findById(profileId).orElseThrow {
+            ResourceNotFoundException("Profile $profileId not found")
+        }
     }
 }
 

@@ -72,29 +72,9 @@ class RepositoryIntegrationTest {
     }
 
     @Test
-    fun `energy profile is scoped to tenant`() {
-        val tenantA = tenantRepository.save(Tenant().apply { name = "Tenant A" })
-        val tenantB = tenantRepository.save(Tenant().apply { name = "Tenant B" })
-
-        val profileA = profileRepository.save(EnergyProfile().apply {
-            tenant = tenantA
-            name = "Profile A"
-        })
-        profileRepository.save(EnergyProfile().apply {
-            tenant = tenantB
-            name = "Profile B"
-        })
-
-        val results = profileRepository.findAllByTenantId(tenantId = tenantA.id!!)
-        assertEquals(expected = 1, actual = results.size)
-        assertEquals(expected = profileA.id, actual = results.first().id)
-    }
-
-    @Test
     fun `monthly input is unique by tenant, profile, period`() {
         val tenant = tenantRepository.save(Tenant().apply { name = "Tenant" })
         val profile = profileRepository.save(EnergyProfile().apply {
-            this.tenant = tenant
             name = "Profile"
         })
 
@@ -121,7 +101,6 @@ class RepositoryIntegrationTest {
         val tenantA = tenantRepository.save(Tenant().apply { name = "A" })
         val tenantB = tenantRepository.save(Tenant().apply { name = "B" })
         val profile = profileRepository.save(EnergyProfile().apply {
-            tenant = tenantA
             name = "Profile"
         })
         val input = inputRepository.save(MonthlyEnergyInput().apply {
@@ -139,7 +118,7 @@ class RepositoryIntegrationTest {
     @Test
     fun `allocation policy priority order round-trips through converter`() {
         val tenant = tenantRepository.save(Tenant().apply { name = "T"; hasWallbox = true; hasHeatPump = true })
-        val profile = profileRepository.save(EnergyProfile().apply { this.tenant = tenant; name = "P" })
+        val profile = profileRepository.save(EnergyProfile().apply { name = "P" })
 
         policyRepository.save(AllocationPolicy().apply {
             this.tenant = tenant

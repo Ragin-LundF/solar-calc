@@ -31,8 +31,8 @@ class PriceSnapshotController(
     @GetMapping
     @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_PRICES_READ}')")
     fun list(@PathVariable tenantId: Long, @PathVariable profileId: Long): List<PriceSnapshotResponse> {
-        requireProfile(tenantId, profileId)
-        return priceRepository.findAllByTenantIdAndEnergyProfileId(tenantId, profileId).map { it.toResponse() }
+        requireProfile(profileId = profileId)
+        return priceRepository.findAllByTenantIdAndEnergyProfileId(tenantId = tenantId, energyProfileId = profileId).map { it.toResponse() }
     }
 
     @GetMapping("/{priceId}")
@@ -42,7 +42,7 @@ class PriceSnapshotController(
         @PathVariable profileId: Long,
         @PathVariable priceId: Long,
     ): PriceSnapshotResponse {
-        requireProfile(tenantId = tenantId, profileId = profileId)
+        requireProfile(profileId = profileId)
         return priceRepository.findByIdAndTenantId(id = priceId, tenantId = tenantId)?.toResponse()
             ?: throw ResourceNotFoundException("PriceSnapshot $priceId not found for tenant $tenantId")
     }
@@ -58,8 +58,9 @@ class PriceSnapshotController(
         val tenant = tenantRepository.findById(tenantId).orElseThrow {
             ResourceNotFoundException("Tenant $tenantId not found")
         }
-        val profile = profileRepository.findByIdAndTenantId(profileId, tenantId)
-            ?: throw ResourceNotFoundException("Profile $profileId not found for tenant $tenantId")
+        val profile = profileRepository.findById(profileId).orElseThrow {
+            ResourceNotFoundException("Profile $profileId not found")
+        }
 
         val snapshot = PriceSnapshot().apply {
             this.tenant = tenant
@@ -77,7 +78,7 @@ class PriceSnapshotController(
         @PathVariable priceId: Long,
         @Valid @RequestBody request: UpsertPriceSnapshotRequest,
     ): PriceSnapshotResponse {
-        requireProfile(tenantId = tenantId, profileId = profileId)
+        requireProfile(profileId = profileId)
         val snapshot = priceRepository.findByIdAndTenantId(id = priceId, tenantId = tenantId)
             ?: throw ResourceNotFoundException("PriceSnapshot $priceId not found for tenant $tenantId")
         snapshot.applyRequest(request)
@@ -93,15 +94,16 @@ class PriceSnapshotController(
         @PathVariable profileId: Long,
         @PathVariable priceId: Long,
     ) {
-        requireProfile(tenantId = tenantId, profileId = profileId)
+        requireProfile(profileId = profileId)
         val snapshot = priceRepository.findByIdAndTenantId(id = priceId, tenantId = tenantId)
             ?: throw ResourceNotFoundException("PriceSnapshot $priceId not found for tenant $tenantId")
         priceRepository.delete(snapshot)
     }
 
-    private fun requireProfile(tenantId: Long, profileId: Long) {
-        profileRepository.findByIdAndTenantId(profileId, tenantId)
-            ?: throw ResourceNotFoundException("Profile $profileId not found for tenant $tenantId")
+    private fun requireProfile(profileId: Long) {
+        profileRepository.findById(profileId).orElseThrow {
+            ResourceNotFoundException("Profile $profileId not found")
+        }
     }
 }
 

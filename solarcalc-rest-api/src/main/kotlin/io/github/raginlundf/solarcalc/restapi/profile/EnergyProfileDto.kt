@@ -6,7 +6,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class EnergyProfileResponse(
     val id: Long,
-    val tenantId: Long,
     val name: String,
 )
 

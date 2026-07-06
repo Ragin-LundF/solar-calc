@@ -2,7 +2,6 @@ package io.github.raginlundf.solarcalc.restapi.profile
 
 import io.github.raginlundf.solarcalc.domain.models.profile.EnergyProfile
 import io.github.raginlundf.solarcalc.domain.models.repository.EnergyProfileRepository
-import io.github.raginlundf.solarcalc.domain.models.repository.TenantRepository
 import io.github.raginlundf.solarcalc.restapi.error.ResourceNotFoundException
 import io.github.raginlundf.solarcalc.restapi.security.SolarcalcScopes
 import jakarta.validation.Valid
@@ -20,38 +19,33 @@ import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDateTime
 
 @RestController
-@RequestMapping("/api/tenants/{tenantId}/profiles")
+@RequestMapping("/api/profiles")
 class EnergyProfileController(
-    private val tenantRepository: TenantRepository,
     private val profileRepository: EnergyProfileRepository,
 ) {
 
     @GetMapping
     @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_PROFILES_READ}')")
-    fun list(@PathVariable tenantId: Long): List<EnergyProfileResponse> {
-        requireTenantExists(tenantId)
-        return profileRepository.findAllByTenantId(tenantId).map { it.toResponse() }
+    fun list(): List<EnergyProfileResponse> {
+        return profileRepository.findAll().map { it.toResponse() }
     }
 
     @GetMapping("/{profileId}")
     @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_PROFILES_READ}')")
-    fun get(@PathVariable tenantId: Long, @PathVariable profileId: Long): EnergyProfileResponse {
-        return profileRepository.findByIdAndTenantId(profileId, tenantId)?.toResponse()
-            ?: throw ResourceNotFoundException("Profile $profileId not found for tenant $tenantId")
+    fun get(@PathVariable profileId: Long): EnergyProfileResponse {
+        val profile = profileRepository.findById(profileId).orElseThrow {
+            ResourceNotFoundException("Profile $profileId not found")
+        }
+        return profile.toResponse()
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_PROFILES_WRITE}')")
     fun create(
-        @PathVariable tenantId: Long,
         @Valid @RequestBody request: CreateEnergyProfileRequest,
     ): EnergyProfileResponse {
-        val tenant = tenantRepository.findById(tenantId).orElseThrow {
-            ResourceNotFoundException("Tenant $tenantId not found")
-        }
         val profile = EnergyProfile().apply {
-            this.tenant = tenant
             name = request.name
         }
         return profileRepository.save(profile).toResponse()
@@ -60,12 +54,12 @@ class EnergyProfileController(
     @PutMapping("/{profileId}")
     @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_PROFILES_WRITE}')")
     fun update(
-        @PathVariable tenantId: Long,
         @PathVariable profileId: Long,
         @Valid @RequestBody request: UpdateEnergyProfileRequest,
     ): EnergyProfileResponse {
-        val profile = profileRepository.findByIdAndTenantId(profileId, tenantId)
-            ?: throw ResourceNotFoundException("Profile $profileId not found for tenant $tenantId")
+        val profile = profileRepository.findById(profileId).orElseThrow {
+            ResourceNotFoundException("Profile $profileId not found")
+        }
         profile.name = request.name
         profile.updatedAt = LocalDateTime.now()
         return profileRepository.save(profile).toResponse()
@@ -74,19 +68,14 @@ class EnergyProfileController(
     @DeleteMapping("/{profileId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_PROFILES_WRITE}')")
-    fun delete(@PathVariable tenantId: Long, @PathVariable profileId: Long) {
-        val profile = profileRepository.findByIdAndTenantId(profileId, tenantId)
-            ?: throw ResourceNotFoundException("Profile $profileId not found for tenant $tenantId")
-        profileRepository.delete(profile)
-    }
-
-    private fun requireTenantExists(tenantId: Long) {
-        if (!tenantRepository.existsById(tenantId)) {
-            throw ResourceNotFoundException("Tenant $tenantId not found")
+    fun delete(@PathVariable profileId: Long) {
+        val profile = profileRepository.findById(profileId).orElseThrow {
+            ResourceNotFoundException("Profile $profileId not found")
         }
+        profileRepository.delete(profile)
     }
 }
 
 private fun EnergyProfile.toResponse(): EnergyProfileResponse {
-    return EnergyProfileResponse(id = id!!, tenantId = tenantId!!, name = name)
+    return EnergyProfileResponse(id = id!!, name = name)
 }

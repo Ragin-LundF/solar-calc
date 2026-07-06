@@ -150,8 +150,8 @@ class CalculationController(
         val tenant = findOrThrow("Tenant $tenantId not found") {
             tenantRepository.findById(tenantId).orElse(null)
         }
-        val profile = findOrThrow("Profile $profileId not found for tenant $tenantId") {
-            profileRepository.findByIdAndTenantId(id = profileId, tenantId = tenantId)
+        val profile = findOrThrow("Profile $profileId not found") {
+            profileRepository.findById(profileId).orElse(null)
         }
         val input = findOrThrow("No monthly input for period $period") {
             inputRepository.findByTenantIdAndEnergyProfileIdAndPeriod(
