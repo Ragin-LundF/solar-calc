@@ -1,0 +1,4 @@
+solarcalc:
+  security:
+    jwt:
+      secret-key: dGVzdC1zZWNyZXQta2V5LWZvci11bml0LXRlc3RzLW9ubHk=
