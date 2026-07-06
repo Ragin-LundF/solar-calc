@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ApiService } from '@/core/api/api.service';
 import { AppStateService } from '@/core/state/app-state.service';
@@ -21,7 +22,7 @@ interface PriceSnapshotDto {
 
 @Component({
   selector: 'app-prices',
-  imports: [ReactiveFormsModule, TranslatePipe, ZardButtonComponent, ZardInputDirective, ZardCardComponent],
+  imports: [ReactiveFormsModule, RouterLink, TranslatePipe, ZardButtonComponent, ZardInputDirective, ZardCardComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './prices.component.html',
 })

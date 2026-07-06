@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ApiService } from '@/core/api/api.service';
 import { AppStateService } from '@/core/state/app-state.service';
@@ -24,7 +25,7 @@ interface CalculationResultDto {
 
 @Component({
   selector: 'app-dashboard',
-  imports: [DecimalPipe, FormsModule, TranslatePipe, ZardButtonComponent, ZardCardComponent, ZardBadgeComponent],
+  imports: [DecimalPipe, FormsModule, RouterLink, TranslatePipe, ZardButtonComponent, ZardCardComponent, ZardBadgeComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './dashboard.component.html',
 })

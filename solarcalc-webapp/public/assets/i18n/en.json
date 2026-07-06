@@ -1,87 +1,106 @@
 {
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout",
+    "username": "Username",
+    "password": "Password",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "registerLink": "Register",
+    "loginLink": "Login",
+    "registerSuccess": "Registration successful",
+    "error": "Login failed",
+    "registerError": "Registration failed",
+    "usernameRequired": "Username is required",
+    "passwordRequired": "Password is required",
+    "usernameMin": "Username must be at least 3 characters",
+    "passwordMin": "Password must be at least 6 characters",
+    "usernameTaken": "Username already taken"
+  },
   "navigation": {
     "dashboard": "Dashboard",
-    "monthlyInput": "Monthly input",
-    "profileSettings": "Profile settings",
+    "monthlyInput": "Monthly Data",
+    "profileSettings": "Profiles",
     "prices": "Prices",
-    "allocationPolicy": "Allocation priority",
-    "scenarioComparison": "Scenario comparison",
-    "tenantSelection": "Switch tenant"
-  },
-  "profile": {
-    "name": "Profile name",
-    "hasWallbox": "Wallbox available",
-    "hasHeatPump": "Heat pump available",
-    "heatingReferenceType": "Heating reference",
-    "heatingReferenceType_NONE": "None",
-    "heatingReferenceType_OIL": "Heating oil",
-    "heatingReferenceType_GAS": "Natural gas",
-    "defaultElectricityPrice": "Default electricity price (EUR/kWh)",
-    "defaultFeedInTariff": "Default feed-in tariff (EUR/kWh)",
-    "defaultPetrolPrice": "Default petrol price (EUR/L)",
-    "locale": "Language",
-    "list": "Profiles",
-    "edit": "Edit profile",
-    "new": "New profile"
-  },
-  "monthlyInput": {
-    "period": "Month (YYYY-MM)",
-    "consumptionKwh": "Total electricity consumption (kWh)",
-    "generationKwh": "PV generation (kWh)",
-    "feedInKwh": "Feed-in (kWh)",
-    "householdConsumptionKwh": "Household consumption (kWh)",
-    "heatPumpConsumptionKwh": "Heat pump (kWh)",
-    "wallboxConsumptionKwh": "Wallbox (kWh)",
-    "edit": "Edit entry",
-    "new": "New entry"
-  },
-  "calculation": {
-    "selfConsumptionSavings": "Self-consumption savings",
-    "feedInRevenue": "Feed-in revenue",
-    "heatPumpSavings": "Heat pump savings",
-    "wallboxSavings": "Wallbox savings",
-    "petrolComparison": "Petrol vehicle comparison",
-    "heatingComparison": "Heating comparison",
-    "totalElectricitySavings": "Total electricity savings",
-    "unallocatedKwh": "Unallocated kWh"
-  },
-  "prices": {
-    "electricityPrice": "Electricity price (EUR/kWh)",
-    "feedInTariff": "Feed-in tariff (EUR/kWh)",
-    "petrolPrice": "Petrol price (EUR/L)",
-    "oilReferenceCost": "Oil reference cost (EUR/month)",
-    "gasReferenceCost": "Gas reference cost (EUR/month)",
-    "evEfficiency": "EV consumption (kWh/100 km)",
-    "iceEfficiency": "Combustion vehicle consumption (L/100 km)",
-    "period": "Valid for month",
-    "defaultPrices": "Default prices"
-  },
-  "allocation": {
-    "HOUSEHOLD": "Household",
-    "HEAT_PUMP": "Heat pump",
-    "WALLBOX": "Wallbox",
-    "priority": "Priority order"
-  },
-  "validation": {
-    "required": "This field is required",
-    "invalidPositiveNumber": "Must be a positive number",
-    "invalidPeriod": "Format: YYYY-MM",
-    "feedInExceedsGeneration": "Feed-in exceeds generated electricity"
+    "allocationPolicy": "Allocation",
+    "scenarioComparison": "Scenarios"
   },
   "common": {
-    "save": "Save",
-    "cancel": "Cancel",
-    "delete": "Delete",
-    "edit": "Edit",
-    "add": "Add",
-    "loading": "Loading...",
-    "error": "Error",
-    "success": "Saved successfully",
-    "noTenantSelected": "No tenant selected. Enter a tenant ID in the sidebar.",
-    "noProfileSelected": "No profile selected. Create a profile in Profile Settings first.",
-    "noProfiles": "No profiles yet.",
-    "noData": "No entries yet.",
     "tenantId": "Tenant ID",
-    "calculate": "Calculate"
+    "calculate": "Calculate",
+    "save": "Save",
+    "add": "Add",
+    "edit": "Edit",
+    "delete": "Delete",
+    "success": "Saved successfully!",
+    "error": "An error occurred",
+    "noTenantSelected": "Please select a tenant",
+    "noProfileSelected": "Please select a profile",
+    "noProfiles": "No profiles yet",
+    "noProfileSetup": "You haven't set up a profile yet.",
+    "noProfileSetupAction": "Create profile now",
+    "profilePlaceholder": "e.g. House",
+    "loading": "Loading...",
+    "darkMode": "Dark Mode",
+    "lightMode": "Light Mode",
+    "language": "Language"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "description": "Calculate your solar savings"
+  },
+  "profile": {
+    "list": "Profiles",
+    "new": "New Profile",
+    "edit": "Edit Profile",
+    "name": "Name",
+    "hasWallbox": "Wallbox",
+    "hasHeatPump": "Heat Pump",
+    "heatingReferenceType": "Heating Reference",
+    "heatingReferenceType_NONE": "None",
+    "heatingReferenceType_OIL": "Oil",
+    "heatingReferenceType_GAS": "Gas",
+    "defaultElectricityPrice": "Electricity Price (€/kWh)",
+    "defaultFeedInTariff": "Feed-in Tariff (€/kWh)",
+    "defaultPetrolPrice": "Petrol Price (€/L)"
+  },
+  "monthlyInput": {
+    "title": "Monthly Data",
+    "period": "Period (YYYY-MM)",
+    "consumptionKwh": "Consumption (kWh)",
+    "generationKwh": "Generation (kWh)",
+    "feedInKwh": "Feed-in (kWh)",
+    "householdConsumptionKwh": "Household (kWh)",
+    "heatPumpConsumptionKwh": "Heat Pump (kWh)",
+    "wallboxConsumptionKwh": "Wallbox (kWh)"
+  },
+  "prices": {
+    "title": "Prices",
+    "period": "Period (optional)",
+    "electricityPricePerKwh": "Electricity Price (€/kWh)",
+    "feedInTariffPerKwh": "Feed-in Tariff (€/kWh)",
+    "petrolPricePerLiter": "Petrol Price (€/L)",
+    "oilReferenceCostPerMonth": "Oil Reference Cost (€/month)",
+    "gasReferenceCostPerMonth": "Gas Reference Cost (€/month)",
+    "evEfficiencyKwhPer100Km": "EV Efficiency (kWh/100km)",
+    "iceEfficiencyLiterPer100Km": "ICE Efficiency (L/100km)"
+  },
+  "allocation": {
+    "title": "Allocation Policy",
+    "priorityOrder": "Priority Order",
+    "moveUp": "Move Up",
+    "moveDown": "Move Down"
+  },
+  "calculation": {
+    "selfConsumptionSavings": "Self-consumption",
+    "feedInRevenue": "Feed-in Revenue",
+    "heatPumpSavings": "Heat Pump",
+    "wallboxSavings": "Wallbox",
+    "totalElectricitySavings": "Total Savings",
+    "unallocatedKwh": "Unallocated"
+  },
+  "validation": {
+    "feedInExceedsGeneration": "Feed-in exceeds generation"
   }
 }

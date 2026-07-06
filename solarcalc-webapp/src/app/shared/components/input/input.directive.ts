@@ -118,7 +118,9 @@ export class ZardInputDirective implements ControlValueAccessor {
   }
 
   private isNumericInput(element: ZardInputElement): element is HTMLInputElement {
-    return element.tagName.toLowerCase() === 'input' && ['number', 'range'].includes(element.type);
+    return element.tagName.toLowerCase() === 'input' && (
+      ['number', 'range'].includes(element.type) || element.inputMode === 'decimal'
+    );
   }
 
   private readNativeValue(element: ZardInputElement | null): ZardInputValue {
@@ -134,7 +136,8 @@ export class ZardInputDirective implements ControlValueAccessor {
           return null;
         }
 
-        const numericValue = element.valueAsNumber;
+        const normalized = element.value.replace(',', '.');
+        const numericValue = parseFloat(normalized);
         return Number.isNaN(numericValue) ? null : numericValue;
       }
     }

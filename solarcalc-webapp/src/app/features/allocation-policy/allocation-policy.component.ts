@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ApiService } from '@/core/api/api.service';
 import { AppStateService } from '@/core/state/app-state.service';
@@ -15,7 +16,7 @@ interface AllocationPolicyDto {
 
 @Component({
   selector: 'app-allocation-policy',
-  imports: [TranslatePipe, ZardButtonComponent, ZardCardComponent, ZardBadgeComponent],
+  imports: [RouterLink, TranslatePipe, ZardButtonComponent, ZardCardComponent, ZardBadgeComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './allocation-policy.component.html',
 })
