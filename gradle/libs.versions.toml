@@ -47,6 +47,8 @@ buildscript-liquibase-core = { module = "org.liquibase:liquibase-core", version.
 #
 # ── Serialization ──────────────────────────────────────
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
+#
 # ── Log4j (versionless — governed by bom-log4j) ──────────────────────────────
 logging-slf4j-api = { module = "org.slf4j:slf4j-api" }
 logging-slf4j-simple = { module = "org.slf4j:slf4j-simple" }

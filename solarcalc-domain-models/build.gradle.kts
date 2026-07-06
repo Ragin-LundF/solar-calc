@@ -15,6 +15,8 @@ dependencies {
 
     implementation(libs.database.liquibase.core)
 
+    api(libs.kotlin.reflect)
+
     api(libs.database.querydsl.jpa.spring)
     api(libs.database.querydsl.kotlin)
     ksp(libs.database.querydsl.ksp.codegen)

@@ -21,12 +21,12 @@ object ObfuscationUtil {
             keyProcessor = { value, keyAsString, obfuscationKeys ->
                 when {
                     obfuscationKeys.contains(keyAsString) -> OBFUSCATION
-                    value is Map<*, *> || value is List<*> -> obfuscate(value, obfuscationKeys)
+                    value is Map<*, *> || value is List<*> -> obfuscate(data = value, keysToObfuscate = obfuscationKeys)
                     else -> value
                 }
             },
             listProcessor = { list, obfuscationKeys ->
-                list.map { listItem -> obfuscate(listItem, obfuscationKeys) }
+                list.map { listItem -> obfuscate(data = listItem, keysToObfuscate = obfuscationKeys) }
             }
         )
     }
@@ -44,12 +44,12 @@ object ObfuscationUtil {
             keyProcessor = { value, keyAsString, skipKeys ->
                 when {
                     skipKeys.contains(keyAsString) -> null
-                    value is Map<*, *> || value is List<*> -> skip(value, skipKeys)
+                    value is Map<*, *> || value is List<*> -> skip(data = value, keysToSkip = skipKeys)
                     else -> value
                 }
             },
             listProcessor = { list, skipKeys ->
-                list.filterNotNull().mapNotNull { listItem -> skip(listItem, skipKeys) }
+                list.filterNotNull().mapNotNull { listItem -> skip(data = listItem, keysToSkip = skipKeys) }
             }
         )
     }
