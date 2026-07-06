@@ -1,0 +1,172 @@
+[versions]
+kotlin = "2.4.0"
+dokka = "2.2.0"
+ksp = "2.3.9"
+spring-boot = "4.1.0"
+log4j = "2.26.1"
+micrometer = "1.17.0"
+querydsl = "7.4.0"
+testcontainers = "2.0.5"
+junit-platform = "6.1.1"
+jackson3 = "3.2.0"
+kotlinx-serialization = "1.11.0"
+kotlinx-coroutines = "1.11.0"
+kotlin-logging = "8.0.4"
+konvert = "4.5.0"
+mariadb = "3.5.9"
+commons-configuration2 = "2.15.1"
+jakarta-servlet = "6.1.0"
+password4j = "1.8.4"
+caffeine = "3.2.4"
+springmockk = "5.0.1"
+cucumber-gherkin-lib = "3.3.0"
+tomcat-jdbc = "11.0.23"
+liquibase-classpath = "5.0.1"
+liquibase-plugin = "3.1.0"
+liquibase = "5.0.3"
+owasp-depcheck = "12.2.2"
+undercouch-download = "5.7.0"
+license-report = "3.1.4"
+detekt = "2.0.0-alpha.5"
+kover = "0.9.8"
+junit = "6.1.0"
+
+[libraries]
+# ── BOMs (use as platform() dependencies) ──────────────────────────────────────
+bom-spring-boot = { module = "org.springframework.boot:spring-boot-dependencies", version.ref = "spring-boot" }
+bom-log4j = { module = "org.apache.logging.log4j:log4j-bom", version.ref = "log4j" }
+bom-micrometer = { module = "io.micrometer:micrometer-bom", version.ref = "micrometer" }
+bom-querydsl = { module = "io.github.openfeign.querydsl:querydsl-bom", version.ref = "querydsl" }
+bom-testcontainers = { module = "org.testcontainers:testcontainers-bom", version.ref = "testcontainers" }
+bom-junit = { module = "org.junit:junit-bom", version.ref = "junit-platform" }
+bom-jackson = { module = "tools.jackson:jackson-bom", version.ref = "jackson3" }
+#
+# ── Buildscript classpath ─────────────────────────────────────────────────────
+buildscript-kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+buildscript-liquibase-core = { module = "org.liquibase:liquibase-core", version.ref = "liquibase-classpath" }
+#
+# ── Serialization ──────────────────────────────────────
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
+# ── Log4j (versionless — governed by bom-log4j) ──────────────────────────────
+logging-slf4j-api = { module = "org.slf4j:slf4j-api" }
+logging-slf4j-simple = { module = "org.slf4j:slf4j-simple" }
+logging-log4j-slf4j-impl = { module = "org.apache.logging.log4j:log4j-slf4j-impl" }
+logging-kotlin-logging = { module = "io.github.oshai:kotlin-logging", version.ref = "kotlin-logging" }
+#
+# ── Spring Boot starters (versionless — governed by bom-spring-boot) ──────────
+spring-boot-starter-log4j2 = { module = "org.springframework.boot:spring-boot-starter-log4j2" }
+spring-boot-starter-validation = { module = "org.springframework.boot:spring-boot-starter-validation" }
+spring-boot-starter-webmvc = { module = "org.springframework.boot:spring-boot-starter-webmvc" }
+spring-boot-starter-data-jpa = { module = "org.springframework.boot:spring-boot-starter-data-jpa" }
+spring-boot-starter-security = { module = "org.springframework.boot:spring-boot-starter-security" }
+spring-boot-starter-actuator = { module = "org.springframework.boot:spring-boot-starter-actuator" }
+spring-boot-starter-cache = { module = "org.springframework.boot:spring-boot-starter-cache" }
+spring-boot-starter-liquibase = { module = "org.springframework.boot:spring-boot-starter-liquibase" }
+spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test" }
+spring-boot-resttestclient = { module = "org.springframework.boot:spring-boot-resttestclient" }
+spring-boot-starter-restclient-test = { module = "org.springframework.boot:spring-boot-starter-restclient-test" }
+spring-boot-configuration-processor = { module = "org.springframework.boot:spring-boot-configuration-processor" }
+spring-boot-devtools = { module = "org.springframework.boot:spring-boot-devtools" }
+spring-boot-core = { module = "org.springframework.boot:spring-boot" }
+#
+# ── Spring Framework (versionless — governed by bom-spring-boot) ───────────────
+spring-web = { module = "org.springframework:spring-web" }
+spring-webmvc = { module = "org.springframework:spring-webmvc" }
+spring-context = { module = "org.springframework:spring-context" }
+spring-context-support = { module = "org.springframework:spring-context-support" }
+spring-test = { module = "org.springframework:spring-test" }
+spring-data-jpa = { module = "org.springframework.data:spring-data-jpa" }
+spring-security-core = { module = "org.springframework.security:spring-security-core" }
+spring-security-web = { module = "org.springframework.security:spring-security-web" }
+spring-security-config = { module = "org.springframework.security:spring-security-config" }
+spring-security-oauth2-jose = { module = "org.springframework.security:spring-security-oauth2-jose" }
+aspectjweaver = { module = "org.aspectj:aspectjweaver" }
+#
+# ── Jackson (versionless — governed by bom-jackson) ───────────────────────────
+mapper-jackson-annotations = { module = "com.fasterxml.jackson.core:jackson-annotations" }
+mapper-jackson-databind = { module = "tools.jackson.core:jackson-databind" }
+mapper-jackson-module-jaxb-annotations = { module = "tools.jackson.module:jackson-module-jaxb-annotations" }
+mapper-jackson-module-kotlin = { module = "tools.jackson.module:jackson-module-kotlin" }
+mapper-jackson-module-blackbird = { module = "tools.jackson.module:jackson-module-blackbird" }
+mapper-jackson-dataformat-yaml = { module = "tools.jackson.dataformat:jackson-dataformat-yaml" }
+mapper-jackson-dataformat-csv = { module = "tools.jackson.dataformat:jackson-dataformat-csv" }
+mapper-jackson-dataformat-xml = { module = "tools.jackson.dataformat:jackson-dataformat-xml" }
+#
+# ── QueryDSL (jpa-spring and ksp-codegen not in BOM — explicit version required) ─
+database-querydsl-jpa-spring = { module = "io.github.openfeign.querydsl:querydsl-jpa-spring", version.ref = "querydsl" }
+database-querydsl-kotlin = { module = "io.github.openfeign.querydsl:querydsl-kotlin" }
+database-querydsl-ksp-codegen = { module = "io.github.openfeign.querydsl:querydsl-ksp-codegen", version.ref = "querydsl" }
+#
+# ── Hibernate / JPA / Liquibase (versionless — governed by bom-spring-boot) ───
+database-hibernate-core = { module = "org.hibernate.orm:hibernate-core" }
+database-liquibase-core = { module = "org.liquibase:liquibase-core" }
+database-tomcat-jdbc = { module = "org.apache.tomcat:tomcat-jdbc" }
+#
+# ── Database driver ────────────────────────────────────────────────────────
+database-h2 = { module = "com.h2database:h2" }
+database-mariadb-java-client = { module = "org.mariadb.jdbc:mariadb-java-client", version.ref = "mariadb" }
+#
+# ── Micrometer (versionless — governed by bom-micrometer) ────────────────────
+micrometer-tracing = { module = "io.micrometer:micrometer-tracing" }
+micrometer-tracing-bridge-otel = { module = "io.micrometer:micrometer-tracing-bridge-otel" }
+micrometer-registry-prometheus = { module = "io.micrometer:micrometer-registry-prometheus" }
+#
+# ── Konvert (explicit versions — not in any BOM) ──────────────────────────────
+konvert-api = { module = "io.mcarle:konvert-api", version.ref = "konvert" }
+konvert-spring-annotations = { module = "io.mcarle:konvert-spring-annotations", version.ref = "konvert" }
+konvert = { module = "io.mcarle:konvert", version.ref = "konvert" }
+konvert-spring-injector = { module = "io.mcarle:konvert-spring-injector", version.ref = "konvert" }
+#
+#
+# ── Jakarta APIs ──────────────────────────────────────────────────────────────
+jakarta-servlet-api = { module = "jakarta.servlet:jakarta.servlet-api", version.ref = "jakarta-servlet" }
+jakarta-validation-api = { module = "jakarta.validation:jakarta.validation-api" }
+#
+#
+# ── Security ──────────────────────────────────────────────────────────
+security-password4j = { module = "com.password4j:password4j", version.ref = "password4j" }
+#
+# ── Cache ──────────────────────────────────────────────────────────
+caching-caffeine = { module = "com.github.ben-manes.caffeine:caffeine", version.ref = "caffeine" }
+#
+# ── Testing ───────────────────────────────────────────────────────────────────
+# ── TestContainers (versionless — governed by bom-testcontainers) ─────────────
+testing-testcontainers-mariadb = { module = "org.testcontainers:testcontainers-mariadb" }
+testing-testcontainers-junit-jupiter = { module = "org.testcontainers:testcontainers", version.ref = "testcontainers" }
+#
+# ── JUnit (versionless — governed by bom-junit) ───────────────────────────────
+testing-junit-jupiter = { module = "org.junit.jupiter:junit-jupiter" }
+testing-kotlin-test-junit5 = { module = "org.jetbrains.kotlin:kotlin-test-junit5", version.ref = "kotlin" }
+testing-junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
+testing-junit-platform-suite = { module = "org.junit.platform:junit-platform-suite" }
+testing-cucumber-junit-platform = { module = "io.cucumber:cucumber-junit-platform-engine" }
+testing-springmockk = { module = "com.ninja-squad:springmockk", version.ref = "springmockk" }
+testing-cucumber-gherkin-lib = { module = "io.github.ragin-lundf:bdd-cucumber-gherkin-lib-rest", version.ref = "cucumber-gherkin-lib" }
+
+[bundles]
+# collection of dependencies to enfore a version because of CVE or duplicates
+constraints = [
+]
+konvert-api = [
+    "konvert-api",
+    "konvert-spring-annotations",
+]
+micrometer-tracing = [
+    "micrometer-tracing",
+    "micrometer-tracing-bridge-otel",
+]
+
+[plugins]
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-jpa = { id = "org.jetbrains.kotlin.plugin.jpa", version.ref = "kotlin" }
+kotlin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }
+kotlin-dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+detekt = { id = "dev.detekt", version.ref = "detekt" }
+kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
+spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
+liquibase-gradle = { id = "org.liquibase.gradle", version.ref = "liquibase-plugin" }
+owasp-depcheck = { id = "org.owasp.dependencycheck", version.ref = "owasp-depcheck" }
+version-catalog-update = "nl.littlerobots.version-catalog-update:1.1.0"
+license-report = { id = "com.github.jk1.dependency-license-report", version.ref = "license-report" }

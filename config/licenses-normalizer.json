@@ -1,0 +1,1380 @@
+{
+  "bundles": [
+    {
+      "bundleName": "AFL",
+      "licenseName": "Academic Free License, Version 2.1",
+      "licenseUrl": "https://spdx.org/licenses/AFL-2.1.html"
+    },
+    {
+      "bundleName": "AMAZON",
+      "licenseName": "Amazon Software License",
+      "licenseUrl": "https://aws.amazon.com/de/asl/"
+    },
+    {
+      "bundleName": "ANTLR",
+      "licenseName": "ANTLR License,  Version 3",
+      "licenseUrl": "https://www.antlr3.org/license.html"
+    },
+    {
+      "bundleName": "APACHE2SIMILAR",
+      "licenseName": "Similar to Apache License, Version 2.0",
+      "licenseUrl": "https://github.com/allardhoeve/pcgen-multiline-objects/blob/master/pcgen/lib/licences/similar%20to%20apache%20license%20but%20with%20the%20acknowledgment%20clause%20removed%20-%20license.txt"
+    },
+    {
+      "bundleName": "APACHE_10",
+      "licenseName": "Apache License, Version 1.0",
+      "licenseUrl": "https://www.apache.org/licenses/LICENSE-1.0.txt"
+    },
+    {
+      "bundleName": "APACHE_11",
+      "licenseName": "Apache License, Version 1.1",
+      "licenseUrl": "https://www.apache.org/licenses/LICENSE-1.1.txt"
+    },
+    {
+      "bundleName": "APACHE_20",
+      "licenseName": "Apache License, Version 2.0",
+      "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0.txt"
+    },
+    {
+      "bundleName": "APPLE",
+      "licenseName": "Apple License"
+    },
+    {
+      "bundleName": "ARCTORUS",
+      "licenseName": "Arctorus BIRT Emitters License",
+      "licenseUrl": "https://www.arctorus.com/arctorus-software/license"
+    },
+    {
+      "bundleName": "ARTISTIC",
+      "licenseName": "Artistic License",
+      "licenseUrl": "https://dev.perl.org/licenses/artistic.html"
+    },
+    {
+      "bundleName": "ARTISTIC_2",
+      "licenseName": "Artistic License 2.0",
+      "licenseUrl": "https://www.perlfoundation.org/artistic-license-20.html"
+    },
+    {
+      "bundleName": "ASM",
+      "licenseName": "ASM License",
+      "licenseUrl": "https://asm.ow2.io/license.html"
+    },
+    {
+      "bundleName": "AXDETE",
+      "licenseName": "Axion Development Team"
+    },
+    {
+      "bundleName": "BOUNCYCASTLELIC",
+      "licenseName": "Bouncy Castle License",
+      "licenseUrl": "https://www.bouncycastle.org/license.html"
+    },
+    {
+      "bundleName": "BSD2",
+      "licenseName": "The BSD-2-Clause License",
+      "licenseUrl": "https://opensource.org/licenses/BSD-2-Clause"
+    },
+    {
+      "bundleName": "BSD3",
+      "licenseName": "The BSD-3-Clause License",
+      "licenseUrl": "https://opensource.org/licenses/BSD-3-Clause"
+    },
+    {
+      "bundleName": "BSD3MIT",
+      "licenseName": "The BSD-3-Clause / MIT License"
+    },
+    {
+      "bundleName": "BSD3NUCLEAR",
+      "licenseName": "The BSD-3-Clause with Nuclear Disclaimer"
+    },
+    {
+      "bundleName": "BSD4",
+      "licenseName": "The BSD License",
+      "licenseUrl": "https://opensource.org/licenses/BSD-4-Clause"
+    },
+    {
+      "bundleName": "CC",
+      "licenseName": "Creative Commons (Attribution) Public Licenses",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/de/"
+    },
+    {
+      "bundleName": "CC0",
+      "licenseName": "Creative Commons CC0 License",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/legalcode"
+    },
+    {
+      "bundleName": "CDDL10GLP2WCPE",
+      "licenseName": "CDDL Version 1.0, GNU-GPL w/ CPE, Version 2.0",
+      "licenseUrl": "https://opensource.org/licenses/CDDL-1.0"
+    },
+    {
+      "bundleName": "CDDL11GLP2",
+      "licenseName": "CDDL Version 1.1, GNU-GPL Version 2.0",
+      "licenseUrl": "https://javaee.github.io/glassfish/LICENSE"
+    },
+    {
+      "bundleName": "CDDL11GLP2WCPE",
+      "licenseName": "CDDL Version 1.1, GNU-GPL w/ CPE, Version 2.0",
+      "licenseUrl": "https://oss.oracle.com/licenses/CDDL+GPL-1.1"
+    },
+    {
+      "bundleName": "CDDL_10",
+      "licenseName": "Common Development and Distribution License (CDDL-1.0)",
+      "licenseUrl": "https://opensource.org/licenses/CDDL-1.0"
+    },
+    {
+      "bundleName": "CDDL_10",
+      "licenseName": "COMMON DEVELOPMENT AND DISTRIBUTION LICEN[CS]E (CDDL) Version 1\\.0",
+      "licenseUrl": "https://opensource.org/licenses/CDDL-1.0"
+    },
+    {
+      "bundleName": "CDDL_11",
+      "licenseName": "Common Development and Distribution License (CDDL-1.1)",
+      "licenseUrl": "https://javaee.github.io/glassfish/LICENSE"
+    },
+    {
+      "bundleName": "CODEHAUS",
+      "licenseName": "Copyright 2002 (C) The Codehaus"
+    },
+    {
+      "bundleName": "COF",
+      "licenseName": "CoffeeScript",
+      "licenseUrl": "https://github.com/jashkenas/coffeescript/blob/master/LICENSE"
+    },
+    {
+      "bundleName": "COPANTONKOVALYOV",
+      "licenseName": "Copyright 2012 Anton Kovalyov",
+      "licenseUrl": "https://github.com/jshint/jshint/blob/master/LICENSE"
+    },
+    {
+      "bundleName": "COPDOUGLASCROCKFORD",
+      "licenseName": "Copyright (c) 2002 Douglas Crockford"
+    },
+    {
+      "bundleName": "COPKOHSUKEKAWAGUCHI",
+      "licenseName": "Copyright (c) 2004 Kohsuke Kawaguchi"
+    },
+    {
+      "bundleName": "COPLARSKUEHNE",
+      "licenseName": "Copyright (C) 2003 - 2005 Lars Kuehne"
+    },
+    {
+      "bundleName": "COPSTRACHANMCWHIRTER",
+      "licenseName": "Copyright 2003 (C) James Strachan and Bob Mcwhirter"
+    },
+    {
+      "bundleName": "COPYEHUDAKATZ",
+      "licenseName": "Copyright (C) 2011 by Yehuda Katz",
+      "licenseUrl": "https://github.com/wycats/handlebars.js/blob/master/LICENSE"
+    },
+    {
+      "bundleName": "COPYEHUDAKATZTOMDALECHARLESJOLLEY",
+      "licenseName": "Copyright (c) 2012 Yehuda Katz, Tom Dale, Charles Jolley and Ember.js contributors",
+      "licenseUrl": "https://github.com/emberjs/ember.js/blob/master/LICENSE"
+    },
+    {
+      "bundleName": "CPL",
+      "licenseName": "Common Public License, Version 1.0",
+      "licenseUrl": "https://opensource.org/licenses/cpl1.0.php"
+    },
+    {
+      "bundleName": "DOM4J",
+      "licenseName": "DOM4J License",
+      "licenseUrl": "https://cmsprev.uke.de/fs5root/license/license_dom4j.html"
+    },
+    {
+      "bundleName": "EDL1",
+      "licenseName": "Eclipse Distribution License - v 1.0",
+      "licenseUrl": "https://www.eclipse.org/org/documents/edl-v10.php"
+    },
+    {
+      "bundleName": "EPL1",
+      "licenseName": "The Eclipse Public License (EPL), Version 1.0",
+      "licenseUrl": "https://www.eclipse.org/legal/epl-v10.html"
+    },
+    {
+      "bundleName": "EPL2",
+      "licenseName": "The Eclipse Public License (EPL), Version 2.0",
+      "licenseUrl": "https://www.eclipse.org/legal/epl-v20.html"
+    },
+    {
+      "bundleName": "GAPE",
+      "licenseName": "Google App Engine Terms of Service"
+    },
+    {
+      "bundleName": "GPL2WCPE",
+      "licenseName": "GNU General Public License, Version 2, with the Classpath Exception",
+      "licenseUrl": "https://openjdk.java.net/legal/gplv2+ce.html"
+    },
+    {
+      "bundleName": "GPL_1",
+      "licenseName": "GNU General Public License",
+      "licenseUrl": "https://dev.perl.org/licenses/gpl1.html"
+    },
+    {
+      "bundleName": "GPL_2",
+      "licenseName": "GNU General Public License, Version 2",
+      "licenseUrl": "https://www.gnu.org/licenses/gpl-2.0.html"
+    },
+    {
+      "bundleName": "GPL_3",
+      "licenseName": "GNU General Public License, Version 3",
+      "licenseUrl": "https://www.gnu.org/licenses/gpl-3.0.html"
+    },
+    {
+      "bundleName": "GWT",
+      "licenseName": "GWT Terms (Apache 2.0)",
+      "licenseUrl": "https://www.gwtproject.org/terms.html"
+    },
+    {
+      "bundleName": "H2",
+      "licenseName": "H2 License",
+      "licenseUrl": "https://www.h2database.com/html/license.html"
+    },
+    {
+      "bundleName": "HSQL",
+      "licenseName": "HSQL License",
+      "licenseUrl": "https://www.governikus.de/fileadmin/user_upload/Third-Party/HSQLDB_License.pdf"
+    },
+    {
+      "bundleName": "INTALIO",
+      "licenseName": "Intalio Inc. License",
+      "licenseUrl": "https://www.exolab.org/"
+    },
+    {
+      "bundleName": "ISC",
+      "licenseName": "Internet Software Consortium",
+      "licenseUrl": "https://www.isc.org/downloads/software-support-policy/isc-license/"
+    },
+    {
+      "bundleName": "IUE_11",
+      "licenseName": "Indiana University Extreme! Lab Software License, Version 1.1"
+    },
+    {
+      "bundleName": "IUE_111",
+      "licenseName": "Indiana University Extreme! Lab Software License, Version 1.1.1",
+      "licenseUrl": "https://github.com/sonatype/plexus-utils/blob/master/src/main/resources/licenses/extreme.indiana.edu.license.TXT"
+    },
+    {
+      "bundleName": "IUE_12",
+      "licenseName": "Indiana University Extreme! Lab Software License, Version 1.2",
+      "licenseUrl": "https://www.extreme.indiana.edu/license.txt"
+    },
+    {
+      "bundleName": "JCP",
+      "licenseName": "Java Community Process (JCP)",
+      "licenseUrl": "https://www.jcp.org/en/home/terms"
+    },
+    {
+      "bundleName": "JDOM",
+      "licenseName": "JDOM License",
+      "licenseUrl": "https://www.oracle.com/technetwork/java/javaee/thirdpartylicensereadme-pc-150262.txt"
+    },
+    {
+      "bundleName": "JDOM2",
+      "licenseName": "JDOM 2 License",
+      "licenseUrl": "https://raw.github.com/hunterhacker/jdom/master/LICENSE.txt"
+    },
+    {
+      "bundleName": "JHTMLTIDY",
+      "licenseName": "Java HTML Tidy License",
+      "licenseUrl": "https://jtidy.sourceforge.net/license.html"
+    },
+    {
+      "bundleName": "JREGEX",
+      "licenseName": "JRegEx License"
+    },
+    {
+      "bundleName": "JSON",
+      "licenseName": "JSON License",
+      "licenseUrl": "https://www.json.org/license.html"
+    },
+    {
+      "bundleName": "JTASPEC_101",
+      "licenseName": "JTA Spec License",
+      "licenseUrl": "https://enterprise.dejacode.com/license_library/public/sun-jta-spec-1.0.1/#license-text"
+    },
+    {
+      "bundleName": "LGPL_21",
+      "licenseName": "GNU Lesser General Public License, Version 2.1",
+      "licenseUrl": "https://www.gnu.org/licenses/lgpl-2.1.html"
+    },
+    {
+      "bundleName": "LGPL_30",
+      "licenseName": "GNU Lesser General Public License, Version 3.0",
+      "licenseUrl": "https://www.gnu.org/licenses/lgpl-3.0.html"
+    },
+    {
+      "bundleName": "MIT",
+      "licenseName": "The MIT License",
+      "licenseUrl": "https://opensource.org/licenses/MIT"
+    },
+    {
+      "bundleName": "MITJSON",
+      "licenseName": "The MIT and the JSON License",
+      "licenseUrl": "https://www.json.org/license.html"
+    },
+    {
+      "bundleName": "MITNETCDF",
+      "licenseName": "MIT netCDF C library license",
+      "licenseUrl": "https://www.unidata.ucar.edu/software/netcdf/copyright.html"
+    },
+    {
+      "bundleName": "MITOFL",
+      "licenseName": "The MIT and the SIL Open Font License",
+      "licenseUrl": "https://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&item_id=OFL"
+    },
+    {
+      "bundleName": "MITX11",
+      "licenseName": "The MIT and the X11 License",
+      "licenseUrl": "https://tldrlegal.com/license/x11-license"
+    },
+    {
+      "bundleName": "MPL_11",
+      "licenseName": "Mozilla Public License Version 1.1",
+      "licenseUrl": "https://www.mozilla.org/en-US/MPL/1.1/"
+    },
+    {
+      "bundleName": "MPL_20",
+      "licenseName": "Mozilla Public License Version 2.0",
+      "licenseUrl": "https://www.mozilla.org/en-US/MPL/2.0/"
+    },
+    {
+      "bundleName": "MX4J",
+      "licenseName": "MX4J License",
+      "licenseUrl": "https://mx4j.sourceforge.net/docs/ch01s06.html"
+    },
+    {
+      "bundleName": "OFL",
+      "licenseName": "SIL Open Font License",
+      "licenseUrl": "https://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&item_id=OFL"
+    },
+    {
+      "bundleName": "PD",
+      "licenseName": "Public Domain"
+    },
+    {
+      "bundleName": "POSTGRE",
+      "licenseName": "The PostgreSQL License",
+      "licenseUrl": "https://opensource.org/licenses/postgresql"
+    },
+    {
+      "bundleName": "SAX",
+      "licenseName": "The SAX License",
+      "licenseUrl": "https://www.saxproject.org/copying.html"
+    },
+    {
+      "bundleName": "W3C",
+      "licenseName": "W3C Software License",
+      "licenseUrl": "https://www.w3.org/Consortium/Legal/2015/copyright-software-and-document.html"
+    },
+    {
+      "bundleName": "WERKENCOMPANY",
+      "licenseName": "The Werken Company"
+    },
+    {
+      "bundleName": "WTFPL",
+      "licenseName": "WTFPL - Do What the Fuck You Want to Public License",
+      "licenseUrl": "https://www.wtfpl.net/"
+    },
+    {
+      "bundleName": "YECHT",
+      "licenseName": "Yecht License",
+      "licenseUrl": "https://github.com/jruby/yecht/blob/master/LICENSE"
+    },
+    {
+      "bundleName": "ZLIB",
+      "licenseName": "ZLiB/LibPNG License",
+      "licenseUrl": "https://opensource.org/licenses/Zlib"
+    }
+  ],
+  "transformationRules": [
+    {
+      "bundleName": "ACTIVATION",
+      "licenseNamePattern": "(?i)activation\\-1\\.0\\.2 Licen[cs]e"
+    },
+    {
+      "bundleName": "AFL",
+      "licenseNamePattern": "(?i)Academic Free Licen[cs]e v2\\.1"
+    },
+    {
+      "bundleName": "AMAZON",
+      "licenseNamePattern": "(?i)Amazon Software Licen[cs]e"
+    },
+    {
+      "bundleName": "ANTLR",
+      "licenseNamePattern": "(?i)ANTLR 3 Licen[cs]e"
+    },
+    {
+      "bundleName": "APACHE2SIMILAR",
+      "licenseNamePattern": "(?i)Similar to Apache Licen[cs]e but with the acknowledgment clause removed"
+    },
+    {
+      "bundleName": "APACHE_10",
+      "licenseNamePattern": "(?i)The Apache Software Licen[cs]e, Version 1\\.0"
+    },
+    {
+      "bundleName": "APACHE_10",
+      "licenseNamePattern": "(?i)Apache Licen[cs]e"
+    },
+    {
+      "bundleName": "APACHE_10",
+      "licenseNamePattern": "(?i)ASF"
+    },
+    {
+      "bundleName": "APACHE_10",
+      "licenseNamePattern": "(?i)ASL"
+    },
+    {
+      "bundleName": "APACHE_10",
+      "licenseNamePattern": "(?i)Apache Software Licenese"
+    },
+    {
+      "bundleName": "APACHE_10",
+      "licenseNamePattern": "(?i)Apache Software Licen[cs]es"
+    },
+    {
+      "bundleName": "APACHE_11",
+      "licenseNamePattern": "(?i)The Apache Software Licen[cs]e, Version 1\\.1"
+    },
+    {
+      "bundleName": "APACHE_11",
+      "licenseNamePattern": "(?i)Apache Licen[cs]e 1\\.1"
+    },
+    {
+      "bundleName": "APACHE_11",
+      "licenseNamePattern": "(?i)Apache Licen[cs]e Version 1\\.1"
+    },
+    {
+      "bundleName": "APACHE_11",
+      "licenseNamePattern": "(?i)Apache Software Licen[cs]e, Version 1\\.1"
+    },
+    {
+      "bundleName": "APACHE_11",
+      "licenseNamePattern": "(?i).*The Apache Software Licen[cs]e, Version 1\\.1.*"
+    },
+    {
+      "bundleName": "APACHE_20",
+      "licenseNamePattern": "(?i)The Apache Software Licen[cs]e, Version 2\\.0"
+    },
+    {
+      "bundleName": "APACHE_20",
+      "licenseNamePattern": "(?i)Apache Software Licen[cs]e 2\\.0"
+    },
+    {
+      "bundleName": "APACHE_20",
+      "licenseNamePattern": "(?i)Apache.*2\\.0"
+    },
+    {
+      "bundleName": "APACHE_20",
+      "licenseNamePattern": "(?i)Apache 2\\.0"
+    },
+    {
+      "bundleName": "APACHE_20",
+      "licenseNamePattern": "(?i)Apache 2"
+    },
+    {
+      "bundleName": "APACHE_20",
+      "licenseNamePattern": "(?i)Apache Public Licen[cs]e 2\\.0"
+    },
+    {
+      "bundleName": "APACHE_20",
+      "licenseNamePattern": "(?i)Apache Licen[cs]e, Version 2\\.0"
+    },
+    {
+      "bundleName": "APACHE_20",
+      "licenseNamePattern": "(?i)The Apache Licen[cs]e, Version 2\\.0"
+    },
+    {
+      "bundleName": "APACHE_20",
+      "licenseNamePattern": "(?i)Apache Licen[cs]e 2\\.0"
+    },
+    {
+      "bundleName": "APACHE_20",
+      "licenseNamePattern": "(?i)ASM Licen[cs]e; The Apache Software Licen[cs]e, Version 2\\.0"
+    },
+    {
+      "bundleName": "APACHE_20",
+      "licenseNamePattern": "(?i)Apache\\-2\\.0"
+    },
+    {
+      "bundleName": "APACHE_20",
+      "licenseNamePattern": "(?i)AL 2\\.0"
+    },
+    {
+      "bundleName": "APACHE_20",
+      "licenseNamePattern": "(?i)ALv2"
+    },
+    {
+      "bundleName": "APACHE_20",
+      "licenseNamePattern": "(?i)ASF 2\\.0"
+    },
+    {
+      "bundleName": "APACHE_20",
+      "licenseNamePattern": "(?i)ASL 2\\.0"
+    },
+    {
+      "bundleName": "APACHE_20",
+      "licenseNamePattern": "(?i)ASL2"
+    },
+    {
+      "bundleName": "APACHE_20",
+      "licenseNamePattern": "(?i)ASLv2"
+    },
+    {
+      "bundleName": "APACHE_20",
+      "licenseNamePattern": "(?i)Apache  Version 2\\.0, January 2004"
+    },
+    {
+      "bundleName": "APACHE_20",
+      "licenseNamePattern": "(?i)Apache Licen[cs]e 2"
+    },
+    {
+      "bundleName": "APACHE_20",
+      "licenseNamePattern": "(?i)Apache Licen[cs]e Version 2"
+    },
+    {
+      "bundleName": "APACHE_20",
+      "licenseNamePattern": "(?i)Apache Licen[cs]e, Version 2"
+    },
+    {
+      "bundleName": "APACHE_20",
+      "licenseNamePattern": "(?i)Apache Licen[cs]e v2"
+    },
+    {
+      "bundleName": "APACHE_20",
+      "licenseNamePattern": "(?i)Apache Licen[cs]e v2\\.0"
+    },
+    {
+      "bundleName": "APACHE_20",
+      "licenseNamePattern": "(?i)Apache Licen[cs]e, version 2\\.0\\."
+    },
+    {
+      "bundleName": "APACHE_20",
+      "licenseNamePattern": "(?i)Apache Software Licen[cs]e \\- Version 2\\.0"
+    },
+    {
+      "bundleName": "APACHE_20",
+      "licenseNamePattern": "(?i)Apache Public Licen[cs]e 2\\.0"
+    },
+    {
+      "bundleName": "APACHE_20",
+      "licenseNamePattern": "(?i)Apache v2\\.0"
+    },
+    {
+      "bundleName": "APACHE_20",
+      "licenseNamePattern": "(?i)The Apache Licen[cs]e Version 2\\.0"
+    },
+    {
+      "bundleName": "APACHE_20",
+      "licenseNamePattern": "(?i)This material is licensed under the Apache Software Licen[cs]e, Version 2\\.0"
+    },
+    {
+      "bundleName": "APACHE_20",
+      "licenseNamePattern": "(?i).*Apache \\(Software\\) Licen[cs]e, Version 2\\.0.*"
+    },
+    {
+      "bundleName": "APACHE_20",
+      "licenseNamePattern": "(?i).*Apache Licen[cs]e.*Version 2\\.0.*"
+    },
+    {
+      "bundleName": "APACHE_20",
+      "licenseNamePattern": "(?i).*Apache Licen[cs]e Version 2\\.0.*"
+    },
+    {
+      "bundleName": "APACHE_20",
+      "licenseNamePattern": "(?i).*Apache.*2\\.0 license.*"
+    },
+    {
+      "bundleName": "APACHE_20",
+      "licenseNamePattern": "(?i).*The IronSmith Software License, Version 1\\.1.*"
+    },
+    {
+      "bundleName": "APPLE",
+      "licenseNamePattern": "(?i)Apple Licen[cs]e"
+    },
+    {
+      "bundleName": "ARCTORUS",
+      "licenseNamePattern": "(?i)Arctorus BIRT Emitters Licen[cs]e"
+    },
+    {
+      "bundleName": "ARTISTIC",
+      "licenseNamePattern": "(?i)Artistic Licen[cs]e"
+    },
+    {
+      "bundleName": "ASM",
+      "licenseNamePattern": "(?i)ASM Licen[sc]e"
+    },
+    {
+      "bundleName": "ATLASSIAN",
+      "licenseNamePattern": "(?i)Atlassian 3\\.0 End User Licen[cs]e Agreement"
+    },
+    {
+      "bundleName": "ATLASSIAN",
+      "licenseNamePattern": "(?i)Atlassian End User Agreement"
+    },
+    {
+      "bundleName": "AXDETE",
+      "licenseNamePattern": "(?i).*Axion Development Team.*"
+    },
+    {
+      "bundleName": "BCL",
+      "licenseNamePattern": "(?i)BCL"
+    },
+    {
+      "bundleName": "BCL",
+      "licenseNamePattern": "(?i)SUN\\-Binary\\-Code\\-Licen[cs]e"
+    },
+    {
+      "bundleName": "BCL",
+      "licenseNamePattern": "(?i)Sun Binary Code Licen[cs]e"
+    },
+    {
+      "bundleName": "BOUNCYCASTLELIC",
+      "licenseNamePattern": "(?i)Bouncy Castle Licen[sc]e"
+    },
+    {
+      "bundleName": "BOUNCYCASTLELIC",
+      "licenseNamePattern": "(?i)The Legion of the Bouncy Castle Inc\\. Licen[sc]e"
+    },
+    {
+      "bundleName": "BSD2",
+      "licenseNamePattern": "(?i)BSD style"
+    },
+    {
+      "bundleName": "BSD2",
+      "licenseNamePattern": "(?i)BSD\\-2\\-Clause"
+    },
+    {
+      "bundleName": "BSD2",
+      "licenseNamePattern": "(?i)BSD\\-like"
+    },
+    {
+      "bundleName": "BSD2",
+      "licenseNamePattern": "(?i)BSD 2\\-Clause Licen[cs]e"
+    },
+    {
+      "bundleName": "BSD2",
+      "licenseNamePattern": "(?i)BSD style Licen[cs]e"
+    },
+    {
+      "bundleName": "BSD2",
+      "licenseNamePattern": "(?i)BSD\\-Style Licen[cs]e"
+    },
+    {
+      "bundleName": "BSD2",
+      "licenseNamePattern": "(?i)BSD\\-style"
+    },
+    {
+      "bundleName": "BSD2",
+      "licenseNamePattern": "(?i)The BSD 2\\-Clause Licen[cs]e"
+    },
+    {
+      "bundleName": "BSD3",
+      "licenseNamePattern": "(?i)Revised BSD Licen[cs]e"
+    },
+    {
+      "bundleName": "BSD3",
+      "licenseNamePattern": "(?i)BSD\\-3\\-Clause"
+    },
+    {
+      "bundleName": "BSD3",
+      "licenseNamePattern": "(?i)BSD 3\\-Clause \"New\" or \"Revised\" Licen[cs]e \\(BSD\\-3\\-Clause\\)"
+    },
+    {
+      "bundleName": "BSD3",
+      "licenseNamePattern": "(?i)BSD 3\\-Clause Licen[cs]e"
+    },
+    {
+      "bundleName": "BSD3",
+      "licenseNamePattern": "(?i)BSD 3\\-Clause"
+    },
+    {
+      "bundleName": "BSD3",
+      "licenseNamePattern": "(?i)Eclipse Distribution Licen[cs]e \\(New BSD Licen[cs]e\\)"
+    },
+    {
+      "bundleName": "BSD3",
+      "licenseNamePattern": "(?i)Revised BSD"
+    },
+    {
+      "bundleName": "BSD3",
+      "licenseNamePattern": "(?i)The BSD 3\\-Clause Licen[cs]e"
+    },
+    {
+      "bundleName": "BSD3",
+      "licenseNamePattern": "(?i)The \\(New\\) BSD Licen[cs]e"
+    },
+    {
+      "bundleName": "BSD3",
+      "licenseNamePattern": "(?i)New BSD Licen[cs]e"
+    },
+    {
+      "bundleName": "BSD3",
+      "licenseNamePattern": "(?i).*The New BSD Licen[cs]e.*"
+    },
+    {
+      "bundleName": "BSD3",
+      "licenseNamePattern": "(?i)BSD Licen[cs]e.*"
+    },
+    {
+      "bundleName": "BSD3MIT",
+      "licenseNamePattern": "(?i)BSD\\-3\\-Clause OR MIT"
+    },
+    {
+      "bundleName": "BSD3NUCLEAR",
+      "licenseNamePattern": "(?i)BSD 3\\-clause Licen[cs]e w/nuclear disclaimer"
+    },
+    {
+      "bundleName": "BSD4",
+      "licenseNamePattern": "(?i)The BSD Licen[cs]e"
+    },
+    {
+      "bundleName": "BSD4",
+      "licenseNamePattern": "(?i)BSD Licen[cs]e"
+    },
+    {
+      "bundleName": "BSD4",
+      "licenseNamePattern": "(?i)BSD\\*"
+    },
+    {
+      "bundleName": "BSD4",
+      "licenseNamePattern": "(?i)BSD"
+    },
+    {
+      "bundleName": "BSD4",
+      "licenseNamePattern": "(?i)FreeBSD Licen[cs]e"
+    },
+    {
+      "bundleName": "BSD4",
+      "licenseNamePattern": "(?i)Modified BSD Licen[cs]e"
+    },
+    {
+      "bundleName": "BSD4",
+      "licenseNamePattern": "(?i)Simplified BSD Licen[cs]e"
+    },
+    {
+      "bundleName": "BSD4",
+      "licenseNamePattern": "(?i)Berkeley Software Distribution \\(BSD\\) Licen[cs]e"
+    },
+    {
+      "bundleName": "BSD4",
+      "licenseNamePattern": "(?i)HSQLDB Licen[cs]e, a BSD open source Licen[cs]e"
+    },
+    {
+      "bundleName": "BSD4",
+      "licenseNamePattern": "(?i)Modified BSD TelnetD Licen[cs]e"
+    },
+    {
+      "bundleName": "CC",
+      "licenseNamePattern": "(?i)\\(MIT AND CC-BY-3.0\\)"
+    },
+    {
+      "bundleName": "CC0",
+      "licenseNamePattern": "(?i)CC0 1\\.0 Universal"
+    },
+    {
+      "bundleName": "CC0",
+      "licenseNamePattern": "(?i)CC0l"
+    },
+    {
+      "bundleName": "CC0",
+      "licenseNamePattern": "(?i)Public Domain, per Creative Commons CC0"
+    },
+    {
+      "bundleName": "CDDL10GLP2WCPE",
+      "licenseNamePattern": "(?i)CDDL 1\\.0; GPL2 w/ CPE"
+    },
+    {
+      "bundleName": "CDDL10GLP2WCPE",
+      "licenseNamePattern": "(?i)CDDL; GPLv2\\+CE"
+    },
+    {
+      "bundleName": "CDDL10GLP2WCPE",
+      "licenseNamePattern": "(?i)CDDL \\+ GPLv2 with classpath exception"
+    },
+    {
+      "bundleName": "CDDL10GLP2WCPE",
+      "licenseNamePattern": "(?i)CDDL or GPLv2 with exceptions"
+    },
+    {
+      "bundleName": "CDDL10GLP2WCPE",
+      "licenseNamePattern": "(?i)CDDL v1\\.0 / GPL v2 dual Licen[cs]e"
+    },
+    {
+      "bundleName": "CDDL10GLP2WCPE",
+      "licenseNamePattern": "(?i)CDDL/GPLv2\\+CE"
+    },
+    {
+      "bundleName": "CDDL10GLP2WCPE",
+      "licenseNamePattern": "(?i)CDDL\\+GPL Licen[cs]e"
+    },
+    {
+      "bundleName": "CDDL10GLP2WCPE",
+      "licenseNamePattern": "(?i)CDDL\\+GPL"
+    },
+    {
+      "bundleName": "CDDL10GLP2WCPE",
+      "licenseNamePattern": "(?i)CDDL\\+GPLv2"
+    },
+    {
+      "bundleName": "CDDL10GLP2WCPE",
+      "licenseNamePattern": "(?i)Dual Licen[cs]e: CDDL 1\\.0 and GPL V2 with Classpath Exception"
+    },
+    {
+      "bundleName": "CDDL11GLP2",
+      "licenseNamePattern": "(?i)CDDL v1\\.1 / GPL v2 dual Licen[cs]e"
+    },
+    {
+      "bundleName": "CDDL11GLP2",
+      "licenseNamePattern": "(?i).*Dual license consisting of the CDDL v1\\.1 and GPL v2.*"
+    },
+    {
+      "bundleName": "CDDL11GLP2WCPE",
+      "licenseNamePattern": "(?i)CDDL 1\\.1; GPL2 w/ CPE"
+    },
+    {
+      "bundleName": "CDDL_10",
+      "licenseNamePattern": "(?i)CDDL 1\\.0"
+    },
+    {
+      "bundleName": "CDDL_10",
+      "licenseNamePattern": "(?i)CDDL Licen[cs]e"
+    },
+    {
+      "bundleName": "CDDL_10",
+      "licenseNamePattern": "(?i)Common Development and Distribution Licen[cs]e \\(CDDL\\) v1\\.0"
+    },
+    {
+      "bundleName": "CDDL_10",
+      "licenseNamePattern": "(?i)Common Development and Distribution Licen[cs]e"
+    },
+    {
+      "bundleName": "CDDL_10",
+      "licenseNamePattern": "(?i).*Common Development and Distribution Licen[cs]e \\(CDDL\\) Version 1\\.0.*"
+    },
+    {
+      "bundleName": "CDDL_11",
+      "licenseNamePattern": "(?i)CDDL 1\\.1"
+    },
+    {
+      "bundleName": "CDDL_11",
+      "licenseNamePattern": "(?i).*Common Development and Distribution Licen[cs]e \\(CDDL\\)[ ]{0,1}Version 1\\.1.*"
+    },
+    {
+      "bundleName": "CODEHAUS",
+      "licenseNamePattern": "(?i).*Copyright 2002 \\(C\\) The Codehaus.*"
+    },
+    {
+      "bundleName": "COF",
+      "licenseNamePattern": "(?i)CoffeeScript"
+    },
+    {
+      "bundleName": "COPANTONKOVALYOV",
+      "licenseNamePattern": "(?i)Copyright 2012 Anton Kovalyov"
+    },
+    {
+      "bundleName": "COPDOUGLASCROCKFORD",
+      "licenseNamePattern": "(?i)Copyright \\(c\\) 2002 Douglas Crockford"
+    },
+    {
+      "bundleName": "COPKOHSUKEKAWAGUCHI",
+      "licenseNamePattern": "(?i)Copyright \\(c\\) 2004 Kohsuke Kawaguchi.*"
+    },
+    {
+      "bundleName": "COPLARSKUEHNE",
+      "licenseNamePattern": "(?i).*Copyright \\(C\\) 2003 - 2005 Lars K.hne.*"
+    },
+    {
+      "bundleName": "COPSTRACHANMCWHIRTER",
+      "licenseNamePattern": "(?i).*Copyright 2003 \\(C\\) James Strachan and Bob Mcwhirter.*"
+    },
+    {
+      "bundleName": "COPYEHUDAKATZ",
+      "licenseNamePattern": "(?i)Copyright \\(C\\) 2011 by Yehuda Katz"
+    },
+    {
+      "bundleName": "COPYEHUDAKATZTOMDALECHARLESJOLLEY",
+      "licenseNamePattern": "(?i)Copyright \\(c\\) 2012 Yehuda Katz, Tom Dale, Charles Jolley and Ember\\.js contributors"
+    },
+    {
+      "bundleName": "CPL",
+      "licenseNamePattern": "(?i)Common Public Licen[cs]e Version 1\\.0"
+    },
+    {
+      "bundleName": "CPL",
+      "licenseNamePattern": "(?i)CPL"
+    },
+    {
+      "bundleName": "CPL",
+      "licenseNamePattern": "(?i)Common Public Licen[cs]e \\- v 1\\.0"
+    },
+    {
+      "bundleName": "DAYSPECLIC",
+      "licenseNamePattern": "(?i)Day Specification Licen[cs]e"
+    },
+    {
+      "bundleName": "DAYSPECLIC",
+      "licenseNamePattern": "(?i)Day Specification Licen[cs]e addendum"
+    },
+    {
+      "bundleName": "DOM4J",
+      "licenseNamePattern": "(?i).*Copyright 2001-2005 \\(C\\) MetaStuff, Ltd. All Rights Reserved\\..*"
+    },
+    {
+      "bundleName": "EDL1",
+      "licenseNamePattern": "(?i)Eclipse Distribution Licen[cs]e \\(EDL\\), Version 1\\.0"
+    },
+    {
+      "bundleName": "EPL1",
+      "licenseNamePattern": "(?i).*Eclipse Public License Version 1.0 \\(\"EPL\"\\).*"
+    },
+    {
+      "bundleName": "EPL1",
+      "licenseNamePattern": "(?i).*Eclipse Public License Version 1.0 \\(\\&quot;EPL\\&quot;\\).*"
+    },
+    {
+      "bundleName": "EPL1",
+      "licenseNamePattern": "(?i)Eclipse Distribution Licen[cs]e - v 1\\.0"
+    },
+    {
+      "bundleName": "EPL1",
+      "licenseNamePattern": "(?i)Eclipse Public Licen[cs]e 1\\.0"
+    },
+    {
+      "bundleName": "EPL1",
+      "licenseNamePattern": "(?i)Eclipse Public Licen[cs]e \\(EPL\\), Version 1\\.0"
+    },
+    {
+      "bundleName": "EPL1",
+      "licenseNamePattern": "(?i)Eclipse Public Licen[cs]e, Version 1\\.0"
+    },
+    {
+      "bundleName": "EPL1",
+      "licenseNamePattern": "(?i)Eclipse Public Licen[cs]e v1\\.0"
+    },
+    {
+      "bundleName": "EPL1",
+      "licenseNamePattern": "(?i)Eclipse Public Licen[cs]e \\- v 1\\.0"
+    },
+    {
+      "bundleName": "EPL1",
+      "licenseNamePattern": "(?i)EPL"
+    },
+    {
+      "bundleName": "EPL1",
+      "licenseNamePattern": "(?i)Eclipse Public Licen[cs]e \\- Version 1\\.0"
+    },
+    {
+      "bundleName": "EPL1",
+      "licenseNamePattern": "(?i)Eclipse Public Licen[cs]e"
+    },
+    {
+      "bundleName": "EPL1",
+      "licenseNamePattern": "(?i)The Eclipse Public Licen[cs]e, Version 1\\.0"
+    },
+    {
+      "bundleName": "EPL1",
+      "licenseNamePattern": "(?i)The Eclipse Public Licen[cs]e"
+    },
+    {
+      "bundleName": "EPL2",
+      "licenseNamePattern": "(?i).*Eclipse Public Licen[cs]e \\- v 2\\.0.*"
+    },
+    {
+      "bundleName": "GAPE",
+      "licenseNamePattern": "(?i)Google App Engine Terms of Service"
+    },
+    {
+      "bundleName": "GPL2WCPE",
+      "licenseNamePattern": "(?i)GPL2 w/ CPE"
+    },
+    {
+      "bundleName": "GPL2WCPE",
+      "licenseNamePattern": "(?i)GNU General Public License, Version 2 with the Classpath Exception"
+    },
+    {
+      "bundleName": "GPL_1",
+      "licenseNamePattern": "(?i)GPL"
+    },
+    {
+      "bundleName": "GPL_2",
+      "licenseNamePattern": "(?i)The GNU General Public Licen[cs]e, Version 2"
+    },
+    {
+      "bundleName": "GPL_2",
+      "licenseNamePattern": "(?i)GNU General Public Licen[cs]e, Version 2"
+    },
+    {
+      "bundleName": "GPL_3",
+      "licenseNamePattern": "(?i)GNU General Public Licen[cs]e 3"
+    },
+    {
+      "bundleName": "GPL_3",
+      "licenseNamePattern": "(?i)GNU General Public Library"
+    },
+    {
+      "bundleName": "GPL_3",
+      "licenseNamePattern": "(?i)GNU GPL license v3"
+    },
+    {
+      "bundleName": "GPL_3",
+      "licenseNamePattern": "(?i)General Public Licen[cs]e, version 3 (GPL\\-3\\.0)"
+    },
+    {
+      "bundleName": "GPL_3",
+      "licenseNamePattern": "(?i).*GNU GENERAL PUBLIC LICE[CS]E Version 3.*"
+    },
+    {
+      "bundleName": "GWT",
+      "licenseNamePattern": "(?i)GWT Terms"
+    },
+    {
+      "bundleName": "GWT",
+      "licenseNamePattern": "(?i)Google Web Toolkit Terms"
+    },
+    {
+      "bundleName": "H2",
+      "licenseNamePattern": "(?i)The H2 Licen[cs]e, Version 1\\.0"
+    },
+    {
+      "bundleName": "HSQL",
+      "licenseNamePattern": "(?i)HSQLDB Licen[cs]e"
+    },
+    {
+      "bundleName": "ICU",
+      "licenseNamePattern": "(?i).*ICU Licen[cs]e - ICU 1.8.1 and later.*"
+    },
+    {
+      "bundleName": "INTALIO",
+      "licenseNamePattern": "(?i).*Copyright 1999-2003 \\(C\\) Intalio Inc.*"
+    },
+    {
+      "bundleName": "ISC",
+      "licenseNamePattern": "(?i)ISC"
+    },
+    {
+      "bundleName": "IUE_11",
+      "licenseNamePattern": "(?i)Indiana University Extreme\\! Lab Software Licen[cs]e, version 1\\.1"
+    },
+    {
+      "bundleName": "IUE_111",
+      "licenseNamePattern": "(?i)Indiana University Extreme\\! Lab Software Licen[cs]e, vesion 1\\.1\\.1"
+    },
+    {
+      "bundleName": "IUE_111",
+      "licenseNamePattern": "(?i)Indiana University Extreme\\! Lab Software Licen[cs]e, version 1\\.1\\.1"
+    },
+    {
+      "bundleName": "IUE_12",
+      "licenseNamePattern": "(?i)Indiana University Extreme\\! Lab Software Licen[cs]e, version 1\\.2"
+    },
+    {
+      "bundleName": "JCP",
+      "licenseNamePattern": "(?i)The Java Community Process \\(JCP\\)"
+    },
+    {
+      "bundleName": "JDOM",
+      "licenseNamePattern": "(?i)JDOM.*"
+    },
+    {
+      "bundleName": "JDOM",
+      "licenseNamePattern": "(?i).*Id: LICEN[CS]E\\.txt,v 1.11 2004/02/06 09:32:57 jhunter Exp.*"
+    },
+    {
+      "bundleName": "JDOM2",
+      "licenseNamePattern": "(?i)JDOM.*"
+    },
+    {
+      "bundleName": "JHTMLTIDY",
+      "licenseNamePattern": "(?i)Java HTML Tidy Licen[cs]e"
+    },
+    {
+      "bundleName": "JREGEX",
+      "licenseNamePattern": "(?i)Copyright \\(c\\) 2001, Sergey A. Samokhodkin.*"
+    },
+    {
+      "bundleName": "JSON",
+      "licenseNamePattern": "(?i)The JSON Licen[cs]e"
+    },
+    {
+      "bundleName": "JTASPEC_101",
+      "licenseNamePattern": "(?i)JTA\\-SPEC\\-1\\.0\\.1.*"
+    },
+    {
+      "bundleName": "JTASPEC_101",
+      "licenseNamePattern": "(?i)jta\\-spec\\-1\\.0\\.1 Licen[cs]e"
+    },
+    {
+      "bundleName": "LGPL_21",
+      "licenseNamePattern": "(?i)LGPL.*2\\.1"
+    },
+    {
+      "bundleName": "LGPL_21",
+      "licenseNamePattern": "(?i)GNU Lesser General Public Licen[cs]e, Version 2\\.1"
+    },
+    {
+      "bundleName": "LGPL_21",
+      "licenseNamePattern": "(?i)GNU Lesser General Public Licen[cs]e"
+    },
+    {
+      "bundleName": "LGPL_21",
+      "licenseNamePattern": "(?i)GNU Lesser Public Licen[cs]e"
+    },
+    {
+      "bundleName": "LGPL_21",
+      "licenseNamePattern": "(?i)Lesser General Public Licen[cs]e \\(LGPL\\)"
+    },
+    {
+      "bundleName": "LGPL_21",
+      "licenseNamePattern": "(?i)GNU General Lesser Public Licen[cs]e \\(LGPL\\) Version 2\\.1"
+    },
+    {
+      "bundleName": "LGPL_21",
+      "licenseNamePattern": "(?i)GNU Lesser General Public Licen[cs]e 2\\.1"
+    },
+    {
+      "bundleName": "LGPL_21",
+      "licenseNamePattern": "(?i)GNU Lesser General Public Licen[cs]e Version 2\\.1, February 1999"
+    },
+    {
+      "bundleName": "LGPL_21",
+      "licenseNamePattern": "(?i)GNU Lesser General Public Licen[cs]e \\(LGPL\\)"
+    },
+    {
+      "bundleName": "LGPL_21",
+      "licenseNamePattern": "(?i)GNU Library or Lesser General Public Licen[cs]e version 2\\.0 \\(LGPLv2\\)"
+    },
+    {
+      "bundleName": "LGPL_21",
+      "licenseNamePattern": "(?i)LGPL, version 2\\.1"
+    },
+    {
+      "bundleName": "LGPL_21",
+      "licenseNamePattern": "(?i)LGPL"
+    },
+    {
+      "bundleName": "LGPL_21",
+      "licenseNamePattern": "(?i)LGPL\\-2\\.1"
+    },
+    {
+      "bundleName": "LGPL_21",
+      "licenseUrlPattern": "(?i)http://www.opensource.org/licenses/LGPL-2.1"
+    },
+    {
+      "bundleName": "LGPL_21",
+      "licenseNamePattern": "(?i)The GNU Lesser General Public Licen[cs]e, Version 2\\.1"
+    },
+    {
+      "bundleName": "LGPL_30",
+      "licenseNamePattern": "(?i)Lesser General Public Licen[cs]e v3 \\(LGPLv3\\)"
+    },
+    {
+      "bundleName": "LGPL_30",
+      "licenseNamePattern": "(?i).*GNU Lesser General Public Licen[cs]e, Version 3\\.0.*"
+    },
+    {
+      "bundleName": "LGPL_30",
+      "licenseNamePattern": "(?i).*GNU Lesser General Public Licen[cs]e, Version 3.*"
+    },
+    {
+      "bundleName": "LGPL_30",
+      "licenseNamePattern": "(?i)GNU General Lesser Public Licen[cs]e \\(LGPL\\) Version 3\\.0"
+    },
+    {
+      "bundleName": "LGPL_30",
+      "licenseNamePattern": "(?i)GNU LGPL 3"
+    },
+    {
+      "bundleName": "LGPL_30",
+      "licenseNamePattern": "(?i)GNU Lesser General Public Licen[cs]e 3\\.0"
+    },
+    {
+      "bundleName": "LGPL_30",
+      "licenseNamePattern": "(?i)GNU Lesser General Public Licen[cs]e \\(LGPL\\), v\\.3"
+    },
+    {
+      "bundleName": "LGPL_30",
+      "licenseNamePattern": "(?i)GNU Lesser General Public Licen[cs]e v3\\.0"
+    },
+    {
+      "bundleName": "LGPL_30",
+      "licenseNamePattern": "(?i)LGPL v\\.3"
+    },
+    {
+      "bundleName": "LGPL_30",
+      "licenseNamePattern": "(?i)Lesser General Public Licen[cs]e, version 3 or greater"
+    },
+    {
+      "bundleName": "LGPL_30",
+      "licenseNamePattern": "(?i)The GNU Lesser General Public Licen[cs]e, Version 3\\.0"
+    },
+    {
+      "bundleName": "MIT",
+      "licenseNamePattern": "(?i)The MIT Licen[cs]e \\(MIT\\)"
+    },
+    {
+      "bundleName": "MIT",
+      "licenseNamePattern": "(?i)MIT Licen[cs]e \\(MIT\\)"
+    },
+    {
+      "bundleName": "MIT",
+      "licenseNamePattern": "(?i)The MIT Licen[cs]e"
+    },
+    {
+      "bundleName": "MIT",
+      "licenseNamePattern": "(?i)MIT Licen[cs]e"
+    },
+    {
+      "bundleName": "MIT",
+      "licenseNamePattern": "(?i)MIT"
+    },
+    {
+      "bundleName": "MIT",
+      "licenseNamePattern": "(?i)The MIT Licen[cs]e.*"
+    },
+    {
+      "bundleName": "MITJSON",
+      "licenseNamePattern": "(?i)\\(MIT AND JSON\\)"
+    },
+    {
+      "bundleName": "MITNETCDF",
+      "licenseNamePattern": "(?i)\\(MIT\\-style\\) netCDF C library Licen[cs]e\\."
+    },
+    {
+      "bundleName": "MITNETCDF",
+      "licenseNamePattern": "(?i)\\(MIT\\-style\\) netCDF C library Licen[cs]e"
+    },
+    {
+      "bundleName": "MITOFL",
+      "licenseNamePattern": "(?i)OFL\\-1\\.1 AND MIT"
+    },
+    {
+      "bundleName": "MITX11",
+      "licenseNamePattern": "(?i)MIT/X11"
+    },
+    {
+      "bundleName": "MITX11",
+      "licenseNamePattern": "(?i)X11"
+    },
+    {
+      "bundleName": "MPL20EPL10",
+      "licenseNamePattern": "(?i)MPL 2\\.0 or EPL 1\\.0"
+    },
+    {
+      "bundleName": "MPL_10",
+      "licenseNamePattern": "(?i)Mozilla Public Licen[cs]e Version 1\\.0"
+    },
+    {
+      "bundleName": "MPL_10",
+      "licenseNamePattern": "(?i)Mozilla Public Licen[cs]e"
+    },
+    {
+      "bundleName": "MPL_10",
+      "licenseNamePattern": "(?i)MPL"
+    },
+    {
+      "bundleName": "MPL_11",
+      "licenseNamePattern": "(?i)Mozilla Public Licen[cs]e 1\\.1 \\(MPL 1\\.1\\)"
+    },
+    {
+      "bundleName": "MPL_11",
+      "licenseNamePattern": "(?i)Mozilla Public Licen[cs]e, Version 1\\.1"
+    },
+    {
+      "bundleName": "MPL_11",
+      "licenseNamePattern": "(?i)Mozilla Public Licen[cs]e Version 1\\.1"
+    },
+    {
+      "bundleName": "MPL_11",
+      "licenseNamePattern": "(?i)MPL 1\\.1"
+    },
+    {
+      "bundleName": "MPL_20",
+      "licenseNamePattern": "(?i)Mozilla Public Licen[cs]e, Version 2\\.0"
+    },
+    {
+      "bundleName": "MPL_20",
+      "licenseNamePattern": "(?i)Mozilla Public Licen[cs]e Version 2\\.0"
+    },
+    {
+      "bundleName": "MX4J",
+      "licenseNamePattern": "(?i)The MX4J Licen[cs]e, Version 1\\.0"
+    },
+    {
+      "bundleName": "OFL",
+      "licenseNamePattern": "(?i)OFL\\-1\\.1"
+    },
+    {
+      "bundleName": "PD",
+      "licenseNamePattern": "(?i)Public Domain"
+    },
+    {
+      "bundleName": "PD",
+      "licenseNamePattern": "(?i)Public domain, Sun Microsoystems"
+    },
+    {
+      "bundleName": "POSTGRE",
+      "licenseNamePattern": "(?i)The PostgreSQL Licen[cs]e"
+    },
+    {
+      "bundleName": "SAX",
+      "licenseNamePattern": "(?i)The SAX Licen[cs]e"
+    },
+    {
+      "bundleName": "SPL",
+      "licenseNamePattern": "(?i)Sun Public Licen[cs]e"
+    },
+    {
+      "bundleName": "TMATE",
+      "licenseNamePattern": "(?i)TMate Open Source Licen[cs]e \\(with dual licensing option\\)"
+    },
+    {
+      "bundleName": "TMATE",
+      "licenseNamePattern": "(?i)TMate Open Source.*"
+    },
+    {
+      "bundleName": "TMATE",
+      "licenseNamePattern": "(?i)TMate.*"
+    },
+    {
+      "bundleName": "UNKNOWN",
+      "licenseNamePattern": "(?i)UNKNOWN"
+    },
+    {
+      "bundleName": "UNKNOWN",
+      "licenseNamePattern": "(?i)Unknown Licen[cs]e"
+    },
+    {
+      "bundleName": "UNKNOWN",
+      "licenseNamePattern": "(?i)UNKNOWN"
+    },
+    {
+      "bundleName": "W3C",
+      "licenseNamePattern": "(?i)The W3C Software Licen[cs]e"
+    },
+    {
+      "bundleName": "W3C",
+      "licenseNamePattern": "(?i)The W3C Licen[cs]e"
+    },
+    {
+      "bundleName": "WERKENCOMPANY",
+      "licenseNamePattern": "(?i).*Copyright 2003 \\(C\\) The Werken Company.*"
+    },
+    {
+      "bundleName": "WERKENCOMPANY",
+      "licenseNamePattern": "(?i).*Copyright 2003-2006 The Werken Company.*"
+    },
+    {
+      "bundleName": "WTFPL",
+      "licenseNamePattern": "(?i)WTFPL"
+    },
+    {
+      "bundleName": "YECHT",
+      "licenseNamePattern": "(?i)yecht 1\\.0 Licen[cs]e"
+    },
+    {
+      "bundleName": "ZLIB",
+      "licenseNamePattern": "(?i)zlib Licen[cs]e"
+    }
+  ]
+}

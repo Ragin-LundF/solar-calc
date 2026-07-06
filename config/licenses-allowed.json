@@ -1,0 +1,325 @@
+{
+  "allowedLicenses": [
+    {
+      "moduleLicense": "ANTLR License,  Version 3"
+    },
+    {
+      "moduleLicense": "ASM License"
+    },
+    {
+      "moduleLicense": "Academic Free License, Version 2.1"
+    },
+    {
+      "moduleLicense": "Amazon Software License"
+    },
+    {
+      "moduleLicense": "Apache License, Version 1.0"
+    },
+    {
+      "moduleLicense": "Apache License, Version 1.1"
+    },
+    {
+      "moduleLicense": "Apache License, Version 2.0"
+    },
+    {
+      "moduleLicense": "Apple License"
+    },
+    {
+      "moduleLicense": "Arctorus BIRT Emitters License"
+    },
+    {
+      "moduleLicense": "Artistic License"
+    },
+    {
+      "moduleLicense": "Artistic License 2.0"
+    },
+    {
+      "moduleLicense": "Axion Development Team"
+    },
+    {
+      "moduleLicense": "Bouncy Castle License"
+    },
+    {
+      "moduleLicense": "CDDL Version 1.0, GNU-GPL w/ CPE, Version 2.0"
+    },
+    {
+      "moduleLicense": "CDDL Version 1.1, GNU-GPL Version 2.0"
+    },
+    {
+      "moduleLicense": "CDDL Version 1.1, GNU-GPL w/ CPE, Version 2.0"
+    },
+    {
+      "moduleLicense": "CoffeeScript"
+    },
+    {
+      "moduleLicense": "Common Public License, Version 1.0"
+    },
+    {
+      "moduleLicense": "Copyright (C) 2003 - 2005 Lars Kuehne"
+    },
+    {
+      "moduleLicense": "Copyright (C) 2011 by Yehuda Katz"
+    },
+    {
+      "moduleLicense": "Copyright (c) 2002 Douglas Crockford"
+    },
+    {
+      "moduleLicense": "Copyright (c) 2004 Kohsuke Kawaguchi"
+    },
+    {
+      "moduleLicense": "Copyright (c) 2012 Yehuda Katz, Tom Dale, Charles Jolley and Ember.js contributors"
+    },
+    {
+      "moduleLicense": "Copyright 2002 (C) The Codehaus"
+    },
+    {
+      "moduleLicense": "Copyright 2003 (C) James Strachan and Bob Mcwhirter"
+    },
+    {
+      "moduleLicense": "Copyright 2012 Anton Kovalyov"
+    },
+    {
+      "moduleLicense": "Creative Commons (Attribution) Public Licenses"
+    },
+    {
+      "moduleLicense": "Creative Commons CC0 License"
+    },
+    {
+      "moduleLicense": "Creative Commons Legal Code"
+    },
+    {
+      "moduleLicense": "DOM4J License"
+    },
+    {
+      "moduleLicense": "Eclipse Distribution License - v 1.0"
+    },
+    {
+      "moduleLicense": "Eclipse Public License - v 2.0"
+    },
+    {
+      "moduleLicense": "GNU General Public License"
+    },
+    {
+      "moduleLicense": "GNU General Public License, Version 2"
+    },
+    {
+      "moduleLicense": "GNU General Public License, Version 2, with the Classpath Exception"
+    },
+    {
+      "moduleLicense": "GNU General Public License, Version 3"
+    },
+    {
+      "moduleLicense": "GNU LESSER GENERAL PUBLIC LICENSE, Version 2.1"
+    },
+    {
+      "moduleLicense": "GNU LESSER GENERAL PUBLIC LICENSE, Version 3"
+    },
+    {
+      "moduleLicense": "GNU Lesser General Public License, Version 2.1"
+    },
+    {
+      "moduleLicense": "GNU Lesser General Public License, Version 3"
+    },
+    {
+      "moduleLicense": "GNU Lesser General Public License, Version 3.0"
+    },
+    {
+      "moduleLicense": "GWT Terms (Apache 2.0)"
+    },
+    {
+      "moduleLicense": "Google App Engine Terms of Service"
+    },
+    {
+      "moduleLicense": "H2 License"
+    },
+    {
+      "moduleLicense": "HSQL License"
+    },
+    {
+      "moduleLicense": "Indiana University Extreme! Lab Software License, Version 1.1"
+    },
+    {
+      "moduleLicense": "Indiana University Extreme! Lab Software License, Version 1.1.1"
+    },
+    {
+      "moduleLicense": "Indiana University Extreme! Lab Software License, Version 1.2"
+    },
+    {
+      "moduleLicense": "Intalio Inc. License"
+    },
+    {
+      "moduleLicense": "Internet Software Consortium"
+    },
+    {
+      "moduleLicense": "ISC License"
+    },
+    {
+      "moduleLicense": "JDOM 2 License"
+    },
+    {
+      "moduleLicense": "JDOM License"
+    },
+    {
+      "moduleLicense": "JRegEx License"
+    },
+    {
+      "moduleLicense": "JSON License"
+    },
+    {
+      "moduleLicense": "JTA Spec License"
+    },
+    {
+      "moduleLicense": "Java Community Process (JCP)"
+    },
+    {
+      "moduleLicense": "Java HTML Tidy License"
+    },
+    {
+      "moduleLicense": "MIT netCDF C library license"
+    },
+    {
+      "moduleLicense": "MX4J License"
+    },
+    {
+      "moduleLicense": "Mozilla Public License Version 1.1"
+    },
+    {
+      "moduleLicense": "Public Domain"
+    },
+    {
+      "moduleLicense": "PUBLIC DOMAIN"
+    },
+    {
+      "moduleLicense": "SIL Open Font License"
+    },
+    {
+      "moduleLicense": "Similar to Apache License, Version 2.0"
+    },
+    {
+      "moduleLicense": "The BSD License"
+    },
+    {
+      "moduleLicense": "The BSD-2-Clause License"
+    },
+    {
+      "moduleLicense": "The BSD-3-Clause / MIT License"
+    },
+    {
+      "moduleLicense": "The BSD-3-Clause License"
+    },
+    {
+      "moduleLicense": "The BSD-3-Clause with Nuclear Disclaimer"
+    },
+    {
+      "moduleLicense": "The Eclipse Public License (EPL), Version 1.0"
+    },
+    {
+      "moduleLicense": "The Eclipse Public License (EPL), Version 2.0"
+    },
+    {
+      "moduleLicense": "MIT-0"
+    },
+    {
+      "moduleLicense": "The MIT License"
+    },
+    {
+      "moduleLicense": "The MIT and the JSON License"
+    },
+    {
+      "moduleLicense": "The MIT and the SIL Open Font License"
+    },
+    {
+      "moduleLicense": "The MIT and the X11 License"
+    },
+    {
+      "moduleLicense": "The PostgreSQL License"
+    },
+    {
+      "moduleLicense": "The SAX License"
+    },
+    {
+      "moduleLicense": "The Werken Company"
+    },
+    {
+      "moduleLicense": "W3C Software License"
+    },
+    {
+      "moduleLicense": "WTFPL - Do What the Fuck You Want to Public License"
+    },
+    {
+      "moduleLicense": "Yecht License"
+    },
+    {
+      "moduleLicense": "ZLiB/LibPNG License"
+    },
+    {
+      "moduleName": "com.michael-bull.kotlin-result:.*"
+    },
+    {
+      "moduleName": "com.fasterxml.jackson.*"
+    },
+    {
+      "moduleName": "com.sun.xml.ws.*"
+    },
+    {
+      "moduleName": "io.github.microutils:.*"
+    },
+    {
+      "moduleName": "io.ktor:.*"
+    },
+    {
+      "moduleName": "io.netty:.*"
+    },
+    {
+      "moduleName": "net.jcip.*"
+    },
+    {
+      "moduleName": "org.antlr:.*"
+    },
+    {
+      "moduleName": "org.apache.commons.*"
+    },
+    {
+      "moduleName": "org.xhtmlrenderer.*"
+    },
+    {
+      "moduleName": "org.jetbrains.kotlinx.*"
+    },
+    {
+      "moduleName": "org.springframework.*"
+    },
+    {
+      "moduleName": "org.jobrunr.*"
+    },
+    {
+      "moduleName": "org.junit.*"
+    },
+    {
+      "moduleName": "org.openapitools:.*"
+    },
+    {
+      "moduleName": "com.github.scribejava:.*"
+    },
+    {
+      "moduleName": "com.squareup.okio:.*"
+    },
+    {
+      "moduleName": "io.opentelemetry:.*"
+    },
+    {
+      "moduleName": "org.jetbrains.kotlin:.*"
+    },
+    {
+      "moduleName": "com.oracle.database.jdbc:.*"
+    },
+    {
+      "moduleName": "org.mariadb.jdbc:mariadb-java-client"
+    },
+    {
+      "moduleName": "com.h2database:.*"
+    },
+    {
+      "moduleName": "org.liquibase:.*"
+    }
+  ]
+}
