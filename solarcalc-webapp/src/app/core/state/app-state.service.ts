@@ -1,16 +1,12 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
+import { AuthService } from '@/core/auth/auth.service';
 
 @Injectable({ providedIn: 'root' })
 export class AppStateService {
-  readonly tenantId = signal<number | null>(this.loadNum('tenantId'));
-  readonly profileId = signal<number | null>(this.loadNum('profileId'));
+  private readonly auth = inject(AuthService);
 
-  setTenant(id: number | null): void {
-    this.tenantId.set(id);
-    this.profileId.set(null);
-    this.persist('tenantId', id);
-    localStorage.removeItem('profileId');
-  }
+  readonly tenantId = this.auth.tenantId;
+  readonly profileId = signal<number | null>(this.loadNum('profileId'));
 
   setProfile(id: number | null): void {
     this.profileId.set(id);

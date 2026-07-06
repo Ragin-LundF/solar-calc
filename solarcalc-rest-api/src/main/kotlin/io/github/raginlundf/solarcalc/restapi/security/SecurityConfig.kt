@@ -8,6 +8,8 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm
 import org.springframework.security.oauth2.jwt.JwtDecoder
 import org.springframework.security.oauth2.jwt.JwtEncoder
@@ -29,6 +31,7 @@ class SecurityConfig(private val jwtProperties: JwtProperties) {
             .csrf { it.disable() }
             .authorizeHttpRequests { auth ->
                 auth.requestMatchers("/actuator/health", "/actuator/info").permitAll()
+                auth.requestMatchers("/api/auth/**").permitAll()
                 auth.requestMatchers("/api/dev/**").permitAll()
                 auth.requestMatchers("/api/**").authenticated()
                 auth.anyRequest().permitAll()
@@ -37,6 +40,11 @@ class SecurityConfig(private val jwtProperties: JwtProperties) {
                 oauth2.jwt { jwt -> jwt.decoder(jwtDecoder()) }
             }
         return http.build()
+    }
+
+    @Bean
+    fun passwordEncoder(): PasswordEncoder {
+        return BCryptPasswordEncoder()
     }
 
     @Bean
