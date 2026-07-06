@@ -79,7 +79,6 @@ class EnergyCalculationServiceImpl : EnergyCalculationService {
             wallboxAllocatedKwh = wb.allocatedKwh,
             wallboxGridKwh = wb.gridKwh,
             wallboxElectricitySavings = wb.elecSavings,
-            wallboxPetrolSavings = wb.petrolSavings,
             totalElectricitySavings = totalElectricitySavings,
             completeness = CalculationCompleteness(flags = flags),
         )
@@ -213,7 +212,6 @@ class EnergyCalculationServiceImpl : EnergyCalculationService {
         val allocatedKwh: BigDecimal?,
         val gridKwh: BigDecimal?,
         val elecSavings: BigDecimal?,
-        val petrolSavings: BigDecimal?,
     )
 
     private fun computeWallbox(
@@ -228,42 +226,16 @@ class EnergyCalculationServiceImpl : EnergyCalculationService {
                 allocatedKwh = null,
                 gridKwh = null,
                 elecSavings = null,
-                petrolSavings = null,
             )
         }
         val wb = allocated[AllocationCategory.WALLBOX]!!
         val wbGrid = gridUsage[AllocationCategory.WALLBOX]!!
         val wbElec = electricityPrice?.let { price -> (wb * price).scale2() }
-        val wbGridCost = electricityPrice?.let { price -> (wbGrid * price).scale2() }
-        val wbPetrol = computeWallboxPetrolSavings(
-            wallboxDemandKwh = wallboxDemand,
-            wallboxGridCost = wbGridCost,
-            petrolPrice = input.petrolPrice,
-            evEfficiency = input.evEfficiencyKwh100km,
-            iceEfficiency = input.iceEfficiencyL100km,
-        )
         return WallboxResult(
             allocatedKwh = wb,
             gridKwh = wbGrid,
             elecSavings = wbElec,
-            petrolSavings = wbPetrol,
         )
-    }
-
-    private fun computeWallboxPetrolSavings(
-        wallboxDemandKwh: BigDecimal,
-        wallboxGridCost: BigDecimal?,
-        petrolPrice: BigDecimal?,
-        evEfficiency: BigDecimal?,
-        iceEfficiency: BigDecimal?,
-    ): BigDecimal? {
-        if (petrolPrice == null || evEfficiency == null) return null
-        if (iceEfficiency == null || wallboxGridCost == null) return null
-        if (evEfficiency <= BigDecimal.ZERO) return null
-        val estimatedKm = wallboxDemandKwh.divide(evEfficiency, 6, RoundingMode.HALF_UP) * BigDecimal("100")
-        val equivalentPetrolLitres = estimatedKm.divide(BigDecimal("100"), 6, RoundingMode.HALF_UP) * iceEfficiency
-        val equivalentPetrolCost = (equivalentPetrolLitres * petrolPrice).scale2()
-        return (equivalentPetrolCost - wallboxGridCost).scale2()
     }
 
     private fun BigDecimal.scale2(): BigDecimal {

@@ -11,13 +11,27 @@
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false" />
             </column>
-            <column name="tenant_id" type="BIGINT">
-                <constraints nullable="false" foreignKeyName="fk_energy_profile_tenant"
-                             references="tenant(id)" />
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_energy_profile_user"
+                             references="solarcalc_user(id)" />
             </column>
             <column name="name" type="VARCHAR(255)">
                 <constraints nullable="false" />
             </column>
+            <column name="has_wallbox" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false" />
+            </column>
+            <column name="has_heat_pump" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false" />
+            </column>
+            <column name="heating_reference_type" type="VARCHAR(10)" defaultValue="NONE">
+                <constraints nullable="false" />
+            </column>
+            <column name="default_electricity_price" type="DECIMAL(12,6)" />
+            <column name="default_feed_in_tariff" type="DECIMAL(12,6)" />
+            <column name="default_petrol_price" type="DECIMAL(12,6)" />
+            <column name="default_oil_reference_cost" type="DECIMAL(12,2)" />
+            <column name="default_gas_reference_cost" type="DECIMAL(12,2)" />
             <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
                 <constraints nullable="false" />
             </column>
@@ -26,8 +40,8 @@
             </column>
         </createTable>
 
-        <createIndex tableName="energy_profile" indexName="idx_energy_profile_tenant_id">
-            <column name="tenant_id" />
+        <createIndex tableName="energy_profile" indexName="idx_energy_profile_user_id">
+            <column name="user_id" />
         </createIndex>
     </changeSet>
 

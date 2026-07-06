@@ -1,8 +1,6 @@
 package io.github.raginlundf.solarcalc.restapi.security
 
 object SolarcalcScopes {
-    const val TENANTS_READ = "io.github.raginlundf.solarcalc.tenants.read"
-    const val TENANTS_WRITE = "io.github.raginlundf.solarcalc.tenants.write"
     const val PROFILES_READ = "io.github.raginlundf.solarcalc.profiles.read"
     const val PROFILES_WRITE = "io.github.raginlundf.solarcalc.profiles.write"
     const val INPUTS_READ = "io.github.raginlundf.solarcalc.inputs.read"
@@ -14,8 +12,6 @@ object SolarcalcScopes {
     const val CALCULATIONS_READ = "io.github.raginlundf.solarcalc.calculations.read"
 
     // Spring Security prefixes JWT scope claims with "SCOPE_" when converting to GrantedAuthority
-    const val SCOPE_TENANTS_READ = "SCOPE_$TENANTS_READ"
-    const val SCOPE_TENANTS_WRITE = "SCOPE_$TENANTS_WRITE"
     const val SCOPE_PROFILES_READ = "SCOPE_$PROFILES_READ"
     const val SCOPE_PROFILES_WRITE = "SCOPE_$PROFILES_WRITE"
     const val SCOPE_INPUTS_READ = "SCOPE_$INPUTS_READ"

@@ -1,8 +1,9 @@
 package io.github.raginlundf.solarcalc.restapi.profile
 
-import io.github.raginlundf.solarcalc.domain.models.profile.EnergyProfile
-import io.github.raginlundf.solarcalc.domain.models.repository.EnergyProfileRepository
-import io.github.raginlundf.solarcalc.restapi.error.ResourceNotFoundException
+import io.github.raginlundf.solarcalc.domain.services.profile.ProfileDomainController
+import io.github.raginlundf.solarcalc.dtos.profile.CreateEnergyProfileRequest
+import io.github.raginlundf.solarcalc.dtos.profile.EnergyProfileResponse
+import io.github.raginlundf.solarcalc.dtos.profile.UpdateEnergyProfileRequest
 import io.github.raginlundf.solarcalc.restapi.security.SolarcalcScopes
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
@@ -16,66 +17,42 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
-import java.time.LocalDateTime
 
 @RestController
-@RequestMapping("/api/profiles")
+@RequestMapping("/api/v1/profiles")
 class EnergyProfileController(
-    private val profileRepository: EnergyProfileRepository,
+    private val profileDomainController: ProfileDomainController,
 ) {
 
     @GetMapping
     @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_PROFILES_READ}')")
     fun list(): List<EnergyProfileResponse> {
-        return profileRepository.findAll().map { it.toResponse() }
+        return profileDomainController.list()
     }
 
     @GetMapping("/{profileId}")
     @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_PROFILES_READ}')")
     fun get(@PathVariable profileId: Long): EnergyProfileResponse {
-        val profile = profileRepository.findById(profileId).orElseThrow {
-            ResourceNotFoundException("Profile $profileId not found")
-        }
-        return profile.toResponse()
+        return profileDomainController.get(profileId = profileId)
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_PROFILES_WRITE}')")
-    fun create(
-        @Valid @RequestBody request: CreateEnergyProfileRequest,
-    ): EnergyProfileResponse {
-        val profile = EnergyProfile().apply {
-            name = request.name
-        }
-        return profileRepository.save(profile).toResponse()
+    fun create(@Valid @RequestBody request: CreateEnergyProfileRequest): EnergyProfileResponse {
+        return profileDomainController.create(request = request)
     }
 
     @PutMapping("/{profileId}")
     @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_PROFILES_WRITE}')")
-    fun update(
-        @PathVariable profileId: Long,
-        @Valid @RequestBody request: UpdateEnergyProfileRequest,
-    ): EnergyProfileResponse {
-        val profile = profileRepository.findById(profileId).orElseThrow {
-            ResourceNotFoundException("Profile $profileId not found")
-        }
-        profile.name = request.name
-        profile.updatedAt = LocalDateTime.now()
-        return profileRepository.save(profile).toResponse()
+    fun update(@PathVariable profileId: Long, @Valid @RequestBody request: UpdateEnergyProfileRequest): EnergyProfileResponse {
+        return profileDomainController.update(profileId = profileId, request = request)
     }
 
     @DeleteMapping("/{profileId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_PROFILES_WRITE}')")
     fun delete(@PathVariable profileId: Long) {
-        val profile = profileRepository.findById(profileId).orElseThrow {
-            ResourceNotFoundException("Profile $profileId not found")
-        }
-        profileRepository.delete(profile)
+        profileDomainController.delete(profileId = profileId)
     }
-}
-
-private fun EnergyProfile.toResponse(): EnergyProfileResponse {
-    return EnergyProfileResponse(id = id!!, name = name)
 }

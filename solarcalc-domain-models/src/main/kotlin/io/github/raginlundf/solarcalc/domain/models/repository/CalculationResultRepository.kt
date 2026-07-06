@@ -8,7 +8,7 @@ interface CalculationResultRepository :
     JpaRepository<CalculationResult, Long>,
     QuerydslPredicateExecutor<CalculationResult> {
 
-    fun findAllByCalculationRunIdAndTenantId(calculationRunId: Long, tenantId: Long): List<CalculationResult>
+    fun findAllByCalculationRunId(calculationRunId: Long): List<CalculationResult>
 
-    fun findByCalculationRunIdAndTenantId(calculationRunId: Long, tenantId: Long): CalculationResult?
+    fun findByCalculationRunId(calculationRunId: Long): CalculationResult?
 }

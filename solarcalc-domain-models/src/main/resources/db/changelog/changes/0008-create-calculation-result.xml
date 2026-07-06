@@ -15,10 +15,6 @@
                 <constraints nullable="false" foreignKeyName="fk_calculation_result_run"
                              references="calculation_run(id)" />
             </column>
-            <column name="tenant_id" type="BIGINT">
-                <constraints nullable="false" foreignKeyName="fk_calculation_result_tenant"
-                             references="tenant(id)" />
-            </column>
             <column name="feed_in_kwh" type="DECIMAL(12,3)">
                 <constraints nullable="false" />
             </column>
@@ -54,9 +50,7 @@
         <createIndex tableName="calculation_result" indexName="idx_calculation_result_run_id">
             <column name="calculation_run_id" />
         </createIndex>
-        <createIndex tableName="calculation_result" indexName="idx_calculation_result_tenant_id">
-            <column name="tenant_id" />
-        </createIndex>
+
     </changeSet>
 
 </databaseChangeLog>

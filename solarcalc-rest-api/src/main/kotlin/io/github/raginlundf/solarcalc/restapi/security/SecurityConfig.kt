@@ -31,8 +31,8 @@ class SecurityConfig(private val jwtProperties: JwtProperties) {
             .csrf { it.disable() }
             .authorizeHttpRequests { auth ->
                 auth.requestMatchers("/actuator/health", "/actuator/info").permitAll()
-                auth.requestMatchers("/api/auth/**").permitAll()
-                auth.requestMatchers("/api/dev/**").permitAll()
+                auth.requestMatchers("/api/v1/auth/**").permitAll()
+                auth.requestMatchers("/api/v1/dev/**").permitAll()
                 auth.requestMatchers("/api/**").authenticated()
                 auth.anyRequest().permitAll()
             }

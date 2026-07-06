@@ -11,10 +11,6 @@
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false" />
             </column>
-            <column name="tenant_id" type="BIGINT">
-                <constraints nullable="false" foreignKeyName="fk_monthly_input_tenant"
-                             references="tenant(id)" />
-            </column>
             <column name="energy_profile_id" type="BIGINT">
                 <constraints nullable="false" foreignKeyName="fk_monthly_input_profile"
                              references="energy_profile(id)" />
@@ -35,8 +31,6 @@
             <column name="electricity_price_override" type="DECIMAL(12,6)" />
             <column name="feed_in_tariff_override" type="DECIMAL(12,6)" />
             <column name="petrol_price_override" type="DECIMAL(12,6)" />
-            <column name="ev_efficiency_override_kwh_100km" type="DECIMAL(8,2)" />
-            <column name="ice_efficiency_override_l_100km" type="DECIMAL(8,2)" />
             <column name="heating_reference_cost_override" type="DECIMAL(12,2)" />
             <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
                 <constraints nullable="false" />
@@ -48,11 +42,10 @@
 
         <addUniqueConstraint
                 tableName="monthly_energy_input"
-                columnNames="tenant_id, energy_profile_id, period"
-                constraintName="uq_monthly_input_tenant_profile_period" />
+                columnNames="energy_profile_id, period"
+                constraintName="uq_monthly_input_profile_period" />
 
-        <createIndex tableName="monthly_energy_input" indexName="idx_monthly_input_tenant_profile">
-            <column name="tenant_id" />
+        <createIndex tableName="monthly_energy_input" indexName="idx_monthly_input_profile">
             <column name="energy_profile_id" />
         </createIndex>
     </changeSet>

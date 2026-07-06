@@ -39,15 +39,14 @@ export class DashboardComponent {
   period = '';
 
   calculate(): void {
-    const tid = this.state.tenantId();
     const pid = this.state.profileId();
-    if (!tid || !pid || !this.period) return;
+    if (!pid || !this.period) return;
 
     this.loading.set(true);
     this.result.set(null);
     this.error.set(null);
 
-    this.api.get<CalculationResultDto>(`/tenants/${tid}/profiles/${pid}/calculations/${this.period}`).subscribe({
+    this.api.get<CalculationResultDto>(`/profiles/${pid}/calculations/${this.period}`).subscribe({
       next: r => { this.result.set(r); this.loading.set(false); },
       error: () => { this.error.set('common.error'); this.loading.set(false); },
     });

@@ -3,11 +3,15 @@ package io.github.raginlundf.solarcalc.domain.models.user
 import io.github.raginlundf.extensions.kotlinEquals
 import io.github.raginlundf.extensions.kotlinHashCode
 import io.github.raginlundf.extensions.kotlinToString
+import io.github.raginlundf.solarcalc.domain.models.profile.EnergyProfile
+import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
+import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
+import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 import java.time.LocalDateTime
 
@@ -25,8 +29,8 @@ class User {
     @Column(name = "password_hash", nullable = false, length = 255)
     var passwordHash: String = ""
 
-    @Column(name = "tenant_id", nullable = false)
-    var tenantId: Long = 0
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
+    var profiles: MutableList<EnergyProfile> = mutableListOf()
 
     @Column(name = "created_at", nullable = false)
     var createdAt: LocalDateTime = LocalDateTime.now()

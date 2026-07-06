@@ -4,11 +4,12 @@ import io.github.raginlundf.solarcalc.domain.models.allocation.AllocationCategor
 import io.github.raginlundf.solarcalc.domain.models.allocation.AllocationPolicy
 import io.github.raginlundf.solarcalc.domain.models.input.MonthlyEnergyInput
 import io.github.raginlundf.solarcalc.domain.models.profile.EnergyProfile
+import io.github.raginlundf.solarcalc.domain.models.profile.HeatingReferenceType
 import io.github.raginlundf.solarcalc.domain.models.repository.AllocationPolicyRepository
 import io.github.raginlundf.solarcalc.domain.models.repository.EnergyProfileRepository
 import io.github.raginlundf.solarcalc.domain.models.repository.MonthlyEnergyInputRepository
-import io.github.raginlundf.solarcalc.domain.models.repository.TenantRepository
-import io.github.raginlundf.solarcalc.domain.models.tenant.Tenant
+import io.github.raginlundf.solarcalc.domain.models.repository.UserRepository
+import io.github.raginlundf.solarcalc.domain.models.user.User
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
@@ -51,43 +52,39 @@ class RepositoryIntegrationTest {
         }
     }
 
-    @Autowired lateinit var tenantRepository: TenantRepository
+    @Autowired lateinit var userRepository: UserRepository
     @Autowired lateinit var profileRepository: EnergyProfileRepository
     @Autowired lateinit var inputRepository: MonthlyEnergyInputRepository
     @Autowired lateinit var policyRepository: AllocationPolicyRepository
 
     @Test
-    fun `tenant can be persisted and retrieved`() {
-        val tenant = Tenant().apply {
-            name = "Test Tenant"
-            hasWallbox = true
-            hasHeatPump = false
+    fun `user can be persisted and retrieved`() {
+        val user = User().apply {
+            username = "test-user"
         }
 
-        val saved = tenantRepository.save(tenant)
-        val found = tenantRepository.findById(saved.id!!).orElseThrow()
+        val saved = userRepository.save(user)
+        val found = userRepository.findById(saved.id!!).orElseThrow()
 
-        assertEquals(expected = "Test Tenant", actual = found.name)
-        assertEquals(expected = true, actual = found.hasWallbox)
+        assertEquals(expected = "test-user", actual = found.username)
     }
 
     @Test
-    fun `monthly input is unique by tenant, profile, period`() {
-        val tenant = tenantRepository.save(Tenant().apply { name = "Tenant" })
+    fun `monthly input is unique by profile and period`() {
+        val user = userRepository.save(User().apply { username = "user" })
         val profile = profileRepository.save(EnergyProfile().apply {
             name = "Profile"
+            this.user = user
         })
 
         inputRepository.save(MonthlyEnergyInput().apply {
-            this.tenant = tenant
             energyProfile = profile
             period = "2024-06"
             consumptionKwh = BigDecimal("500")
             generationKwh = BigDecimal("300")
         })
 
-        val found = inputRepository.findByTenantIdAndEnergyProfileIdAndPeriod(
-            tenantId = tenant.id!!,
+        val found = inputRepository.findByEnergyProfileIdAndPeriod(
             energyProfileId = profile.id!!,
             period = "2024-06",
         )
@@ -97,31 +94,35 @@ class RepositoryIntegrationTest {
     }
 
     @Test
-    fun `cross-tenant input lookup returns null`() {
-        val tenantA = tenantRepository.save(Tenant().apply { name = "A" })
-        val tenantB = tenantRepository.save(Tenant().apply { name = "B" })
-        val profile = profileRepository.save(EnergyProfile().apply {
-            name = "Profile"
-        })
+    fun `cross-profile input lookup returns null`() {
+        val user = userRepository.save(User().apply { username = "u" })
+        val profileA = profileRepository.save(EnergyProfile().apply { name = "A"; this.user = user })
+        val profileB = profileRepository.save(EnergyProfile().apply { name = "B"; this.user = user })
         val input = inputRepository.save(MonthlyEnergyInput().apply {
-            this.tenant = tenantA
-            energyProfile = profile
+            energyProfile = profileA
             period = "2024-07"
             consumptionKwh = BigDecimal("400")
             generationKwh = BigDecimal("200")
         })
 
-        val result = inputRepository.findByIdAndTenantId(id = input.id!!, tenantId = tenantB.id!!)
+        val result = inputRepository.findByEnergyProfileIdAndPeriod(
+            energyProfileId = profileB.id!!,
+            period = "2024-07"
+        )
         assertNull(result)
     }
 
     @Test
     fun `allocation policy priority order round-trips through converter`() {
-        val tenant = tenantRepository.save(Tenant().apply { name = "T"; hasWallbox = true; hasHeatPump = true })
-        val profile = profileRepository.save(EnergyProfile().apply { name = "P" })
+        val user = userRepository.save(User().apply { username = "u" })
+        val profile = profileRepository.save(EnergyProfile().apply {
+            name = "P"
+            this.user = user
+            hasWallbox = true
+            hasHeatPump = true
+        })
 
         policyRepository.save(AllocationPolicy().apply {
-            this.tenant = tenant
             energyProfile = profile
             name = "Wallbox first"
             priorityOrder = listOf(
@@ -132,8 +133,7 @@ class RepositoryIntegrationTest {
             isDefault = true
         })
 
-        val found = policyRepository.findByTenantIdAndEnergyProfileIdAndIsDefaultTrue(
-            tenantId = tenant.id!!,
+        val found = policyRepository.findByEnergyProfileIdAndIsDefaultTrue(
             energyProfileId = profile.id!!
         )
         assertNotNull(actual = found)

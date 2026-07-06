@@ -1,5 +1,7 @@
 package io.github.raginlundf.solarcalc.restapi.error
 
+import io.github.raginlundf.solarcalc.dtos.error.ApiError
+import io.github.raginlundf.solarcalc.dtos.error.ResourceNotFoundException
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -37,12 +39,6 @@ class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error)
     }
 
-    @ExceptionHandler(TenantAccessDeniedException::class)
-    fun handleTenantAccess(ex: TenantAccessDeniedException): ResponseEntity<ApiError> {
-        val error = ApiError(code = "TENANT_ACCESS_DENIED", message = ex.message ?: "Access denied")
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error)
-    }
-
     @ExceptionHandler(Exception::class)
     fun handleUnexpected(ex: Exception): ResponseEntity<ApiError> {
         log.error("Unexpected error", ex)
@@ -50,3 +46,4 @@ class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error)
     }
 }
+

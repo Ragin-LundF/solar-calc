@@ -4,7 +4,6 @@ import io.github.raginlundf.extensions.kotlinEquals
 import io.github.raginlundf.extensions.kotlinHashCode
 import io.github.raginlundf.extensions.kotlinToString
 import io.github.raginlundf.solarcalc.domain.models.profile.EnergyProfile
-import io.github.raginlundf.solarcalc.domain.models.tenant.Tenant
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
@@ -24,13 +23,6 @@ class MonthlyEnergyInput {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "tenant_id", nullable = false)
-    var tenant: Tenant? = null
-
-    @Column(name = "tenant_id", insertable = false, updatable = false)
-    var tenantId: Long? = null
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "energy_profile_id", nullable = false)
@@ -71,12 +63,6 @@ class MonthlyEnergyInput {
     @Column(name = "petrol_price_override", precision = 12, scale = 6)
     var petrolPriceOverride: BigDecimal? = null
 
-    @Column(name = "ev_efficiency_override_kwh_100km", precision = 8, scale = 2)
-    var evEfficiencyOverrideKwh100km: BigDecimal? = null
-
-    @Column(name = "ice_efficiency_override_l_100km", precision = 8, scale = 2)
-    var iceEfficiencyOverrideL100km: BigDecimal? = null
-
     @Column(name = "heating_reference_cost_override", precision = 12, scale = 2)
     var heatingReferenceCostOverride: BigDecimal? = null
 
@@ -95,6 +81,6 @@ class MonthlyEnergyInput {
     }
 
     override fun toString(): String {
-        return kotlinToString(arrayOf(MonthlyEnergyInput::id, MonthlyEnergyInput::tenantId, MonthlyEnergyInput::period))
+        return kotlinToString(arrayOf(MonthlyEnergyInput::id, MonthlyEnergyInput::period))
     }
 }

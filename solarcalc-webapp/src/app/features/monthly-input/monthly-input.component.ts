@@ -11,7 +11,6 @@ import { ZardCardComponent } from '@/shared/components/card';
 interface MonthlyInputDto {
   id?: number;
   period: string;
-  consumptionKwh: number;
   generationKwh: number;
   feedInKwh: number;
   householdConsumptionKwh?: number;
@@ -30,7 +29,6 @@ export class MonthlyInputComponent implements OnInit {
   private readonly state = inject(AppStateService);
   private readonly fb = inject(FormBuilder);
 
-  readonly tenantId = this.state.tenantId;
   readonly profileId = this.state.profileId;
   readonly saving = signal(false);
   readonly saved = signal(false);
@@ -42,7 +40,6 @@ export class MonthlyInputComponent implements OnInit {
 
   readonly form = this.fb.group({
     period: ['', [Validators.required, Validators.pattern(this.periodPattern)]],
-    consumptionKwh: [null as number | null, [Validators.required, Validators.min(0)]],
     generationKwh: [null as number | null, [Validators.required, Validators.min(0)]],
     feedInKwh: [null as number | null, [Validators.required, Validators.min(0)]],
     householdConsumptionKwh: [null as number | null, Validators.min(0)],
@@ -51,13 +48,12 @@ export class MonthlyInputComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    const tid = this.tenantId();
     const pid = this.profileId();
-    if (tid && pid) this.loadInputs(tid, pid);
+    if (pid) this.loadInputs(pid);
   }
 
-  private loadInputs(tenantId: number, profileId: number): void {
-    this.api.get<MonthlyInputDto[]>(`/tenants/${tenantId}/profiles/${profileId}/monthly-inputs`).subscribe({
+  private loadInputs(profileId: number): void {
+    this.api.get<MonthlyInputDto[]>(`/profiles/${profileId}/monthly-inputs`).subscribe({
       next: data => this.inputs.set(data),
     });
   }
@@ -78,15 +74,14 @@ export class MonthlyInputComponent implements OnInit {
 
   save(): void {
     if (this.form.invalid) return;
-    const tid = this.tenantId();
     const pid = this.profileId();
-    if (!tid || !pid) return;
+    if (!pid) return;
 
     this.saving.set(true);
     this.error.set(null);
     const body = this.form.getRawValue() as MonthlyInputDto;
 
-    this.api.post<MonthlyInputDto>(`/tenants/${tid}/profiles/${pid}/monthly-inputs`, body).subscribe({
+    this.api.post<MonthlyInputDto>(`/profiles/${pid}/monthly-inputs`, body).subscribe({
       next: saved => {
         this.inputs.update(list => {
           const idx = list.findIndex(x => x.period === saved.period);

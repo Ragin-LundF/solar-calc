@@ -16,8 +16,6 @@ interface PriceSnapshotDto {
   petrolPricePerLiter?: number;
   oilReferenceCostPerMonth?: number;
   gasReferenceCostPerMonth?: number;
-  evEfficiencyKwhPer100Km?: number;
-  iceEfficiencyLiterPer100Km?: number;
 }
 
 @Component({
@@ -31,7 +29,6 @@ export class PricesComponent implements OnInit {
   private readonly state = inject(AppStateService);
   private readonly fb = inject(FormBuilder);
 
-  readonly tenantId = this.state.tenantId;
   readonly profileId = this.state.profileId;
   readonly saving = signal(false);
   readonly saved = signal(false);
@@ -46,15 +43,12 @@ export class PricesComponent implements OnInit {
     petrolPricePerLiter: [null as number | null, Validators.min(0)],
     oilReferenceCostPerMonth: [null as number | null, Validators.min(0)],
     gasReferenceCostPerMonth: [null as number | null, Validators.min(0)],
-    evEfficiencyKwhPer100Km: [null as number | null, Validators.min(0)],
-    iceEfficiencyLiterPer100Km: [null as number | null, Validators.min(0)],
   });
 
   ngOnInit(): void {
-    const tid = this.tenantId();
     const pid = this.profileId();
-    if (tid && pid) {
-      this.api.get<PriceSnapshotDto[]>(`/tenants/${tid}/profiles/${pid}/prices`).subscribe({
+    if (pid) {
+      this.api.get<PriceSnapshotDto[]>(`/profiles/${pid}/prices`).subscribe({
         next: data => this.snapshots.set(data),
       });
     }
@@ -76,17 +70,16 @@ export class PricesComponent implements OnInit {
 
   save(): void {
     if (this.form.invalid) return;
-    const tid = this.tenantId();
     const pid = this.profileId();
-    if (!tid || !pid) return;
+    if (!pid) return;
 
     this.saving.set(true);
     this.error.set(null);
     const body = this.form.getRawValue() as PriceSnapshotDto;
     const sid = this.selectedId();
     const call = sid
-      ? this.api.put<PriceSnapshotDto>(`/tenants/${tid}/profiles/${pid}/prices/${sid}`, body)
-      : this.api.post<PriceSnapshotDto>(`/tenants/${tid}/profiles/${pid}/prices`, body);
+      ? this.api.put<PriceSnapshotDto>(`/profiles/${pid}/prices/${sid}`, body)
+      : this.api.post<PriceSnapshotDto>(`/profiles/${pid}/prices`, body);
 
     call.subscribe({
       next: p => {

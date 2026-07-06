@@ -14,8 +14,6 @@
     "electricityPrice": "0.300000",
     "feedInTariff": "0.080000",
     "petrolPrice": "1.80",
-    "evEfficiencyKwh100km": "20.00",
-    "iceEfficiencyL100km": "7.00",
     "heatingReferenceCost": "90.00",
     "allocationPriority": ["WALLBOX", "HEAT_PUMP", "HOUSEHOLD"]
   },

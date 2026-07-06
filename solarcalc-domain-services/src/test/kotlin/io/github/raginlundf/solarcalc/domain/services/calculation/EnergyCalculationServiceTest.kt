@@ -25,13 +25,10 @@ class EnergyCalculationServiceTest {
         electricityPrice: String? = "0.30",
         feedInTariff: String? = "0.08",
         petrolPrice: String? = null,
-        evEfficiency: String? = null,
-        iceEfficiency: String? = null,
         heatingRefCost: String? = null,
         priority: List<AllocationCategory> = listOf(AllocationCategory.HOUSEHOLD),
     ): CalculationInput {
         return CalculationInput(
-            tenantId = 1L,
             energyProfileId = 1L,
             period = "2024-06",
             hasWallbox = hasWallbox,
@@ -45,8 +42,6 @@ class EnergyCalculationServiceTest {
             electricityPrice = electricityPrice?.let { BigDecimal(it) },
             feedInTariff = feedInTariff?.let { BigDecimal(it) },
             petrolPrice = petrolPrice?.let { BigDecimal(it) },
-            evEfficiencyKwh100km = evEfficiency?.let { BigDecimal(it) },
-            iceEfficiencyL100km = iceEfficiency?.let { BigDecimal(it) },
             heatingReferenceCost = heatingRefCost?.let { BigDecimal(it) },
             allocationPriority = priority,
         )
@@ -194,33 +189,7 @@ class EnergyCalculationServiceTest {
         assertTrue(CompletenessFlag.DERIVED_HOUSEHOLD_CONSUMPTION in result.completeness.flags)
     }
 
-    // 9. Wallbox petrol comparison when all values present
-    @Test
-    fun `wallbox petrol savings are calculated when all values present`() {
-        val result = service.calculate(
-            baseInput(
-                generation = "200",
-                hasWallbox = true,
-                householdKwh = "100",
-                wallboxKwh = "100",
-                electricityPrice = "0.30",
-                petrolPrice = "1.80",
-                evEfficiency = "20",
-                iceEfficiency = "8",
-                priority = listOf(AllocationCategory.WALLBOX, AllocationCategory.HOUSEHOLD),
-            ),
-        )
-
-        assertNotNull(actual = result.wallboxPetrolSavings)
-        // estimatedKm = 100 / 20 * 100 = 500 km
-        // petrolLitres = 500 / 100 * 8 = 40 litres
-        // petrolCost = 40 * 1.80 = 72.00
-        // wallboxGridCost = 0 * 0.30 = 0.00
-        // petrolSavings = 72.00 - 0.00 = 72.00
-        assertEquals(expected = BigDecimal("72.00"), actual = result.wallboxPetrolSavings)
-    }
-
-    // 10. Heating oil comparison calculated when reference cost present
+    // 9. Heating oil comparison calculated when reference cost present
     @Test
     fun `heat pump heating reference savings calculated against oil reference`() {
         val result = service.calculate(
@@ -242,7 +211,7 @@ class EnergyCalculationServiceTest {
         assertEquals(expected = BigDecimal("105.00"), actual = result.heatPumpHeatingReferenceSavings)
     }
 
-    // 11. Heating gas comparison (same logic as oil, reuses reference cost field)
+    // 10. Heating gas comparison (same logic as oil, reuses reference cost field)
     @Test
     fun `heat pump heating reference savings calculated against gas reference`() {
         val result = service.calculate(
@@ -263,28 +232,5 @@ class EnergyCalculationServiceTest {
         assertEquals(expected = BigDecimal("80.00"), actual = result.heatPumpHeatingReferenceSavings)
     }
 
-    // 12. Total view avoids double counting (electricity savings != petrol savings)
-    @Test
-    fun `total electricity savings does not include petrol savings`() {
-        val result = service.calculate(
-            baseInput(
-                generation = "400",
-                hasWallbox = true,
-                householdKwh = "200",
-                wallboxKwh = "100",
-                electricityPrice = "0.30",
-                petrolPrice = "1.80",
-                evEfficiency = "20",
-                iceEfficiency = "8",
-                priority = listOf(AllocationCategory.HOUSEHOLD, AllocationCategory.WALLBOX),
-            ),
-        )
-
-        // totalElectricitySavings should be householdSavings + wallboxElectricitySavings
-        val expectedTotal = (result.householdSavings!! + result.wallboxElectricitySavings!!).setScale(2)
-        assertEquals(expected = expectedTotal, actual = result.totalElectricitySavings)
-
-        // petrolSavings is separate
-        assertNotNull(actual = result.wallboxPetrolSavings)
-    }
 }
+

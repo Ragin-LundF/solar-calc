@@ -6,7 +6,6 @@ import { Router } from '@angular/router';
 export interface AuthResponse {
   token: string;
   username: string;
-  tenantId: number;
   expiresInSeconds: number;
 }
 
@@ -17,7 +16,6 @@ export class AuthService {
 
   readonly token = signal<string | null>(this.load('token'));
   readonly username = signal<string | null>(this.load('username'));
-  readonly tenantId = signal<number | null>(this.loadNum('tenantId'));
 
   get isAuthenticated(): boolean {
     return this.token() !== null;
@@ -25,7 +23,7 @@ export class AuthService {
 
   async login(username: string, password: string): Promise<AuthResponse> {
     const res = await firstValueFrom(
-      this.http.post<AuthResponse>('/api/auth/login', { username, password }),
+      this.http.post<AuthResponse>('/api/v1/auth/login', { username, password }),
     );
     this.setSession(res);
     return res;
@@ -33,7 +31,7 @@ export class AuthService {
 
   async register(username: string, password: string): Promise<AuthResponse> {
     const res = await firstValueFrom(
-      this.http.post<AuthResponse>('/api/auth/register', { username, password }),
+      this.http.post<AuthResponse>('/api/v1/auth/register', { username, password }),
     );
     this.setSession(res);
     return res;
@@ -42,28 +40,19 @@ export class AuthService {
   logout(): void {
     this.token.set(null);
     this.username.set(null);
-    this.tenantId.set(null);
     localStorage.removeItem('token');
     localStorage.removeItem('username');
-    localStorage.removeItem('tenantId');
     this.router.navigate(['/login']);
   }
 
   private setSession(res: AuthResponse): void {
     this.token.set(res.token);
     this.username.set(res.username);
-    this.tenantId.set(res.tenantId);
     localStorage.setItem('token', res.token);
     localStorage.setItem('username', res.username);
-    localStorage.setItem('tenantId', String(res.tenantId));
   }
 
   private load(key: string): string | null {
     return localStorage.getItem(key);
-  }
-
-  private loadNum(key: string): number | null {
-    const v = localStorage.getItem(key);
-    return v ? Number(v) : null;
   }
 }

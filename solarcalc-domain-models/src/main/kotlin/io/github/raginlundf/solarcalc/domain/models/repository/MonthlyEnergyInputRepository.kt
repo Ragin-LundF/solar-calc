@@ -8,13 +8,10 @@ interface MonthlyEnergyInputRepository :
     JpaRepository<MonthlyEnergyInput, Long>,
     QuerydslPredicateExecutor<MonthlyEnergyInput> {
 
-    fun findAllByTenantIdAndEnergyProfileId(tenantId: Long, energyProfileId: Long): List<MonthlyEnergyInput>
+    fun findAllByEnergyProfileId(energyProfileId: Long): List<MonthlyEnergyInput>
 
-    fun findByTenantIdAndEnergyProfileIdAndPeriod(
-        tenantId: Long,
+    fun findByEnergyProfileIdAndPeriod(
         energyProfileId: Long,
         period: String,
     ): MonthlyEnergyInput?
-
-    fun findByIdAndTenantId(id: Long, tenantId: Long): MonthlyEnergyInput?
 }

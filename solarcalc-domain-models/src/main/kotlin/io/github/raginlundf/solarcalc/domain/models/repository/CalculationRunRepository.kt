@@ -6,13 +6,10 @@ import org.springframework.data.querydsl.QuerydslPredicateExecutor
 
 interface CalculationRunRepository : JpaRepository<CalculationRun, Long>, QuerydslPredicateExecutor<CalculationRun> {
 
-    fun findAllByTenantIdAndEnergyProfileIdAndPeriod(
-        tenantId: Long,
+    fun findAllByEnergyProfileIdAndPeriod(
         energyProfileId: Long,
         period: String,
     ): List<CalculationRun>
 
-    fun findAllByTenantIdAndEnergyProfileId(tenantId: Long, energyProfileId: Long): List<CalculationRun>
-
-    fun findByIdAndTenantId(id: Long, tenantId: Long): CalculationRun?
+    fun findAllByEnergyProfileId(energyProfileId: Long): List<CalculationRun>
 }

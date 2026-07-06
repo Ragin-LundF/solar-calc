@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 @Injectable({ providedIn: 'root' })
 export class ApiService {
   private readonly http = inject(HttpClient);
-  private readonly base = '/api';
+  private readonly base = '/api/v1';
 
   get<T>(path: string): Observable<T> {
     return this.http.get<T>(`${this.base}${path}`);

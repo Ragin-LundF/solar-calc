@@ -11,10 +11,6 @@
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false" />
             </column>
-            <column name="tenant_id" type="BIGINT">
-                <constraints nullable="false" foreignKeyName="fk_price_snapshot_tenant"
-                             references="tenant(id)" />
-            </column>
             <column name="energy_profile_id" type="BIGINT">
                 <constraints nullable="false" foreignKeyName="fk_price_snapshot_profile"
                              references="energy_profile(id)" />
@@ -26,8 +22,6 @@
             <column name="petrol_price" type="DECIMAL(12,6)" />
             <column name="oil_reference_cost" type="DECIMAL(12,2)" />
             <column name="gas_reference_cost" type="DECIMAL(12,2)" />
-            <column name="ev_efficiency_kwh_100km" type="DECIMAL(8,2)" />
-            <column name="ice_efficiency_l_100km" type="DECIMAL(8,2)" />
             <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
                 <constraints nullable="false" />
             </column>
@@ -36,8 +30,7 @@
             </column>
         </createTable>
 
-        <createIndex tableName="price_snapshot" indexName="idx_price_snapshot_tenant_profile_period">
-            <column name="tenant_id" />
+        <createIndex tableName="price_snapshot" indexName="idx_price_snapshot_profile_period">
             <column name="energy_profile_id" />
             <column name="period" />
         </createIndex>

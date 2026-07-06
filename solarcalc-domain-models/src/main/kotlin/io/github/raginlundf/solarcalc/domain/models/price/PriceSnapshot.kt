@@ -4,7 +4,6 @@ import io.github.raginlundf.extensions.kotlinEquals
 import io.github.raginlundf.extensions.kotlinHashCode
 import io.github.raginlundf.extensions.kotlinToString
 import io.github.raginlundf.solarcalc.domain.models.profile.EnergyProfile
-import io.github.raginlundf.solarcalc.domain.models.tenant.Tenant
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
@@ -26,20 +25,13 @@ class PriceSnapshot {
     var id: Long? = null
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "tenant_id", nullable = false)
-    var tenant: Tenant? = null
-
-    @Column(name = "tenant_id", insertable = false, updatable = false)
-    var tenantId: Long? = null
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "energy_profile_id", nullable = false)
     var energyProfile: EnergyProfile? = null
 
     @Column(name = "energy_profile_id", insertable = false, updatable = false)
     var energyProfileId: Long? = null
 
-    /** null = tenant/profile default; non-null = monthly override (format: YYYY-MM) */
+    /** null = profile default; non-null = monthly override (format: YYYY-MM) */
     @Column(length = 7)
     var period: String? = null
 
@@ -58,12 +50,6 @@ class PriceSnapshot {
     @Column(name = "gas_reference_cost", precision = 12, scale = 2)
     var gasReferenceCost: BigDecimal? = null
 
-    @Column(name = "ev_efficiency_kwh_100km", precision = 8, scale = 2)
-    var evEfficiencyKwh100km: BigDecimal? = null
-
-    @Column(name = "ice_efficiency_l_100km", precision = 8, scale = 2)
-    var iceEfficiencyL100km: BigDecimal? = null
-
     @Column(name = "created_at", nullable = false)
     var createdAt: LocalDateTime = LocalDateTime.now()
 
@@ -79,6 +65,6 @@ class PriceSnapshot {
     }
 
     override fun toString(): String {
-        return kotlinToString(arrayOf(PriceSnapshot::id, PriceSnapshot::tenantId, PriceSnapshot::period))
+        return kotlinToString(arrayOf(PriceSnapshot::id, PriceSnapshot::period))
     }
 }

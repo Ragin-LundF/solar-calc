@@ -38,9 +38,10 @@
     "noTenantSelected": "Bitte wählen Sie einen Tenant aus",
     "noProfileSelected": "Bitte wählen Sie ein Profil aus",
     "noProfiles": "Keine Profile vorhanden",
-    "noProfileSetup": "Du hast noch kein Profil angelegt.",
-    "noProfileSetupAction": "Profil jetzt anlegen",
+    "noProfileSetup": "Sie haben noch kein Profil eingerichtet.",
+    "noProfileSetupAction": "Profil erstellen",
     "profilePlaceholder": "z.B. Haus",
+    "noData": "Keine Daten vorhanden",
     "loading": "Laden...",
     "darkMode": "Dark Mode",
     "lightMode": "Light Mode",
@@ -67,6 +68,8 @@
   },
   "monthlyInput": {
     "title": "Monatliche Daten",
+    "new": "Neuer Eintrag",
+    "edit": "Eintrag bearbeiten",
     "period": "Periode (YYYY-MM)",
     "consumptionKwh": "Verbrauch (kWh)",
     "generationKwh": "Erzeugung (kWh)",
@@ -77,18 +80,26 @@
   },
   "prices": {
     "title": "Preise",
+    "defaultPrices": "Standardpreise",
     "period": "Periode (optional)",
+    "electricityPrice": "Strompreis (€/kWh)",
+    "feedInTariff": "Einspeisevergütung (€/kWh)",
+    "petrolPrice": "Benzinpreis (€/L)",
+    "oilReferenceCost": "Öl-Referenzkosten (€/Monat)",
+    "gasReferenceCost": "Gas-Referenzkosten (€/Monat)",
     "electricityPricePerKwh": "Strompreis (€/kWh)",
     "feedInTariffPerKwh": "Einspeisevergütung (€/kWh)",
     "petrolPricePerLiter": "Benzinpreis (€/L)",
     "oilReferenceCostPerMonth": "Öl-Referenzkosten (€/Monat)",
-    "gasReferenceCostPerMonth": "Gas-Referenzkosten (€/Monat)",
-    "evEfficiencyKwhPer100Km": "EV-Effizienz (kWh/100km)",
-    "iceEfficiencyLiterPer100Km": "ICE-Effizienz (L/100km)"
+    "gasReferenceCostPerMonth": "Gas-Referenzkosten (€/Monat)"
   },
   "allocation": {
     "title": "Allokationspolitik",
+    "priority": "Reihenfolge festlegen, welcher Verbraucher zuerst Strom erhält",
     "priorityOrder": "Reihenfolge",
+    "HOUSEHOLD": "Haushalt",
+    "HEAT_PUMP": "Wärmepumpe",
+    "WALLBOX": "Wallbox",
     "moveUp": "Nach oben",
     "moveDown": "Nach unten"
   },
@@ -101,6 +112,7 @@
     "unallocatedKwh": "Nicht allokiert"
   },
   "validation": {
-    "feedInExceedsGeneration": "Einspeisung übersteigt Erzeugung"
+    "feedInExceedsGeneration": "Einspeisung übersteigt Erzeugung",
+    "invalidPeriod": "Periode muss im Format YYYY-MM sein"
   }
 }

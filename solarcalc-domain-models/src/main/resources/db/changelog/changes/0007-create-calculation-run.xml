@@ -11,10 +11,6 @@
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false" />
             </column>
-            <column name="tenant_id" type="BIGINT">
-                <constraints nullable="false" foreignKeyName="fk_calculation_run_tenant"
-                             references="tenant(id)" />
-            </column>
             <column name="energy_profile_id" type="BIGINT">
                 <constraints nullable="false" foreignKeyName="fk_calculation_run_profile"
                              references="energy_profile(id)" />
@@ -36,8 +32,7 @@
             </column>
         </createTable>
 
-        <createIndex tableName="calculation_run" indexName="idx_calculation_run_tenant_profile_period">
-            <column name="tenant_id" />
+        <createIndex tableName="calculation_run" indexName="idx_calculation_run_profile_period">
             <column name="energy_profile_id" />
             <column name="period" />
         </createIndex>

@@ -6,7 +6,7 @@ plugins {
 
 dependencies {
     implementation(project(":solarcalc-domain-services"))
-    implementation(project(":solarcalc-domain-models"))
+    implementation(project(":solarcalc-dtos"))
 
     implementation(libs.spring.web)
     implementation(libs.spring.webmvc)
@@ -18,13 +18,12 @@ dependencies {
     implementation(libs.spring.boot.starter.validation)
     implementation(libs.jakarta.servlet.api)
     implementation(libs.kotlinx.serialization.json)
-
-    implementation(libs.bundles.konvert.api)
-    ksp(libs.konvert)
-    ksp(libs.konvert.spring.injector)
+    implementation(libs.logging.slf4j.api)
 
     testImplementation(libs.spring.test)
     testImplementation(libs.spring.boot.starter.test)
     testImplementation(libs.spring.security.test)
     testImplementation(libs.testing.springmockk)
 }
+
+

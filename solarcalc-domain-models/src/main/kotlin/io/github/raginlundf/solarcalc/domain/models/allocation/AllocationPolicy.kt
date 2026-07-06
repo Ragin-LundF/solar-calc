@@ -4,7 +4,6 @@ import io.github.raginlundf.extensions.kotlinEquals
 import io.github.raginlundf.extensions.kotlinHashCode
 import io.github.raginlundf.extensions.kotlinToString
 import io.github.raginlundf.solarcalc.domain.models.profile.EnergyProfile
-import io.github.raginlundf.solarcalc.domain.models.tenant.Tenant
 import jakarta.persistence.Column
 import jakarta.persistence.Convert
 import jakarta.persistence.Entity
@@ -24,13 +23,6 @@ class AllocationPolicy {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "tenant_id", nullable = false)
-    var tenant: Tenant? = null
-
-    @Column(name = "tenant_id", insertable = false, updatable = false)
-    var tenantId: Long? = null
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "energy_profile_id", nullable = false)
@@ -64,6 +56,6 @@ class AllocationPolicy {
     }
 
     override fun toString(): String {
-        return kotlinToString(arrayOf(AllocationPolicy::id, AllocationPolicy::name, AllocationPolicy::tenantId))
+        return kotlinToString(arrayOf(AllocationPolicy::id, AllocationPolicy::name))
     }
 }

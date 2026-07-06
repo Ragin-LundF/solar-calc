@@ -41,6 +41,7 @@
     "noProfileSetup": "You haven't set up a profile yet.",
     "noProfileSetupAction": "Create profile now",
     "profilePlaceholder": "e.g. House",
+    "noData": "No data yet",
     "loading": "Loading...",
     "darkMode": "Dark Mode",
     "lightMode": "Light Mode",
@@ -67,6 +68,8 @@
   },
   "monthlyInput": {
     "title": "Monthly Data",
+    "new": "New Entry",
+    "edit": "Edit Entry",
     "period": "Period (YYYY-MM)",
     "consumptionKwh": "Consumption (kWh)",
     "generationKwh": "Generation (kWh)",
@@ -77,18 +80,26 @@
   },
   "prices": {
     "title": "Prices",
+    "defaultPrices": "Default Prices",
     "period": "Period (optional)",
+    "electricityPrice": "Electricity Price (€/kWh)",
+    "feedInTariff": "Feed-in Tariff (€/kWh)",
+    "petrolPrice": "Petrol Price (€/L)",
+    "oilReferenceCost": "Oil Reference Cost (€/month)",
+    "gasReferenceCost": "Gas Reference Cost (€/month)",
     "electricityPricePerKwh": "Electricity Price (€/kWh)",
     "feedInTariffPerKwh": "Feed-in Tariff (€/kWh)",
     "petrolPricePerLiter": "Petrol Price (€/L)",
     "oilReferenceCostPerMonth": "Oil Reference Cost (€/month)",
-    "gasReferenceCostPerMonth": "Gas Reference Cost (€/month)",
-    "evEfficiencyKwhPer100Km": "EV Efficiency (kWh/100km)",
-    "iceEfficiencyLiterPer100Km": "ICE Efficiency (L/100km)"
+    "gasReferenceCostPerMonth": "Gas Reference Cost (€/month)"
   },
   "allocation": {
     "title": "Allocation Policy",
+    "priority": "Drag to reorder which consumers get electricity first",
     "priorityOrder": "Priority Order",
+    "HOUSEHOLD": "Household",
+    "HEAT_PUMP": "Heat Pump",
+    "WALLBOX": "Wallbox",
     "moveUp": "Move Up",
     "moveDown": "Move Down"
   },
@@ -101,6 +112,7 @@
     "unallocatedKwh": "Unallocated"
   },
   "validation": {
-    "feedInExceedsGeneration": "Feed-in exceeds generation"
+    "feedInExceedsGeneration": "Feed-in exceeds generation",
+    "invalidPeriod": "Period must be in YYYY-MM format"
   }
 }

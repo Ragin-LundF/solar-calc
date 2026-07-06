@@ -3,7 +3,6 @@ package io.github.raginlundf.solarcalc.domain.models.calculation
 import io.github.raginlundf.extensions.kotlinEquals
 import io.github.raginlundf.extensions.kotlinHashCode
 import io.github.raginlundf.extensions.kotlinToString
-import io.github.raginlundf.solarcalc.domain.models.tenant.Tenant
 import jakarta.persistence.Column
 import jakarta.persistence.Convert
 import jakarta.persistence.Entity
@@ -32,13 +31,6 @@ class CalculationResult {
 
     @Column(name = "calculation_run_id", insertable = false, updatable = false)
     var calculationRunId: Long? = null
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "tenant_id", nullable = false)
-    var tenant: Tenant? = null
-
-    @Column(name = "tenant_id", insertable = false, updatable = false)
-    var tenantId: Long? = null
 
     @Column(name = "feed_in_kwh", nullable = false, precision = 12, scale = 3)
     var feedInKwh: BigDecimal = BigDecimal.ZERO
@@ -108,7 +100,6 @@ class CalculationResult {
             properties = arrayOf(
                 CalculationResult::id,
                 CalculationResult::calculationRunId,
-                CalculationResult::tenantId
             )
         )
     }

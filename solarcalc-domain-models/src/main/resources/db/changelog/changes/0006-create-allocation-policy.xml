@@ -11,10 +11,6 @@
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false" />
             </column>
-            <column name="tenant_id" type="BIGINT">
-                <constraints nullable="false" foreignKeyName="fk_allocation_policy_tenant"
-                             references="tenant(id)" />
-            </column>
             <column name="energy_profile_id" type="BIGINT">
                 <constraints nullable="false" foreignKeyName="fk_allocation_policy_profile"
                              references="energy_profile(id)" />
@@ -37,8 +33,7 @@
             </column>
         </createTable>
 
-        <createIndex tableName="allocation_policy" indexName="idx_allocation_policy_tenant_profile">
-            <column name="tenant_id" />
+        <createIndex tableName="allocation_policy" indexName="idx_allocation_policy_profile">
             <column name="energy_profile_id" />
         </createIndex>
     </changeSet>

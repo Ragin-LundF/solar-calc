@@ -1,7 +1,7 @@
 <div class="max-w-2xl space-y-6">
   <h1 class="text-2xl font-semibold">{{ 'navigation.monthlyInput' | translate }}</h1>
 
-  @if (!tenantId() || !profileId()) {
+  @if (!profileId()) {
     <z-card class="p-8 text-center">
       <p class="text-muted-foreground mb-4">{{ 'common.noProfileSetup' | translate }}</p>
       <a routerLink="/profile-settings" z-button>{{ 'common.noProfileSetupAction' | translate }}</a>
@@ -54,10 +54,6 @@
           <div>
             <label class="block text-sm mb-1">{{ 'monthlyInput.feedInKwh' | translate }}</label>
             <input z-input formControlName="feedInKwh" type="text" inputmode="decimal" class="w-full" />
-          </div>
-          <div>
-            <label class="block text-sm mb-1">{{ 'monthlyInput.consumptionKwh' | translate }}</label>
-            <input z-input formControlName="consumptionKwh" type="text" inputmode="decimal" class="w-full" />
           </div>
           <div>
             <label class="block text-sm mb-1">{{ 'monthlyInput.householdConsumptionKwh' | translate }}</label>

@@ -24,7 +24,6 @@ export class AllocationPolicyComponent implements OnInit {
   private readonly api = inject(ApiService);
   private readonly state = inject(AppStateService);
 
-  readonly tenantId = this.state.tenantId;
   readonly profileId = this.state.profileId;
   readonly saving = signal(false);
   readonly saved = signal(false);
@@ -35,11 +34,10 @@ export class AllocationPolicyComponent implements OnInit {
   readonly priorityOrder = signal<AllocationCategory[]>([...this.allCategories]);
 
   ngOnInit(): void {
-    const tid = this.tenantId();
     const pid = this.profileId();
-    if (!tid || !pid) return;
+    if (!pid) return;
 
-    this.api.get<AllocationPolicyDto[]>(`/tenants/${tid}/profiles/${pid}/allocation-policies`).subscribe({
+    this.api.get<AllocationPolicyDto[]>(`/profiles/${pid}/allocation-policies`).subscribe({
       next: policies => {
         const p = policies[0];
         if (p) {
@@ -72,17 +70,16 @@ export class AllocationPolicyComponent implements OnInit {
   }
 
   save(): void {
-    const tid = this.tenantId();
     const pid = this.profileId();
-    if (!tid || !pid) return;
+    if (!pid) return;
 
     this.saving.set(true);
     this.error.set(null);
     const body: AllocationPolicyDto = { priorityOrder: this.priorityOrder() };
     const id = this.policyId();
     const call = id
-      ? this.api.put<AllocationPolicyDto>(`/tenants/${tid}/profiles/${pid}/allocation-policies/${id}`, body)
-      : this.api.post<AllocationPolicyDto>(`/tenants/${tid}/profiles/${pid}/allocation-policies`, body);
+      ? this.api.put<AllocationPolicyDto>(`/profiles/${pid}/allocation-policies/${id}`, body)
+      : this.api.post<AllocationPolicyDto>(`/profiles/${pid}/allocation-policies`, body);
 
     call.subscribe({
       next: p => {

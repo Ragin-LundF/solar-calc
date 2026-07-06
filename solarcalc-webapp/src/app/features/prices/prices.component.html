@@ -1,7 +1,7 @@
 <div class="max-w-2xl space-y-6">
   <h1 class="text-2xl font-semibold">{{ 'navigation.prices' | translate }}</h1>
 
-  @if (!tenantId() || !profileId()) {
+  @if (!profileId()) {
     <z-card class="p-8 text-center">
       <p class="text-muted-foreground mb-4">{{ 'common.noProfileSetup' | translate }}</p>
       <a routerLink="/profile-settings" z-button>{{ 'common.noProfileSetupAction' | translate }}</a>
@@ -57,14 +57,6 @@
           <div>
             <label class="block text-sm mb-1">{{ 'prices.gasReferenceCost' | translate }}</label>
             <input z-input formControlName="gasReferenceCostPerMonth" type="text" inputmode="decimal" class="w-full" />
-          </div>
-          <div>
-            <label class="block text-sm mb-1">{{ 'prices.evEfficiency' | translate }}</label>
-            <input z-input formControlName="evEfficiencyKwhPer100Km" type="text" inputmode="decimal" class="w-full" />
-          </div>
-          <div>
-            <label class="block text-sm mb-1">{{ 'prices.iceEfficiency' | translate }}</label>
-            <input z-input formControlName="iceEfficiencyLiterPer100Km" type="text" inputmode="decimal" class="w-full" />
           </div>
         </div>
 

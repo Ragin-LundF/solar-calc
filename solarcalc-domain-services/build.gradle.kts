@@ -5,10 +5,12 @@ plugins {
 
 dependencies {
     implementation(project(":solarcalc-domain-models"))
+    implementation(project(":solarcalc-dtos"))
 
     implementation(libs.jakarta.validation.api)
     implementation(libs.spring.context)
     implementation(libs.spring.security.core)
+    implementation(libs.spring.security.oauth2.jose)
     implementation(libs.spring.webmvc)
     implementation(libs.spring.data.jpa)
 

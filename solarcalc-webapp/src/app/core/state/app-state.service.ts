@@ -5,7 +5,6 @@ import { AuthService } from '@/core/auth/auth.service';
 export class AppStateService {
   private readonly auth = inject(AuthService);
 
-  readonly tenantId = this.auth.tenantId;
   readonly profileId = signal<number | null>(this.loadNum('profileId'));
 
   setProfile(id: number | null): void {

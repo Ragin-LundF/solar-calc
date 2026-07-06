@@ -17,19 +17,10 @@
             <column name="password_hash" type="VARCHAR(255)">
                 <constraints nullable="false" />
             </column>
-            <column name="tenant_id" type="BIGINT">
-                <constraints nullable="false" />
-            </column>
             <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
                 <constraints nullable="false" />
             </column>
         </createTable>
-        <addForeignKeyConstraint
-                constraintName="fk_user_tenant"
-                baseTableName="solarcalc_user"
-                baseColumnNames="tenant_id"
-                referencedTableName="tenant"
-                referencedColumnNames="id" />
     </changeSet>
 
 </databaseChangeLog>
