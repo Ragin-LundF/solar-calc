@@ -1,0 +1,115 @@
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
+import { AuthService } from '@/core/auth/auth.service';
+
+@Component({
+  selector: 'app-login',
+  imports: [FormsModule, RouterLink, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: `
+    <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-muted p-4">
+      <div class="w-full max-w-sm">
+        <div class="text-center mb-8">
+          <div class="w-16 h-16 rounded-2xl bg-primary flex items-center justify-center text-primary-foreground text-3xl font-bold mx-auto mb-4 shadow-lg shadow-primary/20">☀</div>
+          <h1 class="text-3xl font-bold tracking-tight">SolarCalc</h1>
+          <p class="text-muted-foreground text-sm mt-1">{{ 'dashboard.description' | translate }}</p>
+        </div>
+
+        <div class="bg-card border border-border rounded-2xl p-6 shadow-lg">
+          <form (ngSubmit)="submit()" class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium mb-1.5" for="username">{{ 'auth.username' | translate }}</label>
+              <input
+                id="username"
+                type="text"
+                [(ngModel)]="username"
+                name="username"
+                required
+                minlength="3"
+                autocomplete="username"
+                placeholder=""
+                class="w-full border border-input rounded-xl px-3 py-2.5 text-sm bg-background focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
+                [class.border-destructive]="error()"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1.5" for="password">{{ 'auth.password' | translate }}</label>
+              <input
+                id="password"
+                type="password"
+                [(ngModel)]="password"
+                name="password"
+                required
+                minlength="6"
+                autocomplete="current-password"
+                placeholder=""
+                class="w-full border border-input rounded-xl px-3 py-2.5 text-sm bg-background focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
+                [class.border-destructive]="error()"
+              />
+            </div>
+
+            @if (error()) {
+              <div class="bg-destructive/10 border border-destructive/20 rounded-lg px-4 py-2">
+                <p class="text-destructive text-sm">{{ error() }}</p>
+              </div>
+            }
+
+            <button
+              type="submit"
+              [disabled]="loading()"
+              class="w-full rounded-xl bg-primary text-primary-foreground py-2.5 text-sm font-medium hover:opacity-90 transition-all disabled:opacity-50 shadow-lg shadow-primary/20"
+            >
+              @if (loading()) {
+                <span class="inline-block animate-spin mr-2">⟳</span>
+              }
+              {{ 'auth.login' | translate }}
+            </button>
+          </form>
+
+          <div class="relative my-6">
+            <div class="absolute inset-0 flex items-center"><span class="w-full border-t border-border"></span></div>
+            <div class="relative flex justify-center text-xs"><span class="bg-card px-2 text-muted-foreground">{{ 'auth.noAccount' | translate }}</span></div>
+          </div>
+
+          <a
+            routerLink="/register"
+            class="block w-full text-center rounded-xl border border-border py-2.5 text-sm font-medium hover:bg-accent transition-colors"
+          >
+            {{ 'auth.registerLink' | translate }}
+          </a>
+        </div>
+      </div>
+    </div>
+  `,
+})
+export class LoginComponent implements OnInit {
+  private readonly auth = inject(AuthService);
+  private readonly router = inject(Router);
+
+  readonly loading = signal(false);
+  readonly error = signal<string | null>(null);
+  username = '';
+  password = '';
+
+  ngOnInit(): void {
+    if (this.auth.isAuthenticated) {
+      this.router.navigate(['/dashboard']);
+    }
+  }
+
+  async submit(): Promise<void> {
+    if (!this.username || !this.password) return;
+    this.loading.set(true);
+    this.error.set(null);
+    try {
+      await this.auth.login(this.username, this.password);
+      this.router.navigate(['/dashboard']);
+    } catch {
+      this.error.set('Invalid username or password');
+    } finally {
+      this.loading.set(false);
+    }
+  }
+}
