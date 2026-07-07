@@ -67,12 +67,26 @@ are fully i18n (English-slug keys under `solar.*`, de/en).
 - [x] Preise & Investition card (prices + L/100km + km/kWh + invest cost),
       auto-save on blur
 
-### 9. Cleanup (remaining)
+### 9. Cleanup
 - [x] i18n keys (de/en) for all new copy — English-slug keys under `solar.*`
-- [x] Build green — backend `compileKotlin` + `SummaryServiceImplTest`, frontend `ng build`
-- [ ] Remove obsolete files (old `dashboard`, `monthly-input`, `prices`,
-      `profile-settings`, `allocation-policy` feature components; stale `navigation.*`
-      i18n keys) — currently unrouted but still on disk
+- [x] Build green — backend `compileKotlin` + tests, frontend `ng build`
+- [x] Removed orphaned FE feature components (`dashboard`, `monthly-input`,
+      `prices`, `profile-settings`, `allocation-policy`)
+- [x] Removed the unused calculation-persistence chain end to end:
+      `calculation_run` + `calculation_result` tables (changesets 0007/0008 deleted
+      + de-registered from master), the `CalculationRun`/`CalculationResult` entities +
+      repos, `EnergyCalculationService`, `Calculation*DomainController`,
+      `CalculationController`, calc DTOs, `CompletenessFlag`(+converter), and the
+      calc cleanup in `MonthlyEnergyInputDomainControllerImpl.delete()`
+- [x] Fixed `BigDecimalSerializer` — emits/accepts JSON numbers (was quoted strings)
+- [x] `ProfileStore` self-heals a stale `profileId` (account switch)
+
+**Live DB tables (all used):** `solarcalc_user`, `energy_profile`,
+`monthly_energy_input`, `price_snapshot` (read by `PriceResolver` → `SummaryService`),
+`allocation_policy`.
+
+### 10. Still open
 - [ ] Manual end-to-end pass against a running backend with real data
 - [ ] Backend: run full `./gradlew build` (all module tests) once
-- [ ] Consider default `kmPerKwh` for existing profiles (exposed in Settings for now)
+- [ ] Consider a default `kmPerKwh` for new profiles (exposed in Settings for now)
+- [ ] Prune stale `navigation.*` / old-feature i18n keys from `de.json`/`en.json`
