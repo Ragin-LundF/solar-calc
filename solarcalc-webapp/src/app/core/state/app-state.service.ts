@@ -15,11 +15,23 @@ export class AppStateService {
         this.setProfile(null);
       }
     });
+    effect(() => {
+      if (this.auth.token() && this.profileId() === null) {
+        const lastUuid = this.auth.lastProfileUuid();
+        if (lastUuid) {
+          this.profileId.set(lastUuid);
+          this.persist('profileId', lastUuid);
+        }
+      }
+    });
   }
 
   setProfile(id: string | null): void {
     this.profileId.set(id);
     this.persist('profileId', id);
+    if (this.auth.token()) {
+      this.auth.updateLastProfile(id);
+    }
   }
 
   private loadStr(key: string): string | null {

@@ -35,6 +35,9 @@ class User {
     @Column(name = "setup_step", nullable = false)
     var setupStep: Int = 0
 
+    @Column(name = "last_profile_uuid", length = 36)
+    var lastProfileUuid: String? = null
+
     @Column(name = "created_at", nullable = false)
     var createdAt: LocalDateTime = LocalDateTime.now()
 

@@ -9,6 +9,7 @@ export interface AuthResponse {
   username: string;
   expiresInSeconds: number;
   setupStep: number;
+  lastProfileUuid: string | null;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -19,6 +20,7 @@ export class AuthService {
   readonly token = signal<string | null>(this.load('token'));
   readonly username = signal<string | null>(this.load('username'));
   readonly setupStep = signal<SetupStep>(this.loadNum('setupStep') as SetupStep ?? SetupStep.NOT_STARTED);
+  readonly lastProfileUuid = signal<string | null>(this.load('lastProfileUuid'));
 
   get isAuthenticated(): boolean {
     return this.token() !== null;
@@ -48,13 +50,24 @@ export class AuthService {
     localStorage.setItem('setupStep', String(step));
   }
 
+  async updateLastProfile(profileUuid: string | null): Promise<void> {
+    await firstValueFrom(
+      this.http.put<{ lastProfileUuid: string | null }>('/api/v1/auth/last-profile', { profileUuid }),
+    );
+    this.lastProfileUuid.set(profileUuid);
+    if (profileUuid == null) localStorage.removeItem('lastProfileUuid');
+    else localStorage.setItem('lastProfileUuid', profileUuid);
+  }
+
   logout(): void {
     this.token.set(null);
     this.username.set(null);
     this.setupStep.set(SetupStep.NOT_STARTED);
+    this.lastProfileUuid.set(null);
     localStorage.removeItem('token');
     localStorage.removeItem('username');
     localStorage.removeItem('setupStep');
+    localStorage.removeItem('lastProfileUuid');
     this.router.navigate(['/login']);
   }
 
@@ -62,9 +75,12 @@ export class AuthService {
     this.token.set(res.token);
     this.username.set(res.username);
     this.setupStep.set(res.setupStep as SetupStep);
+    this.lastProfileUuid.set(res.lastProfileUuid);
     localStorage.setItem('token', res.token);
     localStorage.setItem('username', res.username);
     localStorage.setItem('setupStep', String(res.setupStep));
+    if (res.lastProfileUuid == null) localStorage.removeItem('lastProfileUuid');
+    else localStorage.setItem('lastProfileUuid', res.lastProfileUuid);
   }
 
   private load(key: string): string | null {

@@ -5,6 +5,7 @@ import io.github.raginlundf.solarcalc.domain.services.auth.AuthDomainController
 import io.github.raginlundf.solarcalc.dtos.auth.ErrorResponseDto
 import io.github.raginlundf.solarcalc.dtos.auth.LoginRequestDto
 import io.github.raginlundf.solarcalc.dtos.auth.RegisterRequestDto
+import io.github.raginlundf.solarcalc.dtos.auth.UpdateLastProfileRequestDto
 import io.github.raginlundf.solarcalc.dtos.auth.UpdateSetupStepRequestDto
 import io.github.raginlundf.solarcalc.dtos.error.InvalidCredentialsException
 import io.github.raginlundf.solarcalc.dtos.error.UsernameAlreadyExistsException
@@ -44,6 +45,15 @@ class AuthController(
         } catch (e: InvalidCredentialsException) {
             ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ErrorResponseDto(error = e.message!!) as Any)
         }
+    }
+
+    @LogDuration
+    @PutMapping("/last-profile")
+    fun updateLastProfile(@RequestBody request: UpdateLastProfileRequestDto): ResponseEntity<Map<String, String?>> {
+        val username = SecurityContextHolder.getContext().authentication?.name
+            ?: return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
+        authDomainController.updateLastProfile(username = username, request = request)
+        return ResponseEntity.ok(mapOf("lastProfileUuid" to request.profileUuid))
     }
 
     @LogDuration

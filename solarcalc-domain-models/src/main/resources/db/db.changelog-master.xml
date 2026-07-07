@@ -17,5 +17,6 @@
     <include file="changelog/changes/0010-add-profile-uuid.xml" relativeToChangelogFile="true" />
     <include file="changelog/changes/0011-add-user-setup-step.xml" relativeToChangelogFile="true" />
     <include file="changelog/changes/0012-add-monthly-input-uuid.xml" relativeToChangelogFile="true" />
+    <include file="changelog/changes/0013-add-user-last-profile.xml" relativeToChangelogFile="true" />
 
 </databaseChangeLog>

@@ -8,6 +8,7 @@ import io.github.raginlundf.solarcalc.dtos.profile.CreateEnergyProfileRequest
 import io.github.raginlundf.solarcalc.dtos.profile.EnergyProfileResponse
 import io.github.raginlundf.solarcalc.dtos.profile.UpdateEnergyProfileRequest
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 
 @Service
@@ -24,6 +25,7 @@ class ProfileDomainControllerImpl(
         return requireOwnedProfile(profileUuid = profileUuid, username = username).toResponse()
     }
 
+    @Transactional
     override fun create(request: CreateEnergyProfileRequest, username: String): EnergyProfileResponse {
         val user = userRepository.findByUsername(username).orElseThrow {
             ResourceNotFoundException("User $username not found")
@@ -40,7 +42,10 @@ class ProfileDomainControllerImpl(
             defaultOilReferenceCost = request.defaultOilReferenceCost
             defaultGasReferenceCost = request.defaultGasReferenceCost
         }
-        return profileRepository.save(profile).toResponse()
+        val saved = profileRepository.save(profile)
+        user.lastProfileUuid = saved.uuid
+        userRepository.save(user)
+        return saved.toResponse()
     }
 
     override fun update(
@@ -62,9 +67,16 @@ class ProfileDomainControllerImpl(
         return profileRepository.save(profile).toResponse()
     }
 
+    @Transactional
     override fun delete(profileUuid: String, username: String) {
         val profile = requireOwnedProfile(profileUuid = profileUuid, username = username)
         profileRepository.delete(profile)
+        profile.user?.let { user ->
+            if (user.lastProfileUuid == profileUuid) {
+                user.lastProfileUuid = null
+                userRepository.save(user)
+            }
+        }
     }
 
     private fun requireOwnedProfile(profileUuid: String, username: String): EnergyProfile {

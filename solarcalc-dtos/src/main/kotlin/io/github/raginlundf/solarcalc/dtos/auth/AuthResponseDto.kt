@@ -8,4 +8,5 @@ data class AuthResponseDto(
     val username: String,
     val expiresInSeconds: Long,
     val setupStep: Int = 0,
+    val lastProfileUuid: String? = null,
 )

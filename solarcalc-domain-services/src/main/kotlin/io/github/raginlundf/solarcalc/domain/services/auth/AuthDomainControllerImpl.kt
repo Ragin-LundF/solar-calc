@@ -5,6 +5,7 @@ import io.github.raginlundf.solarcalc.domain.models.user.User
 import io.github.raginlundf.solarcalc.dtos.auth.AuthResponseDto
 import io.github.raginlundf.solarcalc.dtos.auth.LoginRequestDto
 import io.github.raginlundf.solarcalc.dtos.auth.RegisterRequestDto
+import io.github.raginlundf.solarcalc.dtos.auth.UpdateLastProfileRequestDto
 import io.github.raginlundf.solarcalc.dtos.auth.UpdateSetupStepRequestDto
 import io.github.raginlundf.solarcalc.dtos.error.InvalidCredentialsException
 import io.github.raginlundf.solarcalc.dtos.error.UsernameAlreadyExistsException
@@ -46,6 +47,14 @@ class AuthDomainControllerImpl(
     }
 
     @Transactional
+    override fun updateLastProfile(username: String, request: UpdateLastProfileRequestDto) {
+        val user = userRepository.findByUsername(username)
+            .orElseThrow { InvalidCredentialsException(message = "User not found") }
+        user.lastProfileUuid = request.profileUuid
+        userRepository.save(user)
+    }
+
+    @Transactional
     override fun updateSetupStep(username: String, request: UpdateSetupStepRequestDto): Int {
         val user = userRepository.findByUsername(username = username)
             .orElseThrow { InvalidCredentialsException(message = "User not found") }
@@ -62,6 +71,7 @@ class AuthDomainControllerImpl(
             username = username,
             expiresInSeconds = issued.expiresInSeconds,
             setupStep = setupStep,
+            lastProfileUuid = lastProfileUuid,
         )
     }
 }
