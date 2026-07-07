@@ -23,9 +23,9 @@ dependencyResolutionManagement {
 rootProject.name = "solar-calc"
 
 include("solarcalc-domain-models")
-include("solarcalc-dtos")
 include("solarcalc-domain-services")
+include("solarcalc-dtos")
 include("solarcalc-kotlin-extensions")
-include("solarcalc-rest-api")
 include("solarcalc-logging")
+include("solarcalc-rest-api")
 include("solarcalc-server")

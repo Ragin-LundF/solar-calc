@@ -6,20 +6,6 @@ import jakarta.validation.constraints.NotEmpty
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class AllocationPolicyResponse(
-    val id: Long,
-    val energyProfileUuid: String,
-    val name: String,
-    val priorityOrder: List<AllocationCategory>,
-)
-
-@Serializable
-data class CreateAllocationPolicyRequest(
-    val name: String = "Default",
-    @field:NotEmpty val priorityOrder: List<AllocationCategory>,
-)
-
-@Serializable
 data class UpdateAllocationPolicyRequest(
     @field:NotBlank val name: String,
     @field:NotEmpty val priorityOrder: List<AllocationCategory>,
