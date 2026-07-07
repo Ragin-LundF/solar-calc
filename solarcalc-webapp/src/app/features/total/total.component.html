@@ -1,0 +1,36 @@
+<solar-analysis
+  [loading]="loading()"
+  [error]="error()"
+  [rows]="months()"
+  [kpis]="kpis()"
+  [series]="series"
+  [stacked]="true"
+  [gridFormat]="gridFmt"
+  chartTitle="solar.ct.total">
+  <div class="bg-solar-panel border border-solar-border rounded-[14px] overflow-hidden">
+    <table class="w-full text-[13px]">
+      <thead class="bg-solar-thead text-solar-text2">
+        <tr>
+          <th class="px-4 py-2.5 text-left font-medium">{{ 'solar.col.month' | translate }}</th>
+          <th class="px-4 py-2.5 text-right font-medium">{{ 'solar.col.feedIn' | translate }}</th>
+          <th class="px-4 py-2.5 text-right font-medium">{{ 'solar.col.household' | translate }}</th>
+          <th class="px-4 py-2.5 text-right font-medium">{{ 'solar.col.heating' | translate }}</th>
+          <th class="px-4 py-2.5 text-right font-medium">{{ 'solar.col.wallbox' | translate }}</th>
+          <th class="px-4 py-2.5 text-right font-medium">{{ 'solar.col.total' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (m of rows(); track m.period) {
+          <tr class="border-t border-solar-row">
+            <td class="px-4 py-2.5">{{ monthLongLabel(m.period) }}</td>
+            <td class="px-4 py-2.5 text-right text-solar-amber">{{ fmtEUR(m.feedInRevenue) }}</td>
+            <td class="px-4 py-2.5 text-right text-solar-blue">{{ fmtEUR(m.householdSavings) }}</td>
+            <td class="px-4 py-2.5 text-right text-solar-red-soft">{{ fmtEUR(m.heatingSavings) }}</td>
+            <td class="px-4 py-2.5 text-right text-solar-green">{{ fmtEUR(m.wallboxSavingsVsGasoline) }}</td>
+            <td class="px-4 py-2.5 text-right font-semibold text-solar-green">{{ fmtEUR(m.totalSavings) }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</solar-analysis>

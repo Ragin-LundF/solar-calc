@@ -1,0 +1,100 @@
+<!-- Energy allocation -->
+<div class="bg-solar-panel border border-solar-border rounded-[14px] p-5">
+  <div class="text-[14px] font-semibold mb-1">{{ 'solar.settings.allocationTitle' | translate }}</div>
+  <p class="text-[12px] text-solar-text2 mb-4">{{ 'solar.settings.allocationHelp' | translate }}</p>
+  <div class="space-y-2">
+    @for (cat of order(); track cat; let i = $index) {
+      <div class="flex items-center gap-3 bg-solar-input border border-solar-border rounded-lg px-3 py-2.5">
+        <span class="w-6 h-6 shrink-0 rounded-md bg-solar-green text-solar-green-ink text-[12px] font-bold flex items-center justify-center">{{ i + 1 }}</span>
+        <span class="flex-1 text-[13px]">{{ 'allocation.' + cat | translate }}</span>
+        <button (click)="move(i, -1)" [disabled]="i === 0"
+          class="w-7 h-7 rounded-md text-solar-text2 hover:text-solar-text disabled:opacity-30" [title]="'allocation.moveUp' | translate">↑</button>
+        <button (click)="move(i, 1)" [disabled]="i === order().length - 1"
+          class="w-7 h-7 rounded-md text-solar-text2 hover:text-solar-text disabled:opacity-30" [title]="'allocation.moveDown' | translate">↓</button>
+      </div>
+    }
+  </div>
+</div>
+
+@if (profile(); as p) {
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
+    <!-- Profile -->
+    <div class="bg-solar-panel border border-solar-border rounded-[14px] p-5">
+      <div class="text-[14px] font-semibold mb-4">{{ 'solar.settings.profileTitle' | translate }}</div>
+      <label class="block text-[12px] text-solar-text2 mb-3">
+        {{ 'profile.name' | translate }}
+        <input type="text" [value]="p.name" (change)="setName($any($event.target).value)"
+          class="mt-1 w-full bg-solar-input border border-solar-border rounded-lg px-2.5 py-2 text-[13px] text-solar-text" />
+      </label>
+      <div class="flex items-center gap-6 mb-3 text-[13px]">
+        <label class="flex items-center gap-2">
+          <input type="checkbox" [checked]="p.hasWallbox" (change)="setWallbox($any($event.target).checked)" />
+          {{ 'profile.hasWallbox' | translate }}
+        </label>
+        <label class="flex items-center gap-2">
+          <input type="checkbox" [checked]="p.hasHeatPump" (change)="setHeatPump($any($event.target).checked)" />
+          {{ 'profile.hasHeatPump' | translate }}
+        </label>
+      </div>
+      <label class="block text-[12px] text-solar-text2">
+        {{ 'profile.heatingReferenceType' | translate }}
+        <select [value]="p.heatingReferenceType" (change)="setHeatingType($any($event.target).value)"
+          class="mt-1 w-full bg-solar-input border border-solar-border rounded-lg px-2.5 py-2 text-[13px] text-solar-text">
+          @for (t of heatingTypes; track t) {
+            <option [value]="t">{{ 'profile.heatingReferenceType_' + t | translate }}</option>
+          }
+        </select>
+      </label>
+    </div>
+
+    <!-- Prices & investment -->
+    <div class="bg-solar-panel border border-solar-border rounded-[14px] p-5">
+      <div class="text-[14px] font-semibold mb-4">{{ 'solar.settings.pricesTitle' | translate }}</div>
+      <div class="grid grid-cols-2 gap-3">
+        <label class="block text-[12px] text-solar-text2">
+          {{ 'solar.settings.electricity' | translate }}
+          <input type="number" step="0.01" [value]="p.defaultElectricityPrice" (change)="setElectricity($any($event.target).value)"
+            class="mt-1 w-full bg-solar-input border border-solar-border rounded-lg px-2.5 py-2 text-[13px] text-solar-text" />
+        </label>
+        <label class="block text-[12px] text-solar-text2">
+          {{ 'solar.settings.feedIn' | translate }}
+          <input type="number" step="0.001" [value]="p.defaultFeedInTariff" (change)="setFeedIn($any($event.target).value)"
+            class="mt-1 w-full bg-solar-input border border-solar-border rounded-lg px-2.5 py-2 text-[13px] text-solar-text" />
+        </label>
+        <label class="block text-[12px] text-solar-text2">
+          {{ 'solar.settings.petrol' | translate }}
+          <input type="number" step="0.01" [value]="p.defaultPetrolPrice" (change)="setPetrol($any($event.target).value)"
+            class="mt-1 w-full bg-solar-input border border-solar-border rounded-lg px-2.5 py-2 text-[13px] text-solar-text" />
+        </label>
+        <label class="block text-[12px] text-solar-text2">
+          {{ 'solar.settings.liters' | translate }}
+          <input type="number" step="0.1" [value]="p.litersPer100km" (change)="setLiters($any($event.target).value)"
+            class="mt-1 w-full bg-solar-input border border-solar-border rounded-lg px-2.5 py-2 text-[13px] text-solar-text" />
+        </label>
+        <label class="block text-[12px] text-solar-text2">
+          {{ 'solar.settings.kmPerKwh' | translate }}
+          <input type="number" step="0.01" [value]="p.kmPerKwh" (change)="setKmPerKwh($any($event.target).value)"
+            class="mt-1 w-full bg-solar-input border border-solar-border rounded-lg px-2.5 py-2 text-[13px] text-solar-text" />
+        </label>
+        <label class="block text-[12px] text-solar-text2">
+          {{ 'solar.settings.heatingRefCost' | translate }}
+          <input type="number" step="10" [value]="heatingRefCost()" (change)="setHeatingRefCost($any($event.target).value)"
+            [disabled]="p.heatingReferenceType === 'NONE'"
+            class="mt-1 w-full bg-solar-input border border-solar-border rounded-lg px-2.5 py-2 text-[13px] text-solar-text disabled:opacity-50" />
+        </label>
+        <label class="block text-[12px] text-solar-text2 col-span-2">
+          {{ 'solar.settings.invest' | translate }}
+          <input type="number" step="100" [value]="p.investKosten" (change)="setInvest($any($event.target).value)"
+            class="mt-1 w-full bg-solar-input border border-solar-border rounded-lg px-2.5 py-2 text-[13px] text-solar-text" />
+        </label>
+      </div>
+    </div>
+  </div>
+} @else {
+  <div class="bg-solar-panel border border-solar-border rounded-[14px] p-6 mt-4 text-center">
+    <p class="text-[13px] text-solar-text2 mb-3">{{ 'common.noProfileSetup' | translate }}</p>
+    <a routerLink="/setup" class="inline-block rounded-lg bg-solar-green text-solar-green-ink font-semibold px-4 py-2 text-[13px]">
+      {{ 'common.noProfileSetupAction' | translate }}
+    </a>
+  </div>
+}

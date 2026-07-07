@@ -1,0 +1,36 @@
+<solar-analysis
+  [loading]="loading()"
+  [error]="error()"
+  [rows]="months()"
+  [kpis]="kpis()"
+  [series]="series"
+  [stacked]="true"
+  [gridFormat]="gridFmt"
+  chartTitle="solar.ct.production">
+  <div class="bg-solar-panel border border-solar-border rounded-[14px] overflow-hidden">
+    <table class="w-full text-[13px]">
+      <thead class="bg-solar-thead text-solar-text2">
+        <tr>
+          <th class="px-4 py-2.5 text-left font-medium">{{ 'solar.col.month' | translate }}</th>
+          <th class="px-4 py-2.5 text-right font-medium">{{ 'solar.col.generation' | translate }}</th>
+          <th class="px-4 py-2.5 text-right font-medium">{{ 'solar.col.selfConsumption' | translate }}</th>
+          <th class="px-4 py-2.5 text-right font-medium">{{ 'solar.col.feedIn' | translate }}</th>
+          <th class="px-4 py-2.5 text-right font-medium">{{ 'solar.col.share' | translate }}</th>
+          <th class="px-4 py-2.5 text-right font-medium">{{ 'solar.col.revenue' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (m of rows(); track m.period) {
+          <tr class="border-t border-solar-row">
+            <td class="px-4 py-2.5">{{ monthLongLabel(m.period) }}</td>
+            <td class="px-4 py-2.5 text-right text-solar-gray">{{ fmtKWh(m.generationKwh) }}</td>
+            <td class="px-4 py-2.5 text-right text-solar-green">{{ fmtKWh(m.selfConsumedKwh) }}</td>
+            <td class="px-4 py-2.5 text-right text-solar-amber">{{ fmtKWh(m.feedInKwh) }}</td>
+            <td class="px-4 py-2.5 text-right">{{ fmtPct(m.selfConsumptionQuotePct) }}</td>
+            <td class="px-4 py-2.5 text-right text-solar-amber">{{ fmtEUR(m.feedInRevenue) }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</solar-analysis>

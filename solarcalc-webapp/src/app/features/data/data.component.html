@@ -1,0 +1,112 @@
+<!-- New month entry -->
+<div class="bg-solar-panel border border-solar-border rounded-[14px] p-5">
+  <div class="text-[14px] font-semibold mb-4">{{ 'solar.data.newMonth' | translate }}</div>
+  <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
+    <label class="text-[12px] text-solar-text2">
+      {{ 'solar.data.period' | translate }}
+      <input type="month" [ngModel]="form().period" (ngModelChange)="patch('period', $event)"
+        class="mt-1 w-full bg-solar-input border border-solar-border rounded-lg px-2.5 py-2 text-[13px] text-solar-text" />
+    </label>
+    <label class="text-[12px] text-solar-text2">
+      {{ 'solar.data.generation' | translate }}
+      <input type="number" step="0.1" [ngModel]="form().generation" (ngModelChange)="patch('generation', $event)"
+        class="mt-1 w-full bg-solar-input border border-solar-border rounded-lg px-2.5 py-2 text-[13px] text-solar-text" />
+    </label>
+    <label class="text-[12px] text-solar-text2">
+      {{ 'solar.data.feedIn' | translate }}
+      <input type="number" step="0.1" [ngModel]="form().feedIn" (ngModelChange)="patch('feedIn', $event)"
+        class="mt-1 w-full bg-solar-input border border-solar-border rounded-lg px-2.5 py-2 text-[13px] text-solar-text" />
+    </label>
+    <label class="text-[12px] text-solar-text2">
+      {{ 'solar.data.household' | translate }}
+      <input type="number" step="0.1" [ngModel]="form().household" (ngModelChange)="patch('household', $event)"
+        class="mt-1 w-full bg-solar-input border border-solar-border rounded-lg px-2.5 py-2 text-[13px] text-solar-text" />
+    </label>
+    <label class="text-[12px] text-solar-text2">
+      {{ 'solar.data.heatPump' | translate }}
+      <input type="number" step="0.1" [ngModel]="form().heatPump" (ngModelChange)="patch('heatPump', $event)"
+        class="mt-1 w-full bg-solar-input border border-solar-border rounded-lg px-2.5 py-2 text-[13px] text-solar-text" />
+    </label>
+    <label class="text-[12px] text-solar-text2">
+      {{ 'solar.data.wallbox' | translate }}
+      <input type="number" step="0.1" [ngModel]="form().wallbox" (ngModelChange)="patch('wallbox', $event)"
+        class="mt-1 w-full bg-solar-input border border-solar-border rounded-lg px-2.5 py-2 text-[13px] text-solar-text" />
+    </label>
+    <label class="text-[12px] text-solar-text2">
+      {{ 'solar.data.refPrice' | translate }}
+      <input type="number" step="0.01" [ngModel]="form().refPrice" (ngModelChange)="patch('refPrice', $event)"
+        [placeholder]="refPlaceholder()"
+        class="mt-1 w-full bg-solar-input border border-solar-border rounded-lg px-2.5 py-2 text-[13px] text-solar-text" />
+    </label>
+  </div>
+  <div class="flex items-center gap-3 mt-4">
+    <button (click)="submit()" [disabled]="saving() || !form().period"
+      class="rounded-lg bg-solar-green text-solar-green-ink font-semibold px-4 py-2 text-[13px] disabled:opacity-50">
+      {{ 'solar.data.add' | translate }}
+    </button>
+    @if (error()) { <span class="text-[12px] text-solar-red">{{ error()! | translate }}</span> }
+  </div>
+</div>
+
+<!-- Recorded months -->
+<div class="bg-solar-panel border border-solar-border rounded-[14px] overflow-hidden mt-4">
+  <div class="px-5 py-4 text-[14px] font-semibold">{{ 'solar.data.monthsTitle' | translate }}</div>
+  <div class="max-h-[420px] overflow-y-auto">
+    <table class="w-full text-[13px]">
+      <thead class="bg-solar-thead text-solar-text2 sticky top-0">
+        <tr>
+          <th class="px-4 py-2.5 text-left font-medium">{{ 'solar.col.month' | translate }}</th>
+          <th class="px-4 py-2.5 text-right font-medium">{{ 'solar.col.generation' | translate }}</th>
+          <th class="px-4 py-2.5 text-right font-medium">{{ 'solar.col.feedIn' | translate }}</th>
+          <th class="px-4 py-2.5 text-right font-medium">{{ 'solar.col.household' | translate }}</th>
+          <th class="px-4 py-2.5 text-right font-medium">{{ 'solar.k.heatPumpCost' | translate }}</th>
+          <th class="px-4 py-2.5 text-right font-medium">{{ 'solar.col.wallbox' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (m of rows(); track m.period) {
+          <tr class="border-t border-solar-row">
+            <td class="px-4 py-2.5">{{ monthLongLabel(m.period) }}</td>
+            <td class="px-4 py-2.5 text-right text-solar-gray">{{ fmtKWh(m.generationKwh) }}</td>
+            <td class="px-4 py-2.5 text-right text-solar-amber">{{ fmtKWh(m.feedInKwh) }}</td>
+            <td class="px-4 py-2.5 text-right">{{ fmtKWh(m.householdConsumptionKwh) }}</td>
+            <td class="px-4 py-2.5 text-right">{{ fmtKWh(m.heatPumpConsumptionKwh) }}</td>
+            <td class="px-4 py-2.5 text-right">{{ fmtKWh(m.wallboxConsumptionKwh) }}</td>
+          </tr>
+        } @empty {
+          <tr><td colspan="6" class="px-4 py-6 text-center text-solar-text2">{{ 'solar.noData' | translate }}</td></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Heating distribution -->
+<div class="bg-solar-panel border border-solar-border rounded-[14px] p-5 mt-4">
+  <div class="flex items-center justify-between mb-2">
+    <div class="text-[14px] font-semibold">{{ 'solar.data.distTitle' | translate }}</div>
+    <span class="rounded-md px-2.5 py-1 text-[12px] font-semibold"
+      [class]="distValid() ? 'bg-solar-green/15 text-solar-green' : 'bg-solar-red/15 text-solar-red'">
+      {{ distSum() }} %
+    </span>
+  </div>
+  <p class="text-[12px] text-solar-text2 mb-4">{{ 'solar.data.distHelp' | translate }}</p>
+  <div class="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-3">
+    @for (name of monthNames; track $index) {
+      <label class="text-[12px] text-solar-text2">
+        {{ name.slice(0, 3) }}
+        <div class="mt-1 flex items-center bg-solar-input border border-solar-border rounded-lg px-2.5">
+          <input type="number" step="1" [ngModel]="dist()[$index]" (ngModelChange)="setDist($index, +$event)"
+            class="w-full bg-transparent py-2 text-[13px] text-solar-text outline-none" />
+          <span class="text-solar-muted text-[12px]">%</span>
+        </div>
+      </label>
+    }
+  </div>
+  <div class="mt-4">
+    <button (click)="saveDistribution()" [disabled]="!distValid()"
+      class="rounded-lg bg-solar-green text-solar-green-ink font-semibold px-4 py-2 text-[13px] disabled:opacity-50">
+      {{ 'common.save' | translate }}
+    </button>
+  </div>
+</div>

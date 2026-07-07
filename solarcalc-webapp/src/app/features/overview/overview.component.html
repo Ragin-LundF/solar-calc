@@ -1,0 +1,132 @@
+<!-- Layout toggle -->
+<div class="flex justify-end mb-4">
+  <div class="inline-flex bg-solar-panel border border-solar-border rounded-lg p-0.5 text-[12px]">
+    <button (click)="setLayout('KPI')" class="px-3 py-1.5 rounded-md transition-colors"
+      [class]="layout() === 'KPI' ? 'bg-solar-green text-solar-green-ink font-semibold' : 'text-solar-text2'">{{ 'solar.ov.layoutKpi' | translate }}</button>
+    <button (click)="setLayout('STORY')" class="px-3 py-1.5 rounded-md transition-colors"
+      [class]="layout() === 'STORY' ? 'bg-solar-green text-solar-green-ink font-semibold' : 'text-solar-text2'">{{ 'solar.ov.layoutStory' | translate }}</button>
+  </div>
+</div>
+
+@if (loading()) {
+  <div class="text-solar-text2 text-sm py-10 text-center">{{ 'common.loading' | translate }}</div>
+} @else if (error()) {
+  <div class="text-solar-red text-sm py-10 text-center">{{ error()! | translate }}</div>
+} @else if (months().length === 0) {
+  <div class="text-solar-text2 text-sm py-10 text-center">{{ 'solar.noData' | translate }}</div>
+} @else if (layout() === 'KPI') {
+  <!-- ===== KPI-Karten layout ===== -->
+  <div class="grid grid-cols-[repeat(auto-fit,minmax(190px,1fr))] gap-4">
+    @for (k of kpis(); track k.label) {
+      <solar-kpi-card [label]="k.label" [value]="k.value" [sub]="k.sub" [color]="k.color" />
+    }
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-[1.6fr_1fr] gap-4 mt-4">
+    <!-- Combo bar + line chart -->
+    <div class="bg-solar-panel border border-solar-border rounded-[14px] p-5">
+      <div class="text-[14px] font-semibold mb-3">{{ 'solar.ov.chartMonthlyCumulative' | translate }}</div>
+      <div class="overflow-x-auto no-scrollbar">
+        <svg [attr.width]="trend().width" [attr.height]="trend().height" class="block">
+          @for (g of trend().gridLines; track g.y) {
+            <line x1="0" [attr.x2]="trend().width" [attr.y1]="g.y" [attr.y2]="g.y" stroke="#1c222c" stroke-width="1" />
+            <text x="0" [attr.y]="g.y - 3" fill="#5b6472" font-size="10">{{ g.label }}</text>
+          }
+          @for (r of trend().rects; track $index) {
+            <rect [attr.x]="r.x" [attr.y]="r.y" [attr.width]="r.w" [attr.height]="r.h" fill="#22c55e" rx="1" />
+          }
+          <polyline [attr.points]="trend().linePoints" fill="none" stroke="#3b82f6" stroke-width="2" />
+          @for (d of trend().dots; track $index) {
+            <circle [attr.cx]="d.x" [attr.cy]="d.y" r="3" fill="#3b82f6" />
+          }
+          @for (l of trend().xLabels; track $index) {
+            <text [attr.x]="l.x" [attr.y]="trend().height - 34" fill="#8b93a1" font-size="10" text-anchor="middle">{{ l.text }}</text>
+          }
+        </svg>
+      </div>
+    </div>
+
+    <!-- Payback ring -->
+    <div class="bg-solar-panel border border-solar-border rounded-[14px] p-5 flex flex-col items-center justify-center text-center">
+      <div class="text-[14px] font-semibold mb-2 self-start">{{ 'solar.ov.amortisation' | translate }}</div>
+      <svg width="150" height="150" viewBox="0 0 150 150">
+        <circle cx="75" cy="75" [attr.r]="ring().r" fill="none" stroke="#1c222c" stroke-width="14" />
+        <circle cx="75" cy="75" [attr.r]="ring().r" fill="none" stroke="#22c55e" stroke-width="14" stroke-linecap="round"
+          [attr.stroke-dasharray]="ring().circ" [attr.stroke-dashoffset]="ring().offset" transform="rotate(-90 75 75)" />
+        <text x="75" y="72" fill="#e8eaed" font-size="26" font-weight="700" text-anchor="middle">{{ ring().pctLabel }}</text>
+        <text x="75" y="92" fill="#8b93a1" font-size="11" text-anchor="middle">{{ 'solar.ov.amortisedCaption' | translate }}</text>
+      </svg>
+      <div class="text-[13px] text-solar-text2 mt-3">{{ ring().recovered }} / {{ ring().invest }}</div>
+      <div class="text-[13px] text-solar-green mt-1">{{ ring().statusKey | translate:ring().statusParam }}</div>
+    </div>
+  </div>
+
+  <!-- Contribution bar -->
+  <div class="bg-solar-panel border border-solar-border rounded-[14px] p-5 mt-4">
+    <div class="text-[14px] font-semibold mb-3">{{ 'solar.ov.contribution' | translate }}</div>
+    <div class="flex w-full h-7 rounded-lg overflow-hidden">
+      @for (c of contribution(); track c.label) {
+        @if (c.pct > 0) {
+          <div class="flex items-center justify-center text-[11px] font-semibold text-solar-green-ink"
+            [style.width.%]="c.pct" [style.background]="c.color">{{ c.pctLabel }}</div>
+        }
+      }
+    </div>
+    <div class="flex flex-wrap gap-5 mt-3">
+      @for (c of contribution(); track c.label) {
+        <div class="flex items-center gap-2 text-[12px] text-solar-text2">
+          <span class="w-2.5 h-2.5 rounded-sm" [style.background]="c.color"></span>{{ c.label | translate }}
+          <span class="text-solar-text font-medium">{{ c.valueLabel }}</span>
+        </div>
+      }
+    </div>
+  </div>
+} @else {
+  <!-- ===== Story layout ===== -->
+  <div class="bg-gradient-to-br from-solar-panel to-[#0f2a17] border border-solar-border rounded-[14px] p-8 flex flex-wrap items-center justify-between gap-6">
+    <div>
+      <div class="text-[13px] text-solar-text2 uppercase tracking-wide">{{ 'solar.ov.heroTitle' | translate }}</div>
+      <div class="text-[52px] font-extrabold text-solar-green leading-none mt-2">{{ gesamtLabel() }}</div>
+    </div>
+    <div class="flex items-center gap-4 text-center">
+      <svg width="120" height="120" viewBox="0 0 150 150">
+        <circle cx="75" cy="75" [attr.r]="ring().r" fill="none" stroke="#1c222c" stroke-width="14" />
+        <circle cx="75" cy="75" [attr.r]="ring().r" fill="none" stroke="#22c55e" stroke-width="14" stroke-linecap="round"
+          [attr.stroke-dasharray]="ring().circ" [attr.stroke-dashoffset]="ring().offset" transform="rotate(-90 75 75)" />
+        <text x="75" y="82" fill="#e8eaed" font-size="26" font-weight="700" text-anchor="middle">{{ ring().pctLabel }}</text>
+      </svg>
+      <div class="text-left text-[13px]">
+        <div class="text-solar-text2">{{ ring().recovered }} / {{ ring().invest }}</div>
+        <div class="text-solar-green mt-1">{{ ring().statusKey | translate:ring().statusParam }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-solar-panel border border-solar-border rounded-[14px] mt-4 divide-y divide-solar-row">
+    @for (k of kpis(); track k.label) {
+      <div class="flex items-center justify-between px-5 py-3.5">
+        <div>
+          <div class="text-[13px]">{{ k.label | translate }}</div>
+          <div class="text-[12px] text-solar-muted">{{ k.sub | translate }}</div>
+        </div>
+        <div class="text-[19px] font-bold" [style.color]="k.color">{{ k.value }}</div>
+      </div>
+    }
+  </div>
+
+  <div class="bg-solar-panel border border-solar-border rounded-[14px] p-5 mt-4">
+    <div class="text-[14px] font-semibold mb-3">{{ 'solar.ov.development' | translate }}</div>
+    <div class="overflow-x-auto no-scrollbar">
+      <svg [attr.width]="cumLine().width" [attr.height]="cumLine().height" class="block w-full">
+        @for (g of cumLine().gridLines; track g.y) {
+          <line x1="0" [attr.x2]="cumLine().width" [attr.y1]="g.y" [attr.y2]="g.y" stroke="#1c222c" stroke-width="1" />
+          <text x="0" [attr.y]="g.y - 3" fill="#5b6472" font-size="10">{{ g.label }}</text>
+        }
+        <polyline [attr.points]="cumLine().linePoints" fill="none" stroke="#3b82f6" stroke-width="2" />
+        @for (d of cumLine().dots; track $index) {
+          <circle [attr.cx]="d.x" [attr.cy]="d.y" r="3" fill="#3b82f6" />
+        }
+      </svg>
+    </div>
+  </div>
+}
