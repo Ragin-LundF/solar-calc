@@ -76,9 +76,16 @@
           <p class="text-sm text-green-600">{{ 'common.success' | translate }}</p>
         }
 
-        <button z-button type="submit" [zLoading]="saving()" [zDisabled]="form.invalid">
-          {{ 'common.save' | translate }}
-        </button>
+        <div class="flex gap-2">
+          <button z-button type="submit" [zLoading]="saving()" [zDisabled]="form.invalid">
+            {{ 'common.save' | translate }}
+          </button>
+          @if (selectedInputId()) {
+            <button z-button zType="destructive" type="button" (click)="deleteInput()">
+              {{ 'common.delete' | translate }}
+            </button>
+          }
+        </div>
       </form>
     </z-card>
   }

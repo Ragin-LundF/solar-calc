@@ -72,6 +72,20 @@ export class MonthlyInputComponent implements OnInit {
     this.error.set(null);
   }
 
+  deleteInput(): void {
+    const pid = this.profileId();
+    const id = this.selectedInputId();
+    if (!pid || !id) return;
+    if (!window.confirm('Delete this monthly entry?')) return;
+
+    this.api.delete(`/profiles/${pid}/monthly-inputs/${id}`).subscribe({
+      next: () => {
+        this.inputs.update(list => list.filter(x => x.id !== id));
+        this.newInput();
+      },
+    });
+  }
+
   save(): void {
     if (this.form.invalid) return;
     const pid = this.profileId();

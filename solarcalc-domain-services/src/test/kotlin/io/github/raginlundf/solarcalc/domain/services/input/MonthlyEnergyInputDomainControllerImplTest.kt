@@ -1,7 +1,10 @@
 package io.github.raginlundf.solarcalc.domain.services.input
 
+import io.github.raginlundf.solarcalc.domain.models.calculation.CalculationRun
 import io.github.raginlundf.solarcalc.domain.models.input.MonthlyEnergyInput
 import io.github.raginlundf.solarcalc.domain.models.profile.EnergyProfile
+import io.github.raginlundf.solarcalc.domain.models.repository.CalculationResultRepository
+import io.github.raginlundf.solarcalc.domain.models.repository.CalculationRunRepository
 import io.github.raginlundf.solarcalc.domain.models.repository.EnergyProfileRepository
 import io.github.raginlundf.solarcalc.domain.models.repository.MonthlyEnergyInputRepository
 import io.github.raginlundf.solarcalc.dtos.error.ResourceNotFoundException
@@ -17,9 +20,13 @@ class MonthlyEnergyInputDomainControllerImplTest {
 
     private val profileRepository = mockk<EnergyProfileRepository>()
     private val inputRepository = mockk<MonthlyEnergyInputRepository>(relaxed = true)
+    private val calculationRunRepository = mockk<CalculationRunRepository>(relaxed = true)
+    private val calculationResultRepository = mockk<CalculationResultRepository>(relaxed = true)
     private val controller = MonthlyEnergyInputDomainControllerImpl(
         profileRepository = profileRepository,
         inputRepository = inputRepository,
+        calculationRunRepository = calculationRunRepository,
+        calculationResultRepository = calculationResultRepository,
     )
 
     private val profileUuid = UUID.randomUUID().toString()
