@@ -7,7 +7,7 @@ import jakarta.persistence.Converter
 class AllocationCategoryListConverter : AttributeConverter<List<AllocationCategory>, String> {
 
     override fun convertToDatabaseColumn(attribute: List<AllocationCategory>?): String {
-        return attribute?.joinToString(",") { it.name } ?: ""
+        return attribute?.joinToString(separator = ",") { it.name } ?: ""
     }
 
     override fun convertToEntityAttribute(dbData: String?): List<AllocationCategory> {

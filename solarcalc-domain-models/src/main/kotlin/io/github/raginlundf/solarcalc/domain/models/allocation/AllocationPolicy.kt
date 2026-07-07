@@ -38,9 +38,6 @@ class AllocationPolicy {
     @Column(name = "priority_order", nullable = false, length = 100)
     var priorityOrder: List<AllocationCategory> = emptyList()
 
-    @Column(name = "is_default", nullable = false)
-    var isDefault: Boolean = false
-
     @Column(name = "created_at", nullable = false)
     var createdAt: LocalDateTime = LocalDateTime.now()
 
