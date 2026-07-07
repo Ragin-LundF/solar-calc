@@ -76,7 +76,7 @@ class SummaryDomainControllerImpl(
             hasWallbox = profile.hasWallbox,
             kmPerKwh = profile.kmPerKwh ?: BigDecimal.ZERO,
             litersPer100km = profile.litersPer100km ?: BigDecimal.ZERO,
-            investKosten = profile.investKosten ?: BigDecimal.ZERO,
+            investKosten = profile.investCost ?: BigDecimal.ZERO,
             heatingDistribution = distribution,
         )
     }

@@ -3,7 +3,6 @@ package io.github.raginlundf.solarcalc.domain.models.profile
 import io.github.raginlundf.extensions.kotlinEquals
 import io.github.raginlundf.extensions.kotlinHashCode
 import io.github.raginlundf.extensions.kotlinToString
-import io.github.raginlundf.solarcalc.domain.models.profile.HeatingReferenceType
 import io.github.raginlundf.solarcalc.domain.models.user.User
 import jakarta.persistence.Column
 import jakarta.persistence.Convert
@@ -77,8 +76,8 @@ class EnergyProfile {
     var litersPer100km: BigDecimal? = null
 
     /** Total system investment cost, used for payback/amortization tracking. */
-    @Column(name = "invest_kosten", precision = 12, scale = 2)
-    var investKosten: BigDecimal? = null
+    @Column(name = "invest_cost", precision = 12, scale = 2)
+    var investCost: BigDecimal? = null
 
     /** 12 percentages (Jan..Dec) of the annual heating cost, must sum to 100. */
     @Convert(converter = IntListConverter::class)

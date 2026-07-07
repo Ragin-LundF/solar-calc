@@ -2,8 +2,6 @@ package io.github.raginlundf.solarcalc.domain.services.input
 
 import io.github.raginlundf.solarcalc.domain.models.input.MonthlyEnergyInput
 import io.github.raginlundf.solarcalc.domain.models.profile.EnergyProfile
-import io.github.raginlundf.solarcalc.domain.models.repository.CalculationResultRepository
-import io.github.raginlundf.solarcalc.domain.models.repository.CalculationRunRepository
 import io.github.raginlundf.solarcalc.domain.models.repository.EnergyProfileRepository
 import io.github.raginlundf.solarcalc.domain.models.repository.MonthlyEnergyInputRepository
 import io.github.raginlundf.solarcalc.dtos.error.DuplicateInputException
@@ -19,8 +17,6 @@ import java.time.LocalDateTime
 class MonthlyEnergyInputDomainControllerImpl(
     private val profileRepository: EnergyProfileRepository,
     private val inputRepository: MonthlyEnergyInputRepository,
-    private val calculationRunRepository: CalculationRunRepository,
-    private val calculationResultRepository: CalculationResultRepository,
 ) : MonthlyEnergyInputDomainController {
 
     override fun list(profileUuid: String, username: String): List<MonthlyEnergyInputResponse> {
@@ -74,15 +70,6 @@ class MonthlyEnergyInputDomainControllerImpl(
     override fun delete(profileUuid: String, inputUuid: String, username: String) {
         val profile = requireProfile(profileUuid = profileUuid, username = username)
         val input = requireInput(inputUuid = inputUuid, profileId = profile.id!!)
-        val runs = calculationRunRepository.findAllByEnergyProfileIdAndPeriod(
-            energyProfileId = profile.id!!,
-            period = input.period,
-        )
-        runs.forEach { run ->
-            calculationResultRepository.findByCalculationRunId(calculationRunId = run.id!!)
-                ?.let { calculationResultRepository.delete(it) }
-        }
-        calculationRunRepository.deleteAll(runs)
         inputRepository.delete(input)
     }
 
