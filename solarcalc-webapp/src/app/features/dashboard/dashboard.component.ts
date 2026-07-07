@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ApiService } from '@/core/api/api.service';
 import { AppStateService } from '@/core/state/app-state.service';
@@ -32,12 +32,13 @@ interface CalculationResultDto {
 
 @Component({
   selector: 'app-dashboard',
-  imports: [DecimalPipe, FormsModule, RouterLink, TranslatePipe, ZardButtonComponent, ZardCardComponent, ZardBadgeComponent],
+  imports: [DecimalPipe, FormsModule, TranslatePipe, ZardButtonComponent, ZardCardComponent, ZardBadgeComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './dashboard.component.html',
 })
 export class DashboardComponent implements OnInit {
   private readonly api = inject(ApiService);
+  private readonly router = inject(Router);
   readonly state = inject(AppStateService);
 
   readonly loading = signal(false);
@@ -47,7 +48,11 @@ export class DashboardComponent implements OnInit {
   endDate = '';
 
   ngOnInit(): void {
-    if (this.state.profileId()) this.calculate();
+    if (!this.state.isSetupComplete()) {
+      this.router.navigate(['/setup']);
+      return;
+    }
+    this.calculate();
   }
 
   calculate(): void {

@@ -47,10 +47,28 @@
     "lightMode": "Light Mode",
     "language": "Language"
   },
+  "setup": {
+    "title": "Setup",
+    "step1Title": "Create Profile",
+    "step1Description": "Tell us about your home and equipment",
+    "step2Title": "Set Allocation Priority",
+    "step2Description": "Who gets solar power first?",
+    "step3Title": "Set Prices (Optional)",
+    "step3Description": "Configure your energy prices",
+    "step4Title": "All Set!",
+    "step4Description": "Your setup is complete",
+    "next": "Next",
+    "back": "Back",
+    "skip": "Skip",
+    "finish": "Finish",
+    "redirecting": "Redirecting to dashboard..."
+  },
   "dashboard": {
     "title": "Dashboard",
     "description": "Calculate your solar savings",
-    "noData": "No monthly data found. Add data on the Monthly Data page first."
+    "noData": "No monthly data found. Add data on the Monthly Data page first.",
+    "noAllocationPolicy": "No allocation policy set. Set up priority order first.",
+    "noAllocationPolicyAction": "Set up now"
   },
   "profile": {
     "list": "Profiles",

@@ -99,8 +99,8 @@ class CalculationDomainControllerImpl(
         endDate: LocalDate?,
         request: ScenarioComparisonRequest
     ): List<CalculationResponse> {
-        val profile = profileRepository.findByUuid(profileUuid)
-            ?: throw ResourceNotFoundException("Profile $profileUuid not found")
+        val profile = profileRepository.findByUuid(uuid = profileUuid)
+            ?: throw ResourceNotFoundException(message = "Profile $profileUuid not found")
 
         val period = resolvePeriod(profileId = profile.id!!, startDate = startDate, endDate = endDate)
         val ctx = resolveContext(profile = profile, period = period)
@@ -124,7 +124,7 @@ class CalculationDomainControllerImpl(
             allocationPriority = emptyList(),
         )
 
-        return calculationService.compareScenarios(baseInput, request.scenarios).map { it.toResponse() }
+        return calculationService.compareScenarios(input = baseInput, priorities = request.scenarios).map { it.toResponse() }
     }
 
     private fun resolvePeriod(profileId: Long, startDate: LocalDate?, endDate: LocalDate?): String {
@@ -134,7 +134,7 @@ class CalculationDomainControllerImpl(
         }
         val inputs = inputRepository.findAllByEnergyProfileId(energyProfileId = profileId)
         val latest = inputs.maxByOrNull { it.period }
-            ?: throw ResourceNotFoundException("No monthly inputs found for profile $profileId")
+            ?: throw ResourceNotFoundException(message = "No monthly inputs found for profile $profileId")
         return latest.period
     }
 
@@ -151,16 +151,15 @@ class CalculationDomainControllerImpl(
                 period = period,
             )
         }
-        val policy = findOrThrow(message = "No default allocation policy for profile ${profile.uuid}") {
-            policyRepository.findByEnergyProfileIdAndIsDefaultTrue(
-                energyProfileId = profile.id!!,
-            )
+        val policies = policyRepository.findAllByEnergyProfileId(energyProfileId = profile.id!!)
+        val policy = findOrThrow(message = "No allocation policy for profile ${profile.uuid}") {
+            policies.firstOrNull()
         }
         return CalcContext(profile = profile, input = input, policy = policy)
     }
 
     private inline fun <T : Any> findOrThrow(message: String, supplier: () -> T?): T {
-        return supplier() ?: throw ResourceNotFoundException(message)
+        return supplier() ?: throw ResourceNotFoundException(message = message)
     }
 }
 

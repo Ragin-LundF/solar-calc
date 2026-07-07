@@ -47,10 +47,28 @@
     "lightMode": "Light Mode",
     "language": "Sprache"
   },
+  "setup": {
+    "title": "Einrichtung",
+    "step1Title": "Profil erstellen",
+    "step1Description": "Erzählen Sie uns von Ihrem Zuhause und Ihrer Ausstattung",
+    "step2Title": "Allokationsreihenfolge festlegen",
+    "step2Description": "Wer bekommt zuerst Solarstrom?",
+    "step3Title": "Preise festlegen (optional)",
+    "step3Description": "Konfigurieren Sie Ihre Energiepreise",
+    "step4Title": "Fertig!",
+    "step4Description": "Ihre Einrichtung ist abgeschlossen",
+    "next": "Weiter",
+    "back": "Zurück",
+    "skip": "Überspringen",
+    "finish": "Abschließen",
+    "redirecting": "Weiterleitung zum Dashboard..."
+  },
   "dashboard": {
     "title": "Dashboard",
     "description": "Berechnen Sie Ihre Solar-Ersparnis",
-    "noData": "Keine monatlichen Daten gefunden. Fügen Sie zuerst Daten auf der Seite 'Monatliche Daten' hinzu."
+    "noData": "Keine monatlichen Daten gefunden. Fügen Sie zuerst Daten auf der Seite 'Monatliche Daten' hinzu.",
+    "noAllocationPolicy": "Keine Allokationspolitik festgelegt. Legen Sie zuerst die Reihenfolge fest.",
+    "noAllocationPolicyAction": "Jetzt einrichten"
   },
   "profile": {
     "list": "Profile",
