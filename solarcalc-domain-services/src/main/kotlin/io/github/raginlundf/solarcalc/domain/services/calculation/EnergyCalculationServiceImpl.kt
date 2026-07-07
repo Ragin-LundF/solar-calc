@@ -1,5 +1,6 @@
 package io.github.raginlundf.solarcalc.domain.services.calculation
 
+import io.github.raginlundf.extensions.scale2
 import io.github.raginlundf.solarcalc.domain.models.allocation.AllocationCategory
 import io.github.raginlundf.solarcalc.domain.models.calculation.CompletenessFlag
 import org.springframework.stereotype.Service
@@ -232,9 +233,5 @@ class EnergyCalculationServiceImpl : EnergyCalculationService {
             gridKwh = wbGrid,
             elecSavings = wbElec,
         )
-    }
-
-    private fun BigDecimal.scale2(): BigDecimal {
-        return setScale(2, RoundingMode.HALF_UP)
     }
 }
