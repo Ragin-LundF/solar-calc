@@ -4,6 +4,7 @@ import io.github.raginlundf.solarcalc.domain.models.input.MonthlyEnergyInput
 import io.github.raginlundf.solarcalc.domain.models.profile.EnergyProfile
 import io.github.raginlundf.solarcalc.domain.models.repository.EnergyProfileRepository
 import io.github.raginlundf.solarcalc.domain.models.repository.MonthlyEnergyInputRepository
+import io.github.raginlundf.solarcalc.dtos.error.DuplicateInputException
 import io.github.raginlundf.solarcalc.dtos.error.ResourceNotFoundException
 import io.github.raginlundf.solarcalc.dtos.input.MonthlyEnergyInputResponse
 import io.github.raginlundf.solarcalc.dtos.input.UpsertMonthlyEnergyInputRequest
@@ -26,13 +27,13 @@ class MonthlyEnergyInputDomainControllerImpl(
     override fun get(profileUuid: String, inputId: Long): MonthlyEnergyInputResponse {
         requireProfile(profileUuid = profileUuid)
         return inputRepository.findById(inputId).orElseThrow {
-            ResourceNotFoundException("MonthlyInput $inputId not found")
+            ResourceNotFoundException(message = "MonthlyInput $inputId not found")
         }.toResponse(energyProfileUuid = profileUuid)
     }
 
     override fun create(profileUuid: String, request: UpsertMonthlyEnergyInputRequest): MonthlyEnergyInputResponse {
         val profile = profileRepository.findByUuid(profileUuid)
-            ?: throw ResourceNotFoundException("Profile $profileUuid not found")
+            ?: throw ResourceNotFoundException(message = "Profile $profileUuid not found")
 
         val existing = inputRepository.findByEnergyProfileIdAndPeriod(
             energyProfileId = profile.id!!,
@@ -76,8 +77,6 @@ class MonthlyEnergyInputDomainControllerImpl(
             ?: throw ResourceNotFoundException(message = "Profile $profileUuid not found")
     }
 }
-
-class DuplicateInputException(message: String) : RuntimeException(message)
 
 private fun MonthlyEnergyInput.applyRequest(request: UpsertMonthlyEnergyInputRequest) {
     period = request.period

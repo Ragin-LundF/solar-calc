@@ -32,6 +32,9 @@ class User {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
     var profiles: MutableList<EnergyProfile> = mutableListOf()
 
+    @Column(name = "setup_step", nullable = false)
+    var setupStep: Int = 0
+
     @Column(name = "created_at", nullable = false)
     var createdAt: LocalDateTime = LocalDateTime.now()
 

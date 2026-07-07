@@ -1,9 +1,9 @@
 package io.github.raginlundf.solarcalc.restapi.input
 
 import io.github.raginlundf.logging.annotations.LogDuration
-import io.github.raginlundf.solarcalc.domain.services.exceptions.DuplicateInputException
 import io.github.raginlundf.solarcalc.domain.services.input.MonthlyEnergyInputDomainController
 import io.github.raginlundf.solarcalc.dtos.error.ApiError
+import io.github.raginlundf.solarcalc.dtos.error.DuplicateInputException
 import io.github.raginlundf.solarcalc.dtos.input.MonthlyEnergyInputResponse
 import io.github.raginlundf.solarcalc.dtos.input.UpsertMonthlyEnergyInputRequest
 import io.github.raginlundf.solarcalc.restapi.security.SolarcalcScopes

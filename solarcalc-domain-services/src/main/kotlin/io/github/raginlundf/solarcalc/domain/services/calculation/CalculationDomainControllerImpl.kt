@@ -124,7 +124,10 @@ class CalculationDomainControllerImpl(
             allocationPriority = emptyList(),
         )
 
-        return calculationService.compareScenarios(input = baseInput, priorities = request.scenarios).map { it.toResponse() }
+        return calculationService.compareScenarios(
+            input = baseInput,
+            priorities = request.scenarios
+        ).map { it.toResponse() }
     }
 
     private fun resolvePeriod(profileId: Long, startDate: LocalDate?, endDate: LocalDate?): String {

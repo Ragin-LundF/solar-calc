@@ -5,6 +5,7 @@ import io.github.raginlundf.solarcalc.domain.models.user.User
 import io.github.raginlundf.solarcalc.dtos.auth.AuthResponse
 import io.github.raginlundf.solarcalc.dtos.auth.LoginRequest
 import io.github.raginlundf.solarcalc.dtos.auth.RegisterRequest
+import io.github.raginlundf.solarcalc.dtos.auth.UpdateSetupStepRequest
 import io.github.raginlundf.solarcalc.dtos.error.InvalidCredentialsException
 import io.github.raginlundf.solarcalc.dtos.error.UsernameAlreadyExistsException
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -31,7 +32,7 @@ class AuthDomainControllerImpl(
     @Transactional
     override fun register(request: RegisterRequest): AuthResponse {
         if (userRepository.existsByUsername(request.username)) {
-            throw UsernameAlreadyExistsException("Username '${request.username}' is already taken")
+            throw UsernameAlreadyExistsException(message = "Username '${request.username}' is already taken")
         }
 
         val user = User().apply {
@@ -41,25 +42,36 @@ class AuthDomainControllerImpl(
         userRepository.save(user)
 
         return AuthResponse(
-            token = generateToken(user.username),
+            token = generateToken(username = user.username),
             username = user.username,
             expiresInSeconds = TOKEN_EXPIRY_SECONDS,
+            setupStep = user.setupStep,
         )
     }
 
     override fun login(request: LoginRequest): AuthResponse {
-        val user = userRepository.findByUsername(request.username)
-            .orElseThrow { InvalidCredentialsException("Invalid username or password") }
+        val user = userRepository.findByUsername(username = request.username)
+            .orElseThrow { InvalidCredentialsException(message = "Invalid username or password") }
 
         if (!passwordEncoder.matches(request.password, user.passwordHash)) {
-            throw InvalidCredentialsException("Invalid username or password")
+            throw InvalidCredentialsException(message = "Invalid username or password")
         }
 
         return AuthResponse(
-            token = generateToken(user.username),
+            token = generateToken(username = user.username),
             username = user.username,
             expiresInSeconds = TOKEN_EXPIRY_SECONDS,
+            setupStep = user.setupStep,
         )
+    }
+
+    @Transactional
+    override fun updateSetupStep(username: String, request: UpdateSetupStepRequest): Int {
+        val user = userRepository.findByUsername(username = username)
+            .orElseThrow { InvalidCredentialsException(message = "User not found") }
+        user.setupStep = request.setupStep
+        userRepository.save(user)
+        return user.setupStep
     }
 
     private fun generateToken(username: String): String {
