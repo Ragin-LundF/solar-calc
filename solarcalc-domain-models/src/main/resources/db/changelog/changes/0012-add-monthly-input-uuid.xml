@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        logicalFilePath="0012-add-monthly-input-uuid.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="0012-add-monthly-input-uuid" author="solarcalc">
+        <addColumn tableName="monthly_energy_input">
+            <column name="uuid" type="VARCHAR(36)">
+                <constraints nullable="true" unique="true" />
+            </column>
+        </addColumn>
+
+        <sql>
+            UPDATE monthly_energy_input SET uuid = UUID() WHERE uuid IS NULL
+        </sql>
+
+        <addNotNullConstraint
+                tableName="monthly_energy_input"
+                columnName="uuid"
+                columnDataType="VARCHAR(36)" />
+
+        <addUniqueConstraint
+                tableName="monthly_energy_input"
+                columnNames="uuid"
+                constraintName="uq_monthly_input_uuid" />
+    </changeSet>
+
+</databaseChangeLog>
