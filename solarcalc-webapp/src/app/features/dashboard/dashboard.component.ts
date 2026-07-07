@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ApiService } from '@/core/api/api.service';
+import { AuthService } from '@/core/auth/auth.service';
 import { AppStateService } from '@/core/state/app-state.service';
 import { ZardButtonComponent } from '@/shared/components/button';
 import { ZardCardComponent } from '@/shared/components/card';
@@ -39,6 +40,7 @@ interface CalculationResultDto {
 export class DashboardComponent implements OnInit {
   private readonly api = inject(ApiService);
   private readonly router = inject(Router);
+  private readonly auth = inject(AuthService);
   readonly state = inject(AppStateService);
 
   readonly loading = signal(false);
@@ -48,6 +50,9 @@ export class DashboardComponent implements OnInit {
   endDate = '';
 
   ngOnInit(): void {
+    if (!this.auth.isAuthenticated) {
+      return;
+    }
     if (!this.state.isSetupComplete()) {
       this.router.navigate(['/setup']);
       return;
