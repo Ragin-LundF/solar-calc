@@ -1,7 +1,7 @@
 package io.github.raginlundf.solarcalc.restapi.input
 
 import io.github.raginlundf.logging.annotations.LogDuration
-import io.github.raginlundf.solarcalc.domain.services.input.DuplicateInputException
+import io.github.raginlundf.solarcalc.domain.services.exceptions.DuplicateInputException
 import io.github.raginlundf.solarcalc.domain.services.input.MonthlyEnergyInputDomainController
 import io.github.raginlundf.solarcalc.dtos.error.ApiError
 import io.github.raginlundf.solarcalc.dtos.input.MonthlyEnergyInputResponse
@@ -53,7 +53,7 @@ class MonthlyEnergyInputController(
     ): ResponseEntity<Any> {
         val feedInKwh = request.feedInKwh
         if (feedInKwh != null && feedInKwh > request.generationKwh) {
-            return ResponseEntity.unprocessableEntity().body(
+            return ResponseEntity.unprocessableContent().body(
                 ApiError(
                     code = "MONTHLY_INPUT_FEED_IN_EXCEEDS_GENERATION",
                     message = "Feed-in exceeds generated electricity.",
@@ -91,7 +91,7 @@ class MonthlyEnergyInputController(
     ): ResponseEntity<Any> {
         val feedInKwh = request.feedInKwh
         if (feedInKwh != null && feedInKwh > request.generationKwh) {
-            return ResponseEntity.unprocessableEntity().body(
+            return ResponseEntity.unprocessableContent().body(
                 ApiError(
                     code = "MONTHLY_INPUT_FEED_IN_EXCEEDS_GENERATION",
                     message = "Feed-in exceeds generated electricity.",

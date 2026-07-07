@@ -48,9 +48,8 @@ class EnergyCalculationServiceImpl : EnergyCalculationService {
         )
 
         val totalElectricitySavings = if (electricityPrice != null) {
-            listOf(householdSavings, hp.elecSavings, wb.elecSavings)
-                .filterNotNull()
-                .fold(BigDecimal.ZERO, BigDecimal::add)
+            listOfNotNull(householdSavings, hp.elecSavings, wb.elecSavings)
+                .fold(initial = BigDecimal.ZERO, operation = BigDecimal::add)
                 .scale2()
         } else {
             null
