@@ -9,25 +9,15 @@ import io.github.raginlundf.solarcalc.dtos.auth.UpdateSetupStepRequestDto
 import io.github.raginlundf.solarcalc.dtos.error.InvalidCredentialsException
 import io.github.raginlundf.solarcalc.dtos.error.UsernameAlreadyExistsException
 import org.springframework.security.crypto.password.PasswordEncoder
-import org.springframework.security.oauth2.jose.jws.MacAlgorithm
-import org.springframework.security.oauth2.jwt.JwsHeader
-import org.springframework.security.oauth2.jwt.JwtClaimsSet
-import org.springframework.security.oauth2.jwt.JwtEncoder
-import org.springframework.security.oauth2.jwt.JwtEncoderParameters
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.time.Instant
 
 @Service
 class AuthDomainControllerImpl(
     private val userRepository: UserRepository,
-    private val jwtEncoder: JwtEncoder,
+    private val tokenIssuer: JwtTokenIssuer,
     private val passwordEncoder: PasswordEncoder,
 ) : AuthDomainController {
-
-    companion object {
-        private const val TOKEN_EXPIRY_SECONDS = 86_400L
-    }
 
     @Transactional
     override fun register(request: RegisterRequestDto): AuthResponseDto {
@@ -41,12 +31,7 @@ class AuthDomainControllerImpl(
         }
         userRepository.save(user)
 
-        return AuthResponseDto(
-            token = generateToken(username = user.username),
-            username = user.username,
-            expiresInSeconds = TOKEN_EXPIRY_SECONDS,
-            setupStep = user.setupStep,
-        )
+        return user.toAuthResponse()
     }
 
     override fun login(request: LoginRequestDto): AuthResponseDto {
@@ -57,12 +42,7 @@ class AuthDomainControllerImpl(
             throw InvalidCredentialsException(message = "Invalid username or password")
         }
 
-        return AuthResponseDto(
-            token = generateToken(username = user.username),
-            username = user.username,
-            expiresInSeconds = TOKEN_EXPIRY_SECONDS,
-            setupStep = user.setupStep,
-        )
+        return user.toAuthResponse()
     }
 
     @Transactional
@@ -74,28 +54,14 @@ class AuthDomainControllerImpl(
         return user.setupStep
     }
 
-    private fun generateToken(username: String): String {
-        val claims = JwtClaimsSet.builder()
-            .subject(username)
-            .issuedAt(Instant.now())
-            .expiresAt(Instant.now().plusSeconds(TOKEN_EXPIRY_SECONDS))
-            .claim(
-                "scope",
-                listOf(
-                    "io.github.raginlundf.solarcalc.profiles.read",
-                    "io.github.raginlundf.solarcalc.profiles.write",
-                    "io.github.raginlundf.solarcalc.inputs.read",
-                    "io.github.raginlundf.solarcalc.inputs.write",
-                    "io.github.raginlundf.solarcalc.prices.read",
-                    "io.github.raginlundf.solarcalc.prices.write",
-                    "io.github.raginlundf.solarcalc.policies.read",
-                    "io.github.raginlundf.solarcalc.policies.write",
-                    "io.github.raginlundf.solarcalc.calculations.read",
-                ),
-            )
-            .build()
-
-        val header = JwsHeader.with(MacAlgorithm.HS256).build()
-        return jwtEncoder.encode(JwtEncoderParameters.from(header, claims)).tokenValue
+    private fun User.toAuthResponse(): AuthResponseDto {
+        // Every user currently receives full access; read-only users get only READ later.
+        val issued = tokenIssuer.issue(subject = username, scopes = SolarcalcScopes.FULL_ACCESS)
+        return AuthResponseDto(
+            token = issued.token,
+            username = username,
+            expiresInSeconds = issued.expiresInSeconds,
+            setupStep = setupStep,
+        )
     }
 }

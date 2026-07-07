@@ -1,10 +1,11 @@
 package io.github.raginlundf.solarcalc.restapi.calculation
 
 import io.github.raginlundf.logging.annotations.LogDuration
+import io.github.raginlundf.solarcalc.domain.services.auth.SolarcalcScopes
 import io.github.raginlundf.solarcalc.domain.services.calculation.CalculationDomainController
 import io.github.raginlundf.solarcalc.dtos.calculation.CalculationResponse
 import io.github.raginlundf.solarcalc.dtos.calculation.ScenarioComparisonRequest
-import io.github.raginlundf.solarcalc.restapi.security.SolarcalcScopes
+import io.github.raginlundf.solarcalc.restapi.security.CurrentUser
 import jakarta.validation.Valid
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.security.access.prepost.PreAuthorize
@@ -25,7 +26,7 @@ class CalculationController(
 
     @LogDuration
     @GetMapping
-    @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_CALCULATIONS_READ}')")
+    @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_READ}')")
     fun calculate(
         @PathVariable profileUuid: String,
         @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) startDate: LocalDate?,
@@ -33,6 +34,7 @@ class CalculationController(
     ): CalculationResponse {
         return calculationDomainController.calculate(
             profileUuid = profileUuid,
+            username = CurrentUser.requireUsername(),
             startDate = startDate,
             endDate = endDate,
         )
@@ -40,7 +42,7 @@ class CalculationController(
 
     @LogDuration
     @PostMapping("/compare")
-    @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_CALCULATIONS_READ}')")
+    @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_READ}')")
     fun compareScenarios(
         @PathVariable profileUuid: String,
         @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) startDate: LocalDate?,
@@ -49,6 +51,7 @@ class CalculationController(
     ): List<CalculationResponse> {
         return calculationDomainController.compareScenarios(
             profileUuid = profileUuid,
+            username = CurrentUser.requireUsername(),
             startDate = startDate,
             endDate = endDate,
             request = request,

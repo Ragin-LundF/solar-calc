@@ -2,10 +2,11 @@ package io.github.raginlundf.solarcalc.restapi.allocation
 
 import io.github.raginlundf.logging.annotations.LogDuration
 import io.github.raginlundf.solarcalc.domain.services.allocation.AllocationPolicyDomainController
+import io.github.raginlundf.solarcalc.domain.services.auth.SolarcalcScopes
 import io.github.raginlundf.solarcalc.dtos.allocation.AllocationPolicyResponse
 import io.github.raginlundf.solarcalc.dtos.allocation.CreateAllocationPolicyRequest
 import io.github.raginlundf.solarcalc.dtos.allocation.UpdateAllocationPolicyRequest
-import io.github.raginlundf.solarcalc.restapi.security.SolarcalcScopes
+import io.github.raginlundf.solarcalc.restapi.security.CurrentUser
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
@@ -26,35 +27,46 @@ class AllocationPolicyController(
 ) {
     @LogDuration
     @GetMapping
-    @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_POLICIES_READ}')")
+    @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_READ}')")
     fun list(@PathVariable profileUuid: String): List<AllocationPolicyResponse> {
-        return allocationPolicyDomainController.list(profileUuid = profileUuid)
+        return allocationPolicyDomainController.list(
+            profileUuid = profileUuid,
+            username = CurrentUser.requireUsername(),
+        )
     }
 
     @LogDuration
     @GetMapping("/{policyId}")
-    @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_POLICIES_READ}')")
+    @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_READ}')")
     fun get(
         @PathVariable profileUuid: String,
         @PathVariable policyId: Long,
     ): AllocationPolicyResponse {
-        return allocationPolicyDomainController.get(profileUuid = profileUuid, policyId = policyId)
+        return allocationPolicyDomainController.get(
+            profileUuid = profileUuid,
+            policyId = policyId,
+            username = CurrentUser.requireUsername(),
+        )
     }
 
     @LogDuration
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_POLICIES_WRITE}')")
+    @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_WRITE}')")
     fun create(
         @PathVariable profileUuid: String,
         @Valid @RequestBody request: CreateAllocationPolicyRequest,
     ): AllocationPolicyResponse {
-        return allocationPolicyDomainController.create(profileUuid = profileUuid, request = request)
+        return allocationPolicyDomainController.create(
+            profileUuid = profileUuid,
+            request = request,
+            username = CurrentUser.requireUsername(),
+        )
     }
 
     @LogDuration
     @PutMapping("/{policyId}")
-    @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_POLICIES_WRITE}')")
+    @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_WRITE}')")
     fun update(
         @PathVariable profileUuid: String,
         @PathVariable policyId: Long,
@@ -64,17 +76,22 @@ class AllocationPolicyController(
             profileUuid = profileUuid,
             policyId = policyId,
             request = request,
+            username = CurrentUser.requireUsername(),
         )
     }
 
     @LogDuration
     @DeleteMapping("/{policyId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_POLICIES_WRITE}')")
+    @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_WRITE}')")
     fun delete(
         @PathVariable profileUuid: String,
         @PathVariable policyId: Long,
     ) {
-        allocationPolicyDomainController.delete(profileUuid = profileUuid, policyId = policyId)
+        allocationPolicyDomainController.delete(
+            profileUuid = profileUuid,
+            policyId = policyId,
+            username = CurrentUser.requireUsername(),
+        )
     }
 }

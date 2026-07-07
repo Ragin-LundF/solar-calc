@@ -7,12 +7,14 @@ import java.time.LocalDate
 interface CalculationDomainController {
     fun calculate(
         profileUuid: String,
+        username: String,
         startDate: LocalDate? = null,
         endDate: LocalDate? = null,
     ): CalculationResponse
 
     fun compareScenarios(
         profileUuid: String,
+        username: String,
         startDate: LocalDate? = null,
         endDate: LocalDate? = null,
         request: ScenarioComparisonRequest,

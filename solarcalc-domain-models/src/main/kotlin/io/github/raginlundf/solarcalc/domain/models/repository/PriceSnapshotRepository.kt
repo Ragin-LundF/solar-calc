@@ -9,6 +9,8 @@ interface PriceSnapshotRepository : JpaRepository<PriceSnapshot, Long>, Querydsl
     /** Returns default (period=null) and all monthly overrides for the given profile. */
     fun findAllByEnergyProfileId(energyProfileId: Long): List<PriceSnapshot>
 
+    fun findByIdAndEnergyProfileId(id: Long, energyProfileId: Long): PriceSnapshot?
+
     fun findByEnergyProfileIdAndPeriodIsNull(energyProfileId: Long): PriceSnapshot?
 
     fun findByEnergyProfileIdAndPeriod(

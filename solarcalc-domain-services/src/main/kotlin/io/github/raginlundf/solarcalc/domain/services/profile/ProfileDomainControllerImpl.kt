@@ -16,14 +16,12 @@ class ProfileDomainControllerImpl(
     private val userRepository: UserRepository,
 ) : ProfileDomainController {
 
-    override fun list(): List<EnergyProfileResponse> {
-        return profileRepository.findAll().map { it.toResponse() }
+    override fun list(username: String): List<EnergyProfileResponse> {
+        return profileRepository.findAllByUserUsername(userUsername = username).map { it.toResponse() }
     }
 
-    override fun get(profileUuid: String): EnergyProfileResponse {
-        val profile = profileRepository.findByUuid(profileUuid)
-            ?: throw ResourceNotFoundException("Profile $profileUuid not found")
-        return profile.toResponse()
+    override fun get(profileUuid: String, username: String): EnergyProfileResponse {
+        return requireOwnedProfile(profileUuid = profileUuid, username = username).toResponse()
     }
 
     override fun create(request: CreateEnergyProfileRequest, username: String): EnergyProfileResponse {
@@ -45,9 +43,12 @@ class ProfileDomainControllerImpl(
         return profileRepository.save(profile).toResponse()
     }
 
-    override fun update(profileUuid: String, request: UpdateEnergyProfileRequest): EnergyProfileResponse {
-        val profile = profileRepository.findByUuid(profileUuid)
-            ?: throw ResourceNotFoundException("Profile $profileUuid not found")
+    override fun update(
+        profileUuid: String,
+        request: UpdateEnergyProfileRequest,
+        username: String,
+    ): EnergyProfileResponse {
+        val profile = requireOwnedProfile(profileUuid = profileUuid, username = username)
         profile.name = request.name
         profile.hasWallbox = request.hasWallbox
         profile.hasHeatPump = request.hasHeatPump
@@ -61,10 +62,14 @@ class ProfileDomainControllerImpl(
         return profileRepository.save(profile).toResponse()
     }
 
-    override fun delete(profileUuid: String) {
-        val profile = profileRepository.findByUuid(profileUuid)
-            ?: throw ResourceNotFoundException("Profile $profileUuid not found")
+    override fun delete(profileUuid: String, username: String) {
+        val profile = requireOwnedProfile(profileUuid = profileUuid, username = username)
         profileRepository.delete(profile)
+    }
+
+    private fun requireOwnedProfile(profileUuid: String, username: String): EnergyProfile {
+        return profileRepository.findByUuidAndUserUsername(uuid = profileUuid, userUsername = username)
+            ?: throw ResourceNotFoundException("Profile $profileUuid not found")
     }
 }
 

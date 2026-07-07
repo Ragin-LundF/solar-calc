@@ -10,6 +10,8 @@ interface MonthlyEnergyInputRepository :
 
     fun findAllByEnergyProfileId(energyProfileId: Long): List<MonthlyEnergyInput>
 
+    fun findByIdAndEnergyProfileId(id: Long, energyProfileId: Long): MonthlyEnergyInput?
+
     fun findByEnergyProfileIdAndPeriod(
         energyProfileId: Long,
         period: String,

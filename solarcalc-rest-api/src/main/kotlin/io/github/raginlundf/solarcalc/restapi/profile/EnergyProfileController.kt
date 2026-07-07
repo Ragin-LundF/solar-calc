@@ -5,11 +5,11 @@ import io.github.raginlundf.solarcalc.domain.services.profile.ProfileDomainContr
 import io.github.raginlundf.solarcalc.dtos.profile.CreateEnergyProfileRequest
 import io.github.raginlundf.solarcalc.dtos.profile.EnergyProfileResponse
 import io.github.raginlundf.solarcalc.dtos.profile.UpdateEnergyProfileRequest
-import io.github.raginlundf.solarcalc.restapi.security.SolarcalcScopes
+import io.github.raginlundf.solarcalc.domain.services.auth.SolarcalcScopes
+import io.github.raginlundf.solarcalc.restapi.security.CurrentUser
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -28,43 +28,45 @@ class EnergyProfileController(
 
     @LogDuration
     @GetMapping
-    @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_PROFILES_READ}')")
+    @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_READ}')")
     fun list(): List<EnergyProfileResponse> {
-        return profileDomainController.list()
+        return profileDomainController.list(username = CurrentUser.requireUsername())
     }
 
     @LogDuration
     @GetMapping("/{profileUuid}")
-    @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_PROFILES_READ}')")
+    @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_READ}')")
     fun get(@PathVariable profileUuid: String): EnergyProfileResponse {
-        return profileDomainController.get(profileUuid = profileUuid)
+        return profileDomainController.get(profileUuid = profileUuid, username = CurrentUser.requireUsername())
     }
 
     @LogDuration
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_PROFILES_WRITE}')")
+    @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_WRITE}')")
     fun create(@Valid @RequestBody request: CreateEnergyProfileRequest): EnergyProfileResponse {
-        val username = SecurityContextHolder.getContext().authentication?.name
-            ?: throw IllegalStateException("No authenticated user")
-        return profileDomainController.create(request = request, username = username)
+        return profileDomainController.create(request = request, username = CurrentUser.requireUsername())
     }
 
     @LogDuration
     @PutMapping("/{profileUuid}")
-    @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_PROFILES_WRITE}')")
+    @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_WRITE}')")
     fun update(
         @PathVariable profileUuid: String,
         @Valid @RequestBody request: UpdateEnergyProfileRequest
     ): EnergyProfileResponse {
-        return profileDomainController.update(profileUuid = profileUuid, request = request)
+        return profileDomainController.update(
+            profileUuid = profileUuid,
+            request = request,
+            username = CurrentUser.requireUsername(),
+        )
     }
 
     @LogDuration
     @DeleteMapping("/{profileUuid}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_PROFILES_WRITE}')")
+    @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_WRITE}')")
     fun delete(@PathVariable profileUuid: String) {
-        profileDomainController.delete(profileUuid = profileUuid)
+        profileDomainController.delete(profileUuid = profileUuid, username = CurrentUser.requireUsername())
     }
 }

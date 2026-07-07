@@ -9,7 +9,7 @@ services:
       SPRING_PROFILES_ACTIVE: docker
       SPRING_DATASOURCE_URL: jdbc:mariadb://solarcalc-db:3306/solarcalc
       SPRING_DATASOURCE_USERNAME: solarcalc
-      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-solarcalc}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD must be set}
       SOLARCALC_JWT_SECRET: ${SOLARCALC_JWT_SECRET}
     restart: unless-stopped
     depends_on:
@@ -21,8 +21,8 @@ services:
     environment:
       MARIADB_DATABASE: solarcalc
       MARIADB_USER: solarcalc
-      MARIADB_PASSWORD: ${DB_PASSWORD:-solarcalc}
-      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root}
+      MARIADB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD must be set}
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?DB_ROOT_PASSWORD must be set}
     ports:
       - "3306:3306"
     volumes:

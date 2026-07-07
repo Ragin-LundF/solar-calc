@@ -18,22 +18,24 @@ class MonthlyEnergyInputDomainControllerImpl(
     private val inputRepository: MonthlyEnergyInputRepository,
 ) : MonthlyEnergyInputDomainController {
 
-    override fun list(profileUuid: String): List<MonthlyEnergyInputResponse> {
-        val profile = requireProfile(profileUuid = profileUuid)
+    override fun list(profileUuid: String, username: String): List<MonthlyEnergyInputResponse> {
+        val profile = requireProfile(profileUuid = profileUuid, username = username)
         return inputRepository.findAllByEnergyProfileId(energyProfileId = profile.id!!)
             .map { it.toResponse(energyProfileUuid = profileUuid) }
     }
 
-    override fun get(profileUuid: String, inputId: Long): MonthlyEnergyInputResponse {
-        requireProfile(profileUuid = profileUuid)
-        return inputRepository.findById(inputId).orElseThrow {
-            ResourceNotFoundException(message = "MonthlyInput $inputId not found")
-        }.toResponse(energyProfileUuid = profileUuid)
+    override fun get(profileUuid: String, inputId: Long, username: String): MonthlyEnergyInputResponse {
+        val profile = requireProfile(profileUuid = profileUuid, username = username)
+        return requireInput(inputId = inputId, profileId = profile.id!!)
+            .toResponse(energyProfileUuid = profileUuid)
     }
 
-    override fun create(profileUuid: String, request: UpsertMonthlyEnergyInputRequest): MonthlyEnergyInputResponse {
-        val profile = profileRepository.findByUuid(profileUuid)
-            ?: throw ResourceNotFoundException(message = "Profile $profileUuid not found")
+    override fun create(
+        profileUuid: String,
+        request: UpsertMonthlyEnergyInputRequest,
+        username: String,
+    ): MonthlyEnergyInputResponse {
+        val profile = requireProfile(profileUuid = profileUuid, username = username)
 
         val existing = inputRepository.findByEnergyProfileIdAndPeriod(
             energyProfileId = profile.id!!,
@@ -53,28 +55,30 @@ class MonthlyEnergyInputDomainControllerImpl(
     override fun update(
         profileUuid: String,
         inputId: Long,
-        request: UpsertMonthlyEnergyInputRequest
+        request: UpsertMonthlyEnergyInputRequest,
+        username: String,
     ): MonthlyEnergyInputResponse {
-        requireProfile(profileUuid = profileUuid)
-        val input = inputRepository.findById(inputId).orElseThrow {
-            ResourceNotFoundException(message = "MonthlyInput $inputId not found")
-        }
+        val profile = requireProfile(profileUuid = profileUuid, username = username)
+        val input = requireInput(inputId = inputId, profileId = profile.id!!)
         input.applyRequest(request = request)
         input.updatedAt = LocalDateTime.now()
         return inputRepository.save(input).toResponse(energyProfileUuid = profileUuid)
     }
 
-    override fun delete(profileUuid: String, inputId: Long) {
-        requireProfile(profileUuid = profileUuid)
-        val input = inputRepository.findById(inputId).orElseThrow {
-            ResourceNotFoundException(message = "MonthlyInput $inputId not found")
-        }
+    override fun delete(profileUuid: String, inputId: Long, username: String) {
+        val profile = requireProfile(profileUuid = profileUuid, username = username)
+        val input = requireInput(inputId = inputId, profileId = profile.id!!)
         inputRepository.delete(input)
     }
 
-    private fun requireProfile(profileUuid: String): EnergyProfile {
-        return profileRepository.findByUuid(uuid = profileUuid)
+    private fun requireProfile(profileUuid: String, username: String): EnergyProfile {
+        return profileRepository.findByUuidAndUserUsername(uuid = profileUuid, userUsername = username)
             ?: throw ResourceNotFoundException(message = "Profile $profileUuid not found")
+    }
+
+    private fun requireInput(inputId: Long, profileId: Long): MonthlyEnergyInput {
+        return inputRepository.findByIdAndEnergyProfileId(id = inputId, energyProfileId = profileId)
+            ?: throw ResourceNotFoundException(message = "MonthlyInput $inputId not found")
     }
 }
 

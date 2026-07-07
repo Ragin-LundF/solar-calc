@@ -8,6 +8,7 @@ import io.github.raginlundf.solarcalc.dtos.auth.RegisterRequestDto
 import io.github.raginlundf.solarcalc.dtos.auth.UpdateSetupStepRequestDto
 import io.github.raginlundf.solarcalc.dtos.error.InvalidCredentialsException
 import io.github.raginlundf.solarcalc.dtos.error.UsernameAlreadyExistsException
+import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.context.SecurityContextHolder
@@ -25,7 +26,7 @@ class AuthController(
 
     @LogDuration
     @PostMapping("/register")
-    fun register(@RequestBody request: RegisterRequestDto): ResponseEntity<Any> {
+    fun register(@Valid @RequestBody request: RegisterRequestDto): ResponseEntity<Any> {
         return try {
             val response = authDomainController.register(request = request)
             ResponseEntity.status(HttpStatus.CREATED).body(response as Any)
@@ -36,7 +37,7 @@ class AuthController(
 
     @LogDuration
     @PostMapping("/login")
-    fun login(@RequestBody request: LoginRequestDto): ResponseEntity<Any> {
+    fun login(@Valid @RequestBody request: LoginRequestDto): ResponseEntity<Any> {
         return try {
             val response = authDomainController.login(request = request)
             ResponseEntity.ok(response as Any)

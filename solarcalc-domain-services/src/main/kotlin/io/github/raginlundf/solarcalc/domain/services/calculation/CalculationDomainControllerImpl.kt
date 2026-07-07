@@ -33,10 +33,11 @@ class CalculationDomainControllerImpl(
     @Transactional
     override fun calculate(
         profileUuid: String,
+        username: String,
         startDate: LocalDate?,
         endDate: LocalDate?,
     ): CalculationResponse {
-        val profile = profileRepository.findByUuid(profileUuid)
+        val profile = profileRepository.findByUuidAndUserUsername(uuid = profileUuid, userUsername = username)
             ?: throw ResourceNotFoundException("Profile $profileUuid not found")
 
         val period = resolvePeriod(profileId = profile.id!!, startDate = startDate, endDate = endDate)
@@ -95,11 +96,12 @@ class CalculationDomainControllerImpl(
 
     override fun compareScenarios(
         profileUuid: String,
+        username: String,
         startDate: LocalDate?,
         endDate: LocalDate?,
         request: ScenarioComparisonRequest
     ): List<CalculationResponse> {
-        val profile = profileRepository.findByUuid(uuid = profileUuid)
+        val profile = profileRepository.findByUuidAndUserUsername(uuid = profileUuid, userUsername = username)
             ?: throw ResourceNotFoundException(message = "Profile $profileUuid not found")
 
         val period = resolvePeriod(profileId = profile.id!!, startDate = startDate, endDate = endDate)

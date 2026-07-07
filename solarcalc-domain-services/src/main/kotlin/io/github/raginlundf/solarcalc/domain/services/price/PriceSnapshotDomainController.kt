@@ -4,9 +4,14 @@ import io.github.raginlundf.solarcalc.dtos.price.PriceSnapshotResponse
 import io.github.raginlundf.solarcalc.dtos.price.UpsertPriceSnapshotRequest
 
 interface PriceSnapshotDomainController {
-    fun list(profileUuid: String): List<PriceSnapshotResponse>
-    fun get(profileUuid: String, priceId: Long): PriceSnapshotResponse
-    fun create(profileUuid: String, request: UpsertPriceSnapshotRequest): PriceSnapshotResponse
-    fun update(profileUuid: String, priceId: Long, request: UpsertPriceSnapshotRequest): PriceSnapshotResponse
-    fun delete(profileUuid: String, priceId: Long)
+    fun list(profileUuid: String, username: String): List<PriceSnapshotResponse>
+    fun get(profileUuid: String, priceId: Long, username: String): PriceSnapshotResponse
+    fun create(profileUuid: String, request: UpsertPriceSnapshotRequest, username: String): PriceSnapshotResponse
+    fun update(
+        profileUuid: String,
+        priceId: Long,
+        request: UpsertPriceSnapshotRequest,
+        username: String,
+    ): PriceSnapshotResponse
+    fun delete(profileUuid: String, priceId: Long, username: String)
 }

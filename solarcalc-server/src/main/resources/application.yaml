@@ -7,8 +7,6 @@ server:
     enabled: true
 
 spring:
-  main:
-    allow-bean-definition-overriding: true
   application:
     name: solar-calc
   threads:
@@ -47,7 +45,7 @@ spring:
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     open-in-view: false
-    show-sql: true
+    show-sql: false
   liquibase:
     change-log: classpath:db/db.changelog-master.xml
 
@@ -55,6 +53,9 @@ solarcalc:
   security:
     jwt:
       secret-key: ${SOLARCALC_JWT_SECRET}
+      issuer: solarcalc
+      audience: solarcalc-api
+      access-token-validity-seconds: 28800
 
 management:
   endpoints:
@@ -63,6 +64,8 @@ management:
         include: health,info
   endpoint:
     health:
-      show-details: always
+      # Keep /actuator/health public for the fronting web server, but never leak
+      # component/DB details to anonymous callers (only to authorized principals).
+      show-details: when-authorized
 logging:
   config: "classpath:log4j2.xml"

@@ -1,12 +1,13 @@
 package io.github.raginlundf.solarcalc.restapi.input
 
 import io.github.raginlundf.logging.annotations.LogDuration
+import io.github.raginlundf.solarcalc.domain.services.auth.SolarcalcScopes
 import io.github.raginlundf.solarcalc.domain.services.input.MonthlyEnergyInputDomainController
 import io.github.raginlundf.solarcalc.dtos.error.ApiError
 import io.github.raginlundf.solarcalc.dtos.error.DuplicateInputException
 import io.github.raginlundf.solarcalc.dtos.input.MonthlyEnergyInputResponse
 import io.github.raginlundf.solarcalc.dtos.input.UpsertMonthlyEnergyInputRequest
-import io.github.raginlundf.solarcalc.restapi.security.SolarcalcScopes
+import io.github.raginlundf.solarcalc.restapi.security.CurrentUser
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -29,24 +30,31 @@ class MonthlyEnergyInputController(
 
     @LogDuration
     @GetMapping
-    @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_INPUTS_READ}')")
+    @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_READ}')")
     fun list(@PathVariable profileUuid: String): List<MonthlyEnergyInputResponse> {
-        return monthlyEnergyInputDomainController.list(profileUuid = profileUuid)
+        return monthlyEnergyInputDomainController.list(
+            profileUuid = profileUuid,
+            username = CurrentUser.requireUsername(),
+        )
     }
 
     @LogDuration
     @GetMapping("/{inputId}")
-    @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_INPUTS_READ}')")
+    @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_READ}')")
     fun get(
         @PathVariable profileUuid: String,
         @PathVariable inputId: Long,
     ): MonthlyEnergyInputResponse {
-        return monthlyEnergyInputDomainController.get(profileUuid = profileUuid, inputId = inputId)
+        return monthlyEnergyInputDomainController.get(
+            profileUuid = profileUuid,
+            inputId = inputId,
+            username = CurrentUser.requireUsername(),
+        )
     }
 
     @LogDuration
     @PostMapping
-    @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_INPUTS_WRITE}')")
+    @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_WRITE}')")
     fun create(
         @PathVariable profileUuid: String,
         @Valid @RequestBody request: UpsertMonthlyEnergyInputRequest,
@@ -69,6 +77,7 @@ class MonthlyEnergyInputController(
             val result = monthlyEnergyInputDomainController.create(
                 profileUuid = profileUuid,
                 request = request,
+                username = CurrentUser.requireUsername(),
             )
             ResponseEntity.status(HttpStatus.CREATED).body(result as Any)
         } catch (e: DuplicateInputException) {
@@ -83,7 +92,7 @@ class MonthlyEnergyInputController(
 
     @LogDuration
     @PutMapping("/{inputId}")
-    @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_INPUTS_WRITE}')")
+    @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_WRITE}')")
     fun update(
         @PathVariable profileUuid: String,
         @PathVariable inputId: Long,
@@ -107,6 +116,7 @@ class MonthlyEnergyInputController(
             profileUuid = profileUuid,
             inputId = inputId,
             request = request,
+            username = CurrentUser.requireUsername(),
         )
         return ResponseEntity.ok(result as Any)
     }
@@ -114,11 +124,15 @@ class MonthlyEnergyInputController(
     @LogDuration
     @DeleteMapping("/{inputId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_INPUTS_WRITE}')")
+    @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_WRITE}')")
     fun delete(
         @PathVariable profileUuid: String,
         @PathVariable inputId: Long,
     ) {
-        monthlyEnergyInputDomainController.delete(profileUuid = profileUuid, inputId = inputId)
+        monthlyEnergyInputDomainController.delete(
+            profileUuid = profileUuid,
+            inputId = inputId,
+            username = CurrentUser.requireUsername(),
+        )
     }
 }

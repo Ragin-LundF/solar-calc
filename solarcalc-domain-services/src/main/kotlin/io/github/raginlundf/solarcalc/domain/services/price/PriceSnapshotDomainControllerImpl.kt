@@ -16,22 +16,23 @@ class PriceSnapshotDomainControllerImpl(
     private val priceRepository: PriceSnapshotRepository,
 ) : PriceSnapshotDomainController {
 
-    override fun list(profileUuid: String): List<PriceSnapshotResponse> {
-        val profile = requireProfile(profileUuid = profileUuid)
+    override fun list(profileUuid: String, username: String): List<PriceSnapshotResponse> {
+        val profile = requireProfile(profileUuid = profileUuid, username = username)
         return priceRepository.findAllByEnergyProfileId(energyProfileId = profile.id!!)
             .map { it.toResponse(profileUuid) }
     }
 
-    override fun get(profileUuid: String, priceId: Long): PriceSnapshotResponse {
-        requireProfile(profileUuid = profileUuid)
-        return priceRepository.findById(priceId).orElseThrow {
-            ResourceNotFoundException("PriceSnapshot $priceId not found")
-        }.toResponse(profileUuid)
+    override fun get(profileUuid: String, priceId: Long, username: String): PriceSnapshotResponse {
+        val profile = requireProfile(profileUuid = profileUuid, username = username)
+        return requireSnapshot(priceId = priceId, profileId = profile.id!!).toResponse(profileUuid)
     }
 
-    override fun create(profileUuid: String, request: UpsertPriceSnapshotRequest): PriceSnapshotResponse {
-        val profile = profileRepository.findByUuid(profileUuid)
-            ?: throw ResourceNotFoundException("Profile $profileUuid not found")
+    override fun create(
+        profileUuid: String,
+        request: UpsertPriceSnapshotRequest,
+        username: String,
+    ): PriceSnapshotResponse {
+        val profile = requireProfile(profileUuid = profileUuid, username = username)
 
         val snapshot = PriceSnapshot().apply {
             this.energyProfile = profile
@@ -44,27 +45,29 @@ class PriceSnapshotDomainControllerImpl(
         profileUuid: String,
         priceId: Long,
         request: UpsertPriceSnapshotRequest,
+        username: String,
     ): PriceSnapshotResponse {
-        requireProfile(profileUuid = profileUuid)
-        val snapshot = priceRepository.findById(priceId).orElseThrow {
-            ResourceNotFoundException("PriceSnapshot $priceId not found")
-        }
+        val profile = requireProfile(profileUuid = profileUuid, username = username)
+        val snapshot = requireSnapshot(priceId = priceId, profileId = profile.id!!)
         snapshot.applyRequest(request)
         snapshot.updatedAt = LocalDateTime.now()
         return priceRepository.save(snapshot).toResponse(profileUuid)
     }
 
-    override fun delete(profileUuid: String, priceId: Long) {
-        requireProfile(profileUuid = profileUuid)
-        val snapshot = priceRepository.findById(priceId).orElseThrow {
-            ResourceNotFoundException("PriceSnapshot $priceId not found")
-        }
+    override fun delete(profileUuid: String, priceId: Long, username: String) {
+        val profile = requireProfile(profileUuid = profileUuid, username = username)
+        val snapshot = requireSnapshot(priceId = priceId, profileId = profile.id!!)
         priceRepository.delete(snapshot)
     }
 
-    private fun requireProfile(profileUuid: String): EnergyProfile {
-        return profileRepository.findByUuid(profileUuid)
+    private fun requireProfile(profileUuid: String, username: String): EnergyProfile {
+        return profileRepository.findByUuidAndUserUsername(uuid = profileUuid, userUsername = username)
             ?: throw ResourceNotFoundException("Profile $profileUuid not found")
+    }
+
+    private fun requireSnapshot(priceId: Long, profileId: Long): PriceSnapshot {
+        return priceRepository.findByIdAndEnergyProfileId(id = priceId, energyProfileId = profileId)
+            ?: throw ResourceNotFoundException("PriceSnapshot $priceId not found")
     }
 }
 
