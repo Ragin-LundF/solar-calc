@@ -14,7 +14,6 @@ data class SummaryMonthInput(
     val heatPumpKwh: BigDecimal,
     val wallboxKwh: BigDecimal,
     val gridPrice: BigDecimal,
-    val referencePrice: BigDecimal,
     val feedInTariff: BigDecimal,
     val petrolPrice: BigDecimal,
     /** Annual heating reference cost (€/year), 0 when no heating reference is configured. */

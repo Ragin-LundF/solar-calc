@@ -13,7 +13,10 @@
           <th class="px-4 py-2.5 text-left font-medium">{{ 'solar.col.month' | translate }}</th>
           <th class="px-4 py-2.5 text-right font-medium">{{ 'solar.col.consumption' | translate }}</th>
           <th class="px-4 py-2.5 text-right font-medium">{{ 'solar.col.km' | translate }}</th>
+          <th class="px-4 py-2.5 text-right font-medium">{{ 'solar.col.solarShare' | translate }}</th>
+          <th class="px-4 py-2.5 text-right font-medium">{{ 'solar.col.gridDraw' | translate }}</th>
           <th class="px-4 py-2.5 text-right font-medium">{{ 'solar.col.gasolineEquiv' | translate }}</th>
+          <th class="px-4 py-2.5 text-right font-medium">{{ 'solar.k.chargingCost' | translate }}</th>
           <th class="px-4 py-2.5 text-right font-medium">{{ 'solar.col.savings' | translate }}</th>
         </tr>
       </thead>
@@ -23,7 +26,10 @@
             <td class="px-4 py-2.5">{{ monthLongLabel(m.period) }}</td>
             <td class="px-4 py-2.5 text-right text-solar-gray">{{ fmtKWh(m.wallboxConsumptionKwh) }}</td>
             <td class="px-4 py-2.5 text-right text-solar-gray">{{ fmtKm(m.estimatedKm) }}</td>
+            <td class="px-4 py-2.5 text-right text-solar-green">{{ fmtKWh(m.wallboxSolarKwh) }}</td>
+            <td class="px-4 py-2.5 text-right text-solar-gray">{{ fmtKWh(m.wallboxGridKwh) }}</td>
             <td class="px-4 py-2.5 text-right text-solar-red-soft">{{ fmtEUR(m.gasolineEquivalentCost) }}</td>
+            <td class="px-4 py-2.5 text-right text-solar-blue">{{ fmtEUR(m.wallboxCostWithSolar) }}</td>
             <td class="px-4 py-2.5 text-right text-solar-green">{{ fmtEUR(m.wallboxSavingsVsGasoline) }}</td>
           </tr>
         }

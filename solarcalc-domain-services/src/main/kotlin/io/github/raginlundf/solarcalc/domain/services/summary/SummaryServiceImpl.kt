@@ -67,19 +67,16 @@ class SummaryServiceImpl : SummaryService {
             demand = householdDemand,
             solar = solar.getValue(AllocationCategory.HOUSEHOLD),
             gridPrice = month.gridPrice,
-            referencePrice = month.referencePrice,
         )
         val heatPump = costPair(
             demand = heatPumpDemand,
             solar = solar.getValue(AllocationCategory.HEAT_PUMP),
             gridPrice = month.gridPrice,
-            referencePrice = month.referencePrice,
         )
         val wallbox = costPair(
             demand = wallboxDemand,
             solar = solar.getValue(AllocationCategory.WALLBOX),
             gridPrice = month.gridPrice,
-            referencePrice = month.referencePrice,
         )
 
         val heizPct = params.heatingDistribution.getOrElse(monthIndex(month.period)) { 0 }
@@ -147,11 +144,11 @@ class SummaryServiceImpl : SummaryService {
         demand: BigDecimal,
         solar: BigDecimal,
         gridPrice: BigDecimal,
-        referencePrice: BigDecimal,
     ): CostPair {
         val grid = (demand - solar).max(BigDecimal.ZERO)
         val costWithoutSolar = demand * gridPrice
-        val costWithSolar = grid * gridPrice + solar * referencePrice
+        // Self-consumed solar is free; the real cost is only the grid top-up.
+        val costWithSolar = grid * gridPrice
         return CostPair(
             solar = solar,
             grid = grid,

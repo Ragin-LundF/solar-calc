@@ -62,7 +62,6 @@ export interface MonthlyInput {
   householdConsumptionKwh: number | null;
   heatPumpConsumptionKwh: number | null;
   wallboxConsumptionKwh: number | null;
-  referencePrice: number | null;
 }
 
 export interface EnergyProfile {

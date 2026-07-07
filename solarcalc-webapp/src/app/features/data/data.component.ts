@@ -16,10 +16,9 @@ interface EntryForm {
   household: string;
   heatPump: string;
   wallbox: string;
-  refPrice: string;
 }
 
-const EMPTY_FORM: EntryForm = { period: '', generation: '', feedIn: '', household: '', heatPump: '', wallbox: '', refPrice: '' };
+const EMPTY_FORM: EntryForm = { period: '', generation: '', feedIn: '', household: '', heatPump: '', wallbox: '' };
 
 @Component({
   selector: 'app-data',
@@ -47,7 +46,6 @@ export class DataComponent {
   readonly distValid = computed(() => this.distSum() === 100);
 
   readonly rows = computed(() => [...this.months()].sort((a, b) => b.period.localeCompare(a.period)));
-  readonly refPlaceholder = computed(() => String(this.profileStore.profile()?.defaultElectricityPrice ?? ''));
 
   constructor() {
     effect(() => {
@@ -97,7 +95,6 @@ export class DataComponent {
       householdConsumptionKwh: this.num(f.household),
       heatPumpConsumptionKwh: this.num(f.heatPump),
       wallboxConsumptionKwh: this.num(f.wallbox),
-      referencePrice: this.num(f.refPrice),
     };
 
     const existing = this.months().find(m => m.period === f.period);

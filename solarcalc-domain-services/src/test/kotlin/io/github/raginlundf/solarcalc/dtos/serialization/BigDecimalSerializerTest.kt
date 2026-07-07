@@ -14,7 +14,7 @@ class BigDecimalSerializerTest {
     @Test
     fun `decodes unquoted JSON numbers`() {
         val request = json.decodeFromString<UpsertMonthlyEnergyInputRequest>(
-            """{"period":"2024-12","generationKwh":400.6,"feedInKwh":11.5,"referencePrice":null}""",
+            """{"period":"2024-12","generationKwh":400.6,"feedInKwh":11.5}""",
         )
         assertEquals(BigDecimal("400.6"), request.generationKwh)
         assertEquals(BigDecimal("11.5"), request.feedInKwh)

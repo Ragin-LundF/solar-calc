@@ -59,10 +59,6 @@ class MonthlyEnergyInput {
     @Column(name = "wallbox_consumption_kwh", precision = 12, scale = 3)
     var wallboxConsumptionKwh: BigDecimal? = null
 
-    /** Monthly reference/opportunity price (€/kWh) attributed to self-consumed solar. Defaults to the grid price. */
-    @Column(name = "reference_price", precision = 12, scale = 6)
-    var referencePrice: BigDecimal? = null
-
     @Column(name = "electricity_price_override", precision = 12, scale = 6)
     var electricityPriceOverride: BigDecimal? = null
 

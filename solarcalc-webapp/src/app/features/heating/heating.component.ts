@@ -7,7 +7,7 @@ import { MonthlySummary } from '@/core/api/models';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AnalysisKpi, AnalysisLayoutComponent } from '@/shared/components/analysis-layout/analysis-layout.component';
 import { BarSeries } from '@/shared/components/charts/bar-chart.component';
-import { fmtEUR, fmtPct, monthLongLabel } from '@/shared/utils/format';
+import { fmtEUR, fmtKWh, fmtPct, monthLongLabel } from '@/shared/utils/format';
 
 @Component({
   selector: 'app-heating',
@@ -23,6 +23,7 @@ export class HeatingComponent {
   readonly loading = this.store.loading;
   readonly error = this.store.error;
   readonly fmtEUR = fmtEUR;
+  readonly fmtKWh = fmtKWh;
   readonly fmtPct = fmtPct;
   readonly monthLongLabel = monthLongLabel;
   readonly gridFmt = fmtEUR;

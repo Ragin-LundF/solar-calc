@@ -53,7 +53,6 @@ class SummaryDomainControllerImpl(
                 heatPumpKwh = input.heatPumpConsumptionKwh ?: BigDecimal.ZERO,
                 wallboxKwh = input.wallboxConsumptionKwh ?: BigDecimal.ZERO,
                 gridPrice = gridPrice,
-                referencePrice = input.referencePrice ?: gridPrice,
                 feedInTariff = input.feedInTariffOverride ?: prices.feedInTariff ?: BigDecimal.ZERO,
                 petrolPrice = input.petrolPriceOverride ?: prices.petrolPrice ?: BigDecimal.ZERO,
                 heizReferenzJahr = input.heatingReferenceCostOverride ?: prices.heatingReferenceCost ?: BigDecimal.ZERO,

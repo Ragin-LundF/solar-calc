@@ -15,6 +15,8 @@
         <tr>
           <th class="px-4 py-2.5 text-left font-medium">{{ 'solar.col.month' | translate }}</th>
           <th class="px-4 py-2.5 text-right font-medium">{{ 'solar.col.distribution' | translate }}</th>
+          <th class="px-4 py-2.5 text-right font-medium">{{ 'solar.col.solarShare' | translate }}</th>
+          <th class="px-4 py-2.5 text-right font-medium">{{ 'solar.col.gridDraw' | translate }}</th>
           <th class="px-4 py-2.5 text-right font-medium">{{ 'solar.col.oilCost' | translate }}</th>
           <th class="px-4 py-2.5 text-right font-medium">{{ 'solar.col.heatPumpCost' | translate }}</th>
           <th class="px-4 py-2.5 text-right font-medium">{{ 'solar.col.savings' | translate }}</th>
@@ -25,6 +27,8 @@
           <tr class="border-t border-solar-row">
             <td class="px-4 py-2.5">{{ monthLongLabel(m.period) }}</td>
             <td class="px-4 py-2.5 text-right text-solar-text2">{{ fmtPct(m.heizPct) }}</td>
+            <td class="px-4 py-2.5 text-right text-solar-green">{{ fmtKWh(m.heatPumpSolarKwh) }}</td>
+            <td class="px-4 py-2.5 text-right text-solar-gray">{{ fmtKWh(m.heatPumpGridKwh) }}</td>
             <td class="px-4 py-2.5 text-right text-solar-red-soft">{{ fmtEUR(m.oilCost) }}</td>
             <td class="px-4 py-2.5 text-right text-solar-blue">{{ fmtEUR(m.heatPumpCostWithSolar) }}</td>
             <td class="px-4 py-2.5 text-right text-solar-green">{{ fmtEUR(m.heatingSavings) }}</td>

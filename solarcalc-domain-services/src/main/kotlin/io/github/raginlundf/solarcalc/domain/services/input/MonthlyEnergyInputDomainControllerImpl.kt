@@ -94,7 +94,6 @@ private fun MonthlyEnergyInput.applyRequest(request: UpsertMonthlyEnergyInputReq
     householdConsumptionKwh = request.householdConsumptionKwh
     heatPumpConsumptionKwh = request.heatPumpConsumptionKwh
     wallboxConsumptionKwh = request.wallboxConsumptionKwh
-    referencePrice = request.referencePrice
     electricityPriceOverride = request.electricityPriceOverride
     feedInTariffOverride = request.feedInTariffOverride
     petrolPriceOverride = request.petrolPriceOverride
@@ -112,7 +111,6 @@ private fun MonthlyEnergyInput.toResponse(energyProfileUuid: String): MonthlyEne
         householdConsumptionKwh = householdConsumptionKwh,
         heatPumpConsumptionKwh = heatPumpConsumptionKwh,
         wallboxConsumptionKwh = wallboxConsumptionKwh,
-        referencePrice = referencePrice,
         electricityPriceOverride = electricityPriceOverride,
         feedInTariffOverride = feedInTariffOverride,
         petrolPriceOverride = petrolPriceOverride,

@@ -18,7 +18,6 @@ data class MonthlyEnergyInputResponse(
     val householdConsumptionKwh: BigDecimal?,
     val heatPumpConsumptionKwh: BigDecimal?,
     val wallboxConsumptionKwh: BigDecimal?,
-    val referencePrice: BigDecimal?,
     val electricityPriceOverride: BigDecimal?,
     val feedInTariffOverride: BigDecimal?,
     val petrolPriceOverride: BigDecimal?,
