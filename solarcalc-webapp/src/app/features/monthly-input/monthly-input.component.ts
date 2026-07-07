@@ -9,7 +9,7 @@ import { ZardInputDirective } from '@/shared/components/input';
 import { ZardCardComponent } from '@/shared/components/card';
 
 interface MonthlyInputDto {
-  id?: number;
+  id: string;
   period: string;
   generationKwh: number;
   feedInKwh: number;
@@ -34,7 +34,7 @@ export class MonthlyInputComponent implements OnInit {
   readonly saved = signal(false);
   readonly error = signal<string | null>(null);
   readonly inputs = signal<MonthlyInputDto[]>([]);
-  readonly selectedPeriod = signal<string | null>(null);
+  readonly selectedInputId = signal<string | null>(null);
 
   readonly periodPattern = /^\d{4}-(0[1-9]|1[0-2])$/;
 
@@ -59,14 +59,14 @@ export class MonthlyInputComponent implements OnInit {
   }
 
   selectInput(input: MonthlyInputDto): void {
-    this.selectedPeriod.set(input.period);
+    this.selectedInputId.set(input.id);
     this.form.patchValue(input);
     this.saved.set(false);
     this.error.set(null);
   }
 
   newInput(): void {
-    this.selectedPeriod.set(null);
+    this.selectedInputId.set(null);
     this.form.reset();
     this.saved.set(false);
     this.error.set(null);
@@ -80,14 +80,19 @@ export class MonthlyInputComponent implements OnInit {
     this.saving.set(true);
     this.error.set(null);
     const body = this.form.getRawValue() as MonthlyInputDto;
+    const editId = this.selectedInputId();
 
-    this.api.post<MonthlyInputDto>(`/profiles/${pid}/monthly-inputs`, body).subscribe({
+    const request = editId
+      ? this.api.put<MonthlyInputDto>(`/profiles/${pid}/monthly-inputs/${editId}`, body)
+      : this.api.post<MonthlyInputDto>(`/profiles/${pid}/monthly-inputs`, body);
+
+    request.subscribe({
       next: saved => {
         this.inputs.update(list => {
-          const idx = list.findIndex(x => x.period === saved.period);
-          return idx >= 0 ? list.map(x => x.period === saved.period ? saved : x) : [...list, saved];
+          const idx = list.findIndex(x => x.id === saved.id);
+          return idx >= 0 ? list.map(x => x.id === saved.id ? saved : x) : [...list, saved];
         });
-        this.selectedPeriod.set(saved.period);
+        this.selectedInputId.set(saved.id);
         this.saving.set(false);
         this.saved.set(true);
       },

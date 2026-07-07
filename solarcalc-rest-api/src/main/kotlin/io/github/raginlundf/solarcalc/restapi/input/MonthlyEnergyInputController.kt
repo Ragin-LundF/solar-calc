@@ -39,15 +39,15 @@ class MonthlyEnergyInputController(
     }
 
     @LogDuration
-    @GetMapping("/{inputId}")
+    @GetMapping("/{inputUuid}")
     @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_READ}')")
     fun get(
         @PathVariable profileUuid: String,
-        @PathVariable inputId: Long,
+        @PathVariable inputUuid: String,
     ): MonthlyEnergyInputResponse {
         return monthlyEnergyInputDomainController.get(
             profileUuid = profileUuid,
-            inputId = inputId,
+            inputUuid = inputUuid,
             username = CurrentUser.requireUsername(),
         )
     }
@@ -91,11 +91,11 @@ class MonthlyEnergyInputController(
     }
 
     @LogDuration
-    @PutMapping("/{inputId}")
+    @PutMapping("/{inputUuid}")
     @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_WRITE}')")
     fun update(
         @PathVariable profileUuid: String,
-        @PathVariable inputId: Long,
+        @PathVariable inputUuid: String,
         @Valid @RequestBody request: UpsertMonthlyEnergyInputRequest,
     ): ResponseEntity<Any> {
         val feedInKwh = request.feedInKwh
@@ -114,7 +114,7 @@ class MonthlyEnergyInputController(
 
         val result = monthlyEnergyInputDomainController.update(
             profileUuid = profileUuid,
-            inputId = inputId,
+            inputUuid = inputUuid,
             request = request,
             username = CurrentUser.requireUsername(),
         )
@@ -122,16 +122,16 @@ class MonthlyEnergyInputController(
     }
 
     @LogDuration
-    @DeleteMapping("/{inputId}")
+    @DeleteMapping("/{inputUuid}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_WRITE}')")
     fun delete(
         @PathVariable profileUuid: String,
-        @PathVariable inputId: Long,
+        @PathVariable inputUuid: String,
     ) {
         monthlyEnergyInputDomainController.delete(
             profileUuid = profileUuid,
-            inputId = inputId,
+            inputUuid = inputUuid,
             username = CurrentUser.requireUsername(),
         )
     }

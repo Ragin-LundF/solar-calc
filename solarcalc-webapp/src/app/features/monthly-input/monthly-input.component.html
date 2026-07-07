@@ -16,10 +16,10 @@
         </button>
       </div>
       <div class="space-y-1">
-        @for (item of inputs(); track item.period) {
+        @for (item of inputs(); track item.id) {
           <button
             class="w-full text-left px-3 py-2 rounded text-sm hover:bg-accent transition-colors flex justify-between"
-            [class.bg-accent]="selectedPeriod() === item.period"
+            [class.bg-accent]="selectedInputId() === item.id"
             (click)="selectInput(item)"
           >
             <span>{{ item.period }}</span>
@@ -34,7 +34,7 @@
     <!-- Form -->
     <z-card class="p-4">
       <h2 class="text-sm font-medium mb-4">
-        {{ (selectedPeriod() ? 'monthlyInput.edit' : 'monthlyInput.new') | translate }}
+        {{ (selectedInputId() ? 'monthlyInput.edit' : 'monthlyInput.new') | translate }}
       </h2>
 
       <form [formGroup]="form" (ngSubmit)="save()" class="space-y-4">

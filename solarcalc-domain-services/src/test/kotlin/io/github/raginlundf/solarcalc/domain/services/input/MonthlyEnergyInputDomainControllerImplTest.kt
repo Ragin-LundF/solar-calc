@@ -11,6 +11,7 @@ import io.mockk.verify
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import java.util.UUID
 
 class MonthlyEnergyInputDomainControllerImplTest {
 
@@ -21,51 +22,55 @@ class MonthlyEnergyInputDomainControllerImplTest {
         inputRepository = inputRepository,
     )
 
+    private val profileUuid = UUID.randomUUID().toString()
+    private val inputUuid = UUID.randomUUID().toString()
+
     private fun ownedProfile(): EnergyProfile {
         return EnergyProfile().apply {
             id = 7L
-            uuid = "p1"
+            uuid = profileUuid
         }
     }
 
     @Test
     fun `get rejects access when the profile is not owned by the caller`() {
         every {
-            profileRepository.findByUuidAndUserUsername(uuid = "p1", userUsername = "mallory")
+            profileRepository.findByUuidAndUserUsername(uuid = profileUuid, userUsername = "mallory")
         } returns null
 
         assertFailsWith<ResourceNotFoundException> {
-            controller.get(profileUuid = "p1", inputId = 5L, username = "mallory")
+            controller.get(profileUuid = profileUuid, inputUuid = inputUuid, username = "mallory")
         }
-        verify(exactly = 0) { inputRepository.findByIdAndEnergyProfileId(any(), any()) }
+        verify(exactly = 0) { inputRepository.findByUuidAndEnergyProfileId(any(), any()) }
     }
 
     @Test
     fun `get rejects an input that belongs to a different profile`() {
         every {
-            profileRepository.findByUuidAndUserUsername(uuid = "p1", userUsername = "alice")
+            profileRepository.findByUuidAndUserUsername(uuid = profileUuid, userUsername = "alice")
         } returns ownedProfile()
-        every { inputRepository.findByIdAndEnergyProfileId(id = 5L, energyProfileId = 7L) } returns null
+        every { inputRepository.findByUuidAndEnergyProfileId(uuid = inputUuid, energyProfileId = 7L) } returns null
 
         assertFailsWith<ResourceNotFoundException> {
-            controller.get(profileUuid = "p1", inputId = 5L, username = "alice")
+            controller.get(profileUuid = profileUuid, inputUuid = inputUuid, username = "alice")
         }
     }
 
     @Test
     fun `get returns an input scoped to the caller's own profile`() {
         every {
-            profileRepository.findByUuidAndUserUsername(uuid = "p1", userUsername = "alice")
+            profileRepository.findByUuidAndUserUsername(uuid = profileUuid, userUsername = "alice")
         } returns ownedProfile()
-        every { inputRepository.findByIdAndEnergyProfileId(id = 5L, energyProfileId = 7L) } returns
+        every { inputRepository.findByUuidAndEnergyProfileId(uuid = inputUuid, energyProfileId = 7L) } returns
             MonthlyEnergyInput().apply {
                 id = 5L
+                uuid = inputUuid
                 period = "2024-03"
             }
 
-        val result = controller.get(profileUuid = "p1", inputId = 5L, username = "alice")
+        val result = controller.get(profileUuid = profileUuid, inputUuid = inputUuid, username = "alice")
 
-        assertEquals(expected = 5L, actual = result.id)
+        assertEquals(expected = inputUuid, actual = result.id)
         assertEquals(expected = "2024-03", actual = result.period)
     }
 }
