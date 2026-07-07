@@ -1,11 +1,11 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
-import { TranslatePipe } from '@ngx-translate/core';
-import { ApiService } from '@/core/api/api.service';
-import { AppStateService } from '@/core/state/app-state.service';
-import { ZardButtonComponent } from '@/shared/components/button';
-import { ZardCardComponent } from '@/shared/components/card';
-import { ZardBadgeComponent } from '@/shared/components/badge';
+import {ChangeDetectionStrategy, Component, inject, OnInit, signal} from '@angular/core';
+import {RouterLink} from '@angular/router';
+import {TranslatePipe} from '@ngx-translate/core';
+import {ApiService} from '@/core/api/api.service';
+import {AppStateService} from '@/core/state/app-state.service';
+import {ZardButtonComponent} from '@/shared/components/button';
+import {ZardCardComponent} from '@/shared/components/card';
+import {ZardBadgeComponent} from '@/shared/components/badge';
 
 type AllocationCategory = 'HOUSEHOLD' | 'HEAT_PUMP' | 'WALLBOX';
 
@@ -32,7 +32,7 @@ export class AllocationPolicyComponent implements OnInit {
   readonly error = signal<string | null>(null);
   readonly policyId = signal<number | null>(null);
 
-  readonly allCategories: AllocationCategory[] = ['HOUSEHOLD', 'HEAT_PUMP', 'WALLBOX'];
+  readonly allCategories: AllocationCategory[] = ['HEAT_PUMP', 'WALLBOX', 'HOUSEHOLD'];
   readonly priorityOrder = signal<AllocationCategory[]>([...this.allCategories]);
 
   ngOnInit(): void {
@@ -77,7 +77,7 @@ export class AllocationPolicyComponent implements OnInit {
 
     this.saving.set(true);
     this.error.set(null);
-    const body: AllocationPolicyDto = { name: 'Default', priorityOrder: this.priorityOrder() };
+    const body: AllocationPolicyDto = {name: 'Default', priorityOrder: this.priorityOrder()};
     const id = this.policyId();
     const call = id
       ? this.api.put<AllocationPolicyDto>(`/profiles/${pid}/allocation-policies/${id}`, body)
@@ -89,7 +89,10 @@ export class AllocationPolicyComponent implements OnInit {
         this.saving.set(false);
         this.saved.set(true);
       },
-      error: () => { this.saving.set(false); this.error.set('common.error'); },
+      error: () => {
+        this.saving.set(false);
+        this.error.set('common.error');
+      },
     });
   }
 }

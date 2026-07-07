@@ -58,7 +58,7 @@
     @if (r.completenessFlags.length > 0) {
       <div class="flex flex-wrap gap-2">
         @for (flag of r.completenessFlags; track flag) {
-          <z-badge zType="secondary">{{ flag }}</z-badge>
+          <z-badge zType="secondary">{{ 'completenessFlag.' + flag | translate }}</z-badge>
         }
       </div>
     }

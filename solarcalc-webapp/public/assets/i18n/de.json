@@ -66,6 +66,8 @@
   "dashboard": {
     "title": "Dashboard",
     "description": "Berechnen Sie Ihre Solar-Ersparnis",
+    "startDate": "Startdatum",
+    "endDate": "Enddatum",
     "noData": "Keine monatlichen Daten gefunden. Fügen Sie zuerst Daten auf der Seite 'Monatliche Daten' hinzu.",
     "noAllocationPolicy": "Keine Allokationspolitik festgelegt. Legen Sie zuerst die Reihenfolge fest.",
     "noAllocationPolicyAction": "Jetzt einrichten"
@@ -129,6 +131,15 @@
     "wallboxSavings": "Wallbox",
     "totalElectricitySavings": "Gesamtersparnis",
     "unallocatedKwh": "Nicht allokiert"
+  },
+  "completenessFlag": {
+    "COMPLETE": "Vollständig",
+    "MISSING_ELECTRICITY_PRICE": "Strompreis fehlt",
+    "MISSING_FEED_IN_TARIFF": "Einspeisevergütung fehlt",
+    "MISSING_PETROL_PRICE": "Benzinpreis fehlt",
+    "MISSING_HEATING_REFERENCE_COST": "Heizungsreferenzkosten fehlen",
+    "ALLOCATION_CAPPED_FEED_IN": "Allokation begrenzt Einspeisung",
+    "DERIVED_HOUSEHOLD_CONSUMPTION": "Abgeleiteter Haushaltsverbrauch"
   },
   "validation": {
     "feedInExceedsGeneration": "Einspeisung übersteigt Erzeugung",

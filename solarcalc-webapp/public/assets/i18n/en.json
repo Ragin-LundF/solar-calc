@@ -66,6 +66,8 @@
   "dashboard": {
     "title": "Dashboard",
     "description": "Calculate your solar savings",
+    "startDate": "Start Date",
+    "endDate": "End Date",
     "noData": "No monthly data found. Add data on the Monthly Data page first.",
     "noAllocationPolicy": "No allocation policy set. Set up priority order first.",
     "noAllocationPolicyAction": "Set up now"
@@ -129,6 +131,15 @@
     "wallboxSavings": "Wallbox",
     "totalElectricitySavings": "Total Savings",
     "unallocatedKwh": "Unallocated"
+  },
+  "completenessFlag": {
+    "COMPLETE": "Complete",
+    "MISSING_ELECTRICITY_PRICE": "Missing electricity price",
+    "MISSING_FEED_IN_TARIFF": "Missing feed-in tariff",
+    "MISSING_PETROL_PRICE": "Missing petrol price",
+    "MISSING_HEATING_REFERENCE_COST": "Missing heating reference cost",
+    "ALLOCATION_CAPPED_FEED_IN": "Allocation capped feed-in",
+    "DERIVED_HOUSEHOLD_CONSUMPTION": "Derived household consumption"
   },
   "validation": {
     "feedInExceedsGeneration": "Feed-in exceeds generation",
