@@ -26,6 +26,7 @@ These rules apply to all Kotlin code. A more specific repository instruction win
 - Comment complex logic, non-obvious decisions, trade-offs, and domain rules. Never add comments that restate obvious code.
 - Where this package defines no rule, follow the official Kotlin style guide.
 - Follow `.editorconfig` exactly (see `editorconfig-style.md`): indentation, line endings, charset, final newlines, max line length, Gherkin indentation.
+- DTO objects have always the suffix `Dto`
 
 ## Design expectations
 
