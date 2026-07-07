@@ -144,5 +144,145 @@
   "validation": {
     "feedInExceedsGeneration": "Feed-in exceeds generation",
     "invalidPeriod": "Period must be in YYYY-MM format"
+  },
+  "solar": {
+    "noData": "No data for the selected period.",
+    "tab": {
+      "overview": "Overview",
+      "production": "Production & Feed-in",
+      "heating": "Heating",
+      "household": "Household",
+      "wallbox": "Wallbox",
+      "total": "Total",
+      "data": "Data",
+      "settings": "Settings"
+    },
+    "title": {
+      "overview": "Overview",
+      "production": "Production & Feed-in",
+      "heating": "Heating",
+      "household": "Household",
+      "wallbox": "Wallbox",
+      "total": "Total",
+      "data": "Data",
+      "settings": "Settings"
+    },
+    "subtitle": {
+      "overview": "Savings and payback at a glance",
+      "production": "Solar production and grid feed-in",
+      "heating": "Heat pump versus reference heating",
+      "household": "Household electricity cost with and without solar",
+      "wallbox": "Charging electrically versus refuelling",
+      "total": "All savings combined",
+      "data": "Capture monthly readings and heating distribution",
+      "settings": "Allocation, profile and prices"
+    },
+    "filter": {
+      "ytd": "This year",
+      "12m": "Last 12 months",
+      "all": "All",
+      "custom": "Custom"
+    },
+    "k": {
+      "totalGeneration": "Total generation",
+      "selfConsumption": "Self-consumption",
+      "feedIn": "Feed-in",
+      "feedInRevenue": "Feed-in revenue",
+      "consumption": "Consumption",
+      "withoutSolar": "Without solar",
+      "withSolar": "With solar",
+      "savings": "Savings",
+      "oilReference": "Oil cost (reference)",
+      "heatPumpCost": "Heat pump cost",
+      "distributionSum": "Distribution sum",
+      "estimatedKm": "km estimated",
+      "gasolineEquivalent": "Petrol equivalent",
+      "chargingCost": "Charging cost",
+      "savingsVsGasoline": "Savings vs. refuelling",
+      "heating": "Heating",
+      "household": "Household",
+      "wallbox": "Wallbox",
+      "householdWallbox": "Household + wallbox",
+      "totalSavings": "Total savings"
+    },
+    "ct": {
+      "production": "Self-consumption & feed-in",
+      "household": "Household electricity: cost & savings",
+      "heating": "Oil reference vs. heat pump",
+      "wallbox": "Charging vs. refuelling",
+      "total": "All savings per month"
+    },
+    "col": {
+      "month": "Month",
+      "generation": "Generation",
+      "selfConsumption": "Self-consumption",
+      "feedIn": "Feed-in",
+      "share": "Share",
+      "revenue": "Revenue",
+      "consumption": "Consumption",
+      "withoutSolar": "Without solar",
+      "withSolar": "With solar",
+      "savings": "Savings",
+      "distribution": "Distribution",
+      "oilCost": "Oil cost",
+      "heatPumpCost": "HP cost",
+      "km": "km (est.)",
+      "gasolineEquiv": "Petrol equiv.",
+      "heating": "Heating",
+      "household": "Household",
+      "wallbox": "Wallbox",
+      "total": "Total"
+    },
+    "ks": {
+      "production": { "totalGeneration": "solar production", "selfConsumption": "self-used", "feedIn": "to grid", "revenue": "tariff" },
+      "household": { "consumption": "household electricity", "withoutSolar": "cost without PV", "withSolar": "cost with PV", "savings": "from self-consumption" },
+      "heating": { "oil": "reference heating", "hp": "actual", "savings": "vs. reference", "sum": "must equal 100%" },
+      "wallbox": { "consumption": "charging", "km": "driven", "gasoline": "fuel cost", "charging": "electric", "savings": "vs. refuelling" },
+      "total": { "feedIn": "grid feed-in", "heating": "vs. reference heating", "householdWallbox": "electricity & charging", "total": "everything combined" },
+      "overview": { "selfConsumption": "self-used solar energy", "feedIn": "grid feed-in tariff", "heating": "savings vs. reference heating", "household": "household electricity savings", "wallbox": "savings vs. refuelling" }
+    },
+    "ov": {
+      "layoutKpi": "KPI cards",
+      "layoutStory": "Story",
+      "chartMonthlyCumulative": "Monthly & cumulative savings",
+      "amortisation": "Payback",
+      "amortisedCaption": "paid off",
+      "contribution": "Savings composition",
+      "statusAmortised": "System paid off",
+      "statusExpected": "Expected {{month}}",
+      "statusUnknown": "Projection not possible",
+      "heroTitle": "Total savings in period",
+      "development": "Development"
+    },
+    "link": {
+      "editDistribution": "Edit monthly distribution →"
+    },
+    "data": {
+      "newMonth": "Capture new month",
+      "period": "Period",
+      "generation": "Generation (kWh)",
+      "feedIn": "Feed-in (kWh)",
+      "household": "Household (kWh)",
+      "heatPump": "Heat pump (kWh)",
+      "wallbox": "Wallbox (kWh)",
+      "refPrice": "Reference price (€/kWh)",
+      "add": "+ Add",
+      "monthsTitle": "Recorded months",
+      "distTitle": "Heating distribution over the year",
+      "distHelp": "The 12 values must sum to 100 %. They distribute the annual reference heating cost across the months for the oil comparison."
+    },
+    "settings": {
+      "allocationTitle": "Energy allocation",
+      "allocationHelp": "This order determines which consumer gets solar power first. It drives every cost and savings calculation.",
+      "profileTitle": "Profile",
+      "pricesTitle": "Prices & investment",
+      "electricity": "Electricity price (€/kWh)",
+      "feedIn": "Feed-in tariff (€/kWh)",
+      "petrol": "Petrol price (€/L)",
+      "liters": "Consumption (L/100km)",
+      "kmPerKwh": "EV efficiency (km/kWh)",
+      "heatingRefCost": "Heating reference cost (€/year)",
+      "invest": "System investment cost (€)"
+    }
   }
 }

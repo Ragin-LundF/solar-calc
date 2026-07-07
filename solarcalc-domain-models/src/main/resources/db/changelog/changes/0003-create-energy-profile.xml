@@ -32,6 +32,15 @@
             <column name="default_petrol_price" type="DECIMAL(12,6)" />
             <column name="default_oil_reference_cost" type="DECIMAL(12,2)" />
             <column name="default_gas_reference_cost" type="DECIMAL(12,2)" />
+            <column name="km_per_kwh" type="DECIMAL(8,3)" />
+            <column name="liters_per_100km" type="DECIMAL(8,3)" />
+            <column name="invest_kosten" type="DECIMAL(12,2)" />
+            <column name="heating_monthly_distribution" type="VARCHAR(100)" defaultValue="22,18,12,5,3,1,1,1,2,3,13,19">
+                <constraints nullable="false" />
+            </column>
+            <column name="overview_layout" type="VARCHAR(10)" defaultValue="KPI">
+                <constraints nullable="false" />
+            </column>
             <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
                 <constraints nullable="false" />
             </column>

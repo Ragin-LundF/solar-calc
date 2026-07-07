@@ -28,6 +28,7 @@
             <column name="household_consumption_kwh" type="DECIMAL(12,3)" />
             <column name="heat_pump_consumption_kwh" type="DECIMAL(12,3)" />
             <column name="wallbox_consumption_kwh" type="DECIMAL(12,3)" />
+            <column name="reference_price" type="DECIMAL(12,6)" />
             <column name="electricity_price_override" type="DECIMAL(12,6)" />
             <column name="feed_in_tariff_override" type="DECIMAL(12,6)" />
             <column name="petrol_price_override" type="DECIMAL(12,6)" />

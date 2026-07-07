@@ -4,54 +4,27 @@ import { authGuard } from '@/core/auth/auth.guard';
 export const routes: Routes = [
   {
     path: 'login',
-    loadComponent: () =>
-      import('@/features/login/login.component').then(m => m.LoginComponent),
+    loadComponent: () => import('@/features/login/login.component').then(m => m.LoginComponent),
   },
   {
     path: 'register',
-    loadComponent: () =>
-      import('@/features/register/register.component').then(m => m.RegisterComponent),
+    loadComponent: () => import('@/features/register/register.component').then(m => m.RegisterComponent),
   },
   {
     path: '',
     canActivate: [authGuard],
     children: [
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-      {
-        path: 'dashboard',
-        loadComponent: () =>
-          import('@/features/dashboard/dashboard.component').then(m => m.DashboardComponent),
-      },
-      {
-        path: 'monthly-input',
-        loadComponent: () =>
-          import('@/features/monthly-input/monthly-input.component').then(m => m.MonthlyInputComponent),
-      },
-      {
-        path: 'profile-settings',
-        loadComponent: () =>
-          import('@/features/profile-settings/profile-settings.component').then(m => m.ProfileSettingsComponent),
-      },
-      {
-        path: 'prices',
-        loadComponent: () =>
-          import('@/features/prices/prices.component').then(m => m.PricesComponent),
-      },
-      {
-        path: 'allocation-policy',
-        loadComponent: () =>
-          import('@/features/allocation-policy/allocation-policy.component').then(m => m.AllocationPolicyComponent),
-      },
-      {
-        path: 'setup',
-        loadComponent: () =>
-          import('@/features/setup-wizard/setup-wizard.component').then(m => m.SetupWizardComponent),
-      },
-
+      { path: '', redirectTo: 'overview', pathMatch: 'full' },
+      { path: 'overview', loadComponent: () => import('@/features/overview/overview.component').then(m => m.OverviewComponent) },
+      { path: 'production', loadComponent: () => import('@/features/production/production.component').then(m => m.ProductionComponent) },
+      { path: 'heating', loadComponent: () => import('@/features/heating/heating.component').then(m => m.HeatingComponent) },
+      { path: 'household', loadComponent: () => import('@/features/household/household.component').then(m => m.HouseholdComponent) },
+      { path: 'wallbox', loadComponent: () => import('@/features/wallbox/wallbox.component').then(m => m.WallboxComponent) },
+      { path: 'total', loadComponent: () => import('@/features/total/total.component').then(m => m.TotalComponent) },
+      { path: 'data', loadComponent: () => import('@/features/data/data.component').then(m => m.DataComponent) },
+      { path: 'settings', loadComponent: () => import('@/features/settings/settings.component').then(m => m.SettingsComponent) },
+      { path: 'setup', loadComponent: () => import('@/features/setup-wizard/setup-wizard.component').then(m => m.SetupWizardComponent) },
     ],
   },
-  {
-    path: '**',
-    redirectTo: 'dashboard',
-  },
+  { path: '**', redirectTo: 'overview' },
 ];

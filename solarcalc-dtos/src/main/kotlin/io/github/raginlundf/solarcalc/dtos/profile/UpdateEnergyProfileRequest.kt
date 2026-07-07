@@ -3,6 +3,7 @@
 package io.github.raginlundf.solarcalc.dtos.profile
 
 import io.github.raginlundf.solarcalc.domain.models.profile.HeatingReferenceType
+import io.github.raginlundf.solarcalc.domain.models.profile.OverviewLayout
 import io.github.raginlundf.solarcalc.dtos.serialization.BigDecimalSerializer
 import jakarta.validation.constraints.NotBlank
 import kotlinx.serialization.Serializable
@@ -20,4 +21,9 @@ data class UpdateEnergyProfileRequest(
     val defaultPetrolPrice: BigDecimal? = null,
     val defaultOilReferenceCost: BigDecimal? = null,
     val defaultGasReferenceCost: BigDecimal? = null,
+    val kmPerKwh: BigDecimal? = null,
+    val litersPer100km: BigDecimal? = null,
+    val investKosten: BigDecimal? = null,
+    val heatingMonthlyDistribution: List<Int>? = null,
+    val overviewLayout: OverviewLayout? = null,
 )

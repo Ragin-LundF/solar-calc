@@ -21,6 +21,7 @@ data class UpsertMonthlyEnergyInputRequest(
     val householdConsumptionKwh: BigDecimal? = null,
     val heatPumpConsumptionKwh: BigDecimal? = null,
     val wallboxConsumptionKwh: BigDecimal? = null,
+    val referencePrice: BigDecimal? = null,
     val electricityPriceOverride: BigDecimal? = null,
     val feedInTariffOverride: BigDecimal? = null,
     val petrolPriceOverride: BigDecimal? = null,

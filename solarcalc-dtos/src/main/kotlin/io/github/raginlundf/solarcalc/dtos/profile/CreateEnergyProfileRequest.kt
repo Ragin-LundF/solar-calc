@@ -20,4 +20,7 @@ data class CreateEnergyProfileRequest(
     val defaultPetrolPrice: BigDecimal? = null,
     val defaultOilReferenceCost: BigDecimal? = null,
     val defaultGasReferenceCost: BigDecimal? = null,
+    val kmPerKwh: BigDecimal? = null,
+    val litersPer100km: BigDecimal? = null,
+    val investKosten: BigDecimal? = null,
 )

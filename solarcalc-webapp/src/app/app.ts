@@ -1,31 +1,53 @@
 import { Component, computed, inject, signal, effect } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router';
+import { filter } from 'rxjs';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { AuthService } from '@/core/auth/auth.service';
 import { AppStateService } from '@/core/state/app-state.service';
+import { FilterService } from '@/core/state/filter.service';
+import { ProfileStore } from '@/core/api/profile.store';
+
+interface Tab {
+  id: string;
+  route: string;
+}
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, TranslatePipe],
+  imports: [RouterOutlet, RouterLink, TranslatePipe],
   templateUrl: './app.html',
 })
 export class App {
   private readonly translate = inject(TranslateService);
+  private readonly router = inject(Router);
   readonly auth = inject(AuthService);
   readonly state = inject(AppStateService);
+  readonly filterState = inject(FilterService);
+  // Instantiated app-wide so a stale/missing profile id self-heals on any page.
+  private readonly profileStore = inject(ProfileStore);
 
   readonly currentLang = computed(() => this.translate.currentLang() ?? 'de');
-  readonly dark = signal(localStorage.getItem('darkMode') === 'true');
+  readonly dark = signal(localStorage.getItem('darkMode') !== 'false');
 
-  readonly navItems = [
-    { route: '/dashboard', labelKey: 'navigation.dashboard', icon: '⚡' },
-    { route: '/monthly-input', labelKey: 'navigation.monthlyInput', icon: '📊' },
-    { route: '/profile-settings', labelKey: 'navigation.profileSettings', icon: '⚙️' },
-    { route: '/allocation-policy', labelKey: 'navigation.allocationPolicy', icon: '🔀' },
-    { route: '/prices', labelKey: 'navigation.prices', icon: '💶' },
+  readonly tabs: Tab[] = [
+    { id: 'overview', route: '/overview' },
+    { id: 'production', route: '/production' },
+    { id: 'heating', route: '/heating' },
+    { id: 'household', route: '/household' },
+    { id: 'wallbox', route: '/wallbox' },
+    { id: 'total', route: '/total' },
+    { id: 'data', route: '/data' },
+    { id: 'settings', route: '/settings' },
   ];
 
+  readonly activeTab = signal<string>(this.tabFromUrl(this.router.url));
+  readonly showFilter = computed(() => !['data', 'settings'].includes(this.activeTab()));
+
   constructor() {
+    this.router.events
+      .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
+      .subscribe(e => this.activeTab.set(this.tabFromUrl(e.urlAfterRedirects)));
+
     effect(() => {
       const isDark = this.dark();
       document.documentElement.classList.toggle('dark', isDark);
@@ -33,13 +55,21 @@ export class App {
     });
   }
 
+  private tabFromUrl(url: string): string {
+    const segment = url.split('?')[0].split('/').filter(Boolean)[0] ?? 'overview';
+    return this.tabs.some(t => t.id === segment) ? segment : 'overview';
+  }
+
+  setFilterMode(mode: 'ytd' | '12m' | 'all' | 'custom'): void {
+    this.filterState.mode.set(mode);
+  }
+
   toggleDark(): void {
     this.dark.update(v => !v);
   }
 
   toggleLang(): void {
-    const next = this.currentLang() === 'de' ? 'en' : 'de';
-    this.translate.use(next);
+    this.translate.use(this.currentLang() === 'de' ? 'en' : 'de');
   }
 
   logout(): void {

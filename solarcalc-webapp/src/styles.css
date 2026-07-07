@@ -111,6 +111,26 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+
+  /* Solar dashboard design palette (see .plan/design/README.md) */
+  --color-solar-bg: #0a0e14;
+  --color-solar-panel: #12161f;
+  --color-solar-border: #262c38;
+  --color-solar-tabbar: #0d1117;
+  --color-solar-tabbar-border: #1c222c;
+  --color-solar-thead: #181d27;
+  --color-solar-row: #1c222c;
+  --color-solar-input: #0d1117;
+  --color-solar-text: #e8eaed;
+  --color-solar-text2: #8b93a1;
+  --color-solar-muted: #5b6472;
+  --color-solar-blue: #3b82f6;
+  --color-solar-green: #22c55e;
+  --color-solar-green-ink: #04130a;
+  --color-solar-red: #f04438;
+  --color-solar-red-soft: #f97066;
+  --color-solar-amber: #eab308;
+  --color-solar-gray: #9aa4b2;
 }
 
 @layer base {
@@ -155,6 +175,9 @@
   border-radius: 5px;
   background: var(--muted);
 }
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { scrollbar-width: none; }
 
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(4px); }

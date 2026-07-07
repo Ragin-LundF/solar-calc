@@ -41,6 +41,9 @@ class ProfileDomainControllerImpl(
             defaultPetrolPrice = request.defaultPetrolPrice
             defaultOilReferenceCost = request.defaultOilReferenceCost
             defaultGasReferenceCost = request.defaultGasReferenceCost
+            kmPerKwh = request.kmPerKwh
+            litersPer100km = request.litersPer100km
+            investKosten = request.investKosten
         }
         val saved = profileRepository.save(profile)
         user.lastProfileUuid = saved.uuid
@@ -63,6 +66,11 @@ class ProfileDomainControllerImpl(
         profile.defaultPetrolPrice = request.defaultPetrolPrice
         profile.defaultOilReferenceCost = request.defaultOilReferenceCost
         profile.defaultGasReferenceCost = request.defaultGasReferenceCost
+        profile.kmPerKwh = request.kmPerKwh
+        profile.litersPer100km = request.litersPer100km
+        profile.investKosten = request.investKosten
+        request.heatingMonthlyDistribution?.let { profile.heatingMonthlyDistribution = it }
+        request.overviewLayout?.let { profile.overviewLayout = it }
         profile.updatedAt = LocalDateTime.now()
         return profileRepository.save(profile).toResponse()
     }
@@ -97,5 +105,10 @@ private fun EnergyProfile.toResponse(): EnergyProfileResponse {
         defaultPetrolPrice = defaultPetrolPrice,
         defaultOilReferenceCost = defaultOilReferenceCost,
         defaultGasReferenceCost = defaultGasReferenceCost,
+        kmPerKwh = kmPerKwh,
+        litersPer100km = litersPer100km,
+        investKosten = investKosten,
+        heatingMonthlyDistribution = heatingMonthlyDistribution,
+        overviewLayout = overviewLayout,
     )
 }

@@ -6,6 +6,7 @@ import io.github.raginlundf.extensions.kotlinToString
 import io.github.raginlundf.solarcalc.domain.models.profile.HeatingReferenceType
 import io.github.raginlundf.solarcalc.domain.models.user.User
 import jakarta.persistence.Column
+import jakarta.persistence.Convert
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
 import jakarta.persistence.Enumerated
@@ -20,6 +21,9 @@ import jakarta.persistence.Table
 import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.util.UUID
+
+/** Seasonal heating-demand curve (Jan..Dec), reused every calendar year. Sums to 100. */
+val DEFAULT_HEATING_DISTRIBUTION: List<Int> = listOf(22, 18, 12, 5, 3, 1, 1, 1, 2, 3, 13, 19)
 
 @Entity
 @Table(name = "energy_profile")
@@ -63,6 +67,27 @@ class EnergyProfile {
 
     @Column(name = "default_gas_reference_cost", precision = 12, scale = 2)
     var defaultGasReferenceCost: BigDecimal? = null
+
+    /** EV efficiency in km per kWh, used for the wallbox gasoline comparison. */
+    @Column(name = "km_per_kwh", precision = 8, scale = 3)
+    var kmPerKwh: BigDecimal? = null
+
+    /** Reference car consumption in liters per 100 km. */
+    @Column(name = "liters_per_100km", precision = 8, scale = 3)
+    var litersPer100km: BigDecimal? = null
+
+    /** Total system investment cost, used for payback/amortization tracking. */
+    @Column(name = "invest_kosten", precision = 12, scale = 2)
+    var investKosten: BigDecimal? = null
+
+    /** 12 percentages (Jan..Dec) of the annual heating cost, must sum to 100. */
+    @Convert(converter = IntListConverter::class)
+    @Column(name = "heating_monthly_distribution", length = 100, nullable = false)
+    var heatingMonthlyDistribution: List<Int> = DEFAULT_HEATING_DISTRIBUTION
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "overview_layout", nullable = false, length = 10)
+    var overviewLayout: OverviewLayout = OverviewLayout.KPI
 
     @Column(name = "created_at", nullable = false)
     var createdAt: LocalDateTime = LocalDateTime.now()

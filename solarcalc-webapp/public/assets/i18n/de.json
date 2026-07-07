@@ -144,5 +144,145 @@
   "validation": {
     "feedInExceedsGeneration": "Einspeisung übersteigt Erzeugung",
     "invalidPeriod": "Periode muss im Format YYYY-MM sein"
+  },
+  "solar": {
+    "noData": "Keine Daten für den gewählten Zeitraum.",
+    "tab": {
+      "overview": "Übersicht",
+      "production": "Erzeugung & Einspeisung",
+      "heating": "Heizung",
+      "household": "Haushalt",
+      "wallbox": "Wallbox",
+      "total": "Gesamtabrechnung",
+      "data": "Daten",
+      "settings": "Einstellungen"
+    },
+    "title": {
+      "overview": "Übersicht",
+      "production": "Erzeugung & Einspeisung",
+      "heating": "Heizung",
+      "household": "Haushalt",
+      "wallbox": "Wallbox",
+      "total": "Gesamtabrechnung",
+      "data": "Daten",
+      "settings": "Einstellungen"
+    },
+    "subtitle": {
+      "overview": "Ersparnis und Amortisation auf einen Blick",
+      "production": "Solarproduktion und Netzeinspeisung",
+      "heating": "Wärmepumpe im Vergleich zur Referenzheizung",
+      "household": "Haushaltsstromkosten mit und ohne Solar",
+      "wallbox": "Elektrisch laden im Vergleich zum Tanken",
+      "total": "Alle Ersparnisse zusammengefasst",
+      "data": "Monatswerte erfassen und Heizungsverteilung",
+      "settings": "Allokation, Profil und Preise"
+    },
+    "filter": {
+      "ytd": "Dieses Jahr",
+      "12m": "Letzte 12 Monate",
+      "all": "Alles",
+      "custom": "Benutzerdefiniert"
+    },
+    "k": {
+      "totalGeneration": "Gesamterzeugung",
+      "selfConsumption": "Eigenverbrauch",
+      "feedIn": "Einspeisung",
+      "feedInRevenue": "Einspeiseerlös",
+      "consumption": "Verbrauch",
+      "withoutSolar": "Ohne Solar",
+      "withSolar": "Mit Solar",
+      "savings": "Ersparnis",
+      "oilReference": "Öl-Kosten (Referenz)",
+      "heatPumpCost": "Wärmepumpe Kosten",
+      "distributionSum": "Verteilungssumme",
+      "estimatedKm": "km geschätzt",
+      "gasolineEquivalent": "Benzin-Äquivalent",
+      "chargingCost": "Kosten Ladung",
+      "savingsVsGasoline": "Ersparnis vs. Tanken",
+      "heating": "Heizung",
+      "household": "Haushalt",
+      "wallbox": "Wallbox",
+      "householdWallbox": "Haushalt + Wallbox",
+      "totalSavings": "Gesamtersparnis"
+    },
+    "ct": {
+      "production": "Eigenverbrauch & Einspeisung",
+      "household": "Haushaltsstrom: Kosten & Ersparnis",
+      "heating": "Öl-Referenz vs. Wärmepumpe",
+      "wallbox": "Laden vs. Tanken",
+      "total": "Alle Ersparnisse pro Monat"
+    },
+    "col": {
+      "month": "Monat",
+      "generation": "Erzeugung",
+      "selfConsumption": "Eigenverbrauch",
+      "feedIn": "Einspeisung",
+      "share": "Quote",
+      "revenue": "Erlös",
+      "consumption": "Verbrauch",
+      "withoutSolar": "Ohne Solar",
+      "withSolar": "Mit Solar",
+      "savings": "Ersparnis",
+      "distribution": "Verteilung",
+      "oilCost": "Öl-Kosten",
+      "heatPumpCost": "WP-Kosten",
+      "km": "km (geschätzt)",
+      "gasolineEquiv": "Benzin-Äquiv.",
+      "heating": "Heizung",
+      "household": "Haushalt",
+      "wallbox": "Wallbox",
+      "total": "Gesamt"
+    },
+    "ks": {
+      "production": { "totalGeneration": "Solarproduktion", "selfConsumption": "selbst genutzt", "feedIn": "ins Netz", "revenue": "Vergütung" },
+      "household": { "consumption": "Haushaltsstrom", "withoutSolar": "Kosten ohne PV", "withSolar": "Kosten mit PV", "savings": "durch Eigenverbrauch" },
+      "heating": { "oil": "Referenzheizung", "hp": "tatsächlich", "savings": "vs. Referenz", "sum": "muss 100 % sein" },
+      "wallbox": { "consumption": "Ladung", "km": "gefahren", "gasoline": "Tankkosten", "charging": "elektrisch", "savings": "vs. Tanken" },
+      "total": { "feedIn": "Netzeinspeisung", "heating": "vs. Referenzheizung", "householdWallbox": "Strom & Laden", "total": "alles zusammen" },
+      "overview": { "selfConsumption": "selbst genutzte Solarenergie", "feedIn": "Vergütung für Netzeinspeisung", "heating": "Ersparnis vs. Referenzheizung", "household": "Ersparnis Haushaltsstrom", "wallbox": "Ersparnis vs. Tanken" }
+    },
+    "ov": {
+      "layoutKpi": "KPI-Karten",
+      "layoutStory": "Story",
+      "chartMonthlyCumulative": "Monatliche & kumulierte Ersparnis",
+      "amortisation": "Amortisation",
+      "amortisedCaption": "amortisiert",
+      "contribution": "Zusammensetzung der Ersparnis",
+      "statusAmortised": "Anlage amortisiert",
+      "statusExpected": "Voraussichtlich {{month}}",
+      "statusUnknown": "Prognose nicht möglich",
+      "heroTitle": "Gesamtersparnis im Zeitraum",
+      "development": "Entwicklung"
+    },
+    "link": {
+      "editDistribution": "Monatsverteilung bearbeiten →"
+    },
+    "data": {
+      "newMonth": "Neuen Monat erfassen",
+      "period": "Periode",
+      "generation": "Erzeugung (kWh)",
+      "feedIn": "Einspeisung (kWh)",
+      "household": "Haushalt (kWh)",
+      "heatPump": "Wärmepumpe (kWh)",
+      "wallbox": "Wallbox (kWh)",
+      "refPrice": "Referenzpreis (€/kWh)",
+      "add": "+ Hinzufügen",
+      "monthsTitle": "Erfasste Monate",
+      "distTitle": "Heizungsverteilung über das Jahr",
+      "distHelp": "Die 12 Werte müssen zusammen 100 % ergeben. Sie verteilen die jährlichen Referenz-Heizkosten auf die Monate für den Öl-Vergleich."
+    },
+    "settings": {
+      "allocationTitle": "Energie-Allokation",
+      "allocationHelp": "Diese Reihenfolge bestimmt, welcher Verbraucher zuerst Solarstrom erhält. Sie steuert jede Kosten- und Ersparnisberechnung.",
+      "profileTitle": "Profil",
+      "pricesTitle": "Preise & Investition",
+      "electricity": "Strompreis (€/kWh)",
+      "feedIn": "Einspeisevergütung (€/kWh)",
+      "petrol": "Benzinpreis (€/L)",
+      "liters": "Verbrauch (L/100km)",
+      "kmPerKwh": "EV-Effizienz (km/kWh)",
+      "heatingRefCost": "Heizkosten Referenz (€/Jahr)",
+      "invest": "Investitionskosten Anlage (€)"
+    }
   }
 }
