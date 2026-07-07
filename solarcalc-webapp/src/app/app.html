@@ -21,7 +21,6 @@
         </nav>
 
         <div class="flex items-center gap-1 shrink-0 text-solar-text2">
-          <button (click)="toggleDark()" class="w-8 h-8 rounded-lg hover:bg-solar-panel hover:text-solar-text" [title]="'common.darkMode' | translate">{{ dark() ? '☾' : '☀' }}</button>
           <button (click)="toggleLang()" class="w-8 h-8 rounded-lg hover:bg-solar-panel hover:text-solar-text uppercase text-[11px] font-semibold">{{ currentLang() }}</button>
           <button (click)="logout()" class="w-8 h-8 rounded-lg hover:bg-solar-panel hover:text-solar-red" [title]="'auth.logout' | translate">⏻</button>
         </div>

@@ -261,6 +261,11 @@
     },
     "data": {
       "newMonth": "Neuen Monat erfassen",
+      "editMonth": "Monat bearbeiten",
+      "update": "Aktualisieren",
+      "cancel": "Abbrechen",
+      "actions": "Aktionen",
+      "confirmDelete": "Diesen Monat wirklich löschen?",
       "period": "Periode",
       "generation": "Erzeugung (kWh)",
       "feedIn": "Einspeisung (kWh)",

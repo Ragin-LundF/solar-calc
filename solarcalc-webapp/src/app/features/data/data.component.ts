@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { TranslatePipe } from '@ngx-translate/core';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucidePencil, lucideTrash2 } from '@ng-icons/lucide';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { firstValueFrom } from 'rxjs';
 import { ApiService } from '@/core/api/api.service';
 import { AppStateService } from '@/core/state/app-state.service';
@@ -23,7 +25,8 @@ const EMPTY_FORM: EntryForm = { period: '', generation: '', feedIn: '', househol
 @Component({
   selector: 'app-data',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [FormsModule, TranslatePipe],
+  imports: [FormsModule, TranslatePipe, NgIcon],
+  viewProviders: [provideIcons({ lucidePencil, lucideTrash2 })],
   templateUrl: './data.component.html',
 })
 export class DataComponent {
@@ -31,12 +34,14 @@ export class DataComponent {
   private readonly state = inject(AppStateService);
   private readonly summaryStore = inject(SummaryStore);
   private readonly profileStore = inject(ProfileStore);
+  private readonly translate = inject(TranslateService);
 
   readonly fmtKWh = fmtKWh;
   readonly monthLongLabel = monthLongLabel;
   readonly monthNames = MONTH_NAMES_DE;
 
   readonly form = signal<EntryForm>({ ...EMPTY_FORM });
+  readonly editingId = signal<string | null>(null);
   readonly months = signal<MonthlyInput[]>([]);
   readonly saving = signal(false);
   readonly error = signal<string | null>(null);
@@ -71,6 +76,38 @@ export class DataComponent {
     this.form.update(f => ({ ...f, [field]: value }));
   }
 
+  startEdit(m: MonthlyInput): void {
+    const str = (n: number | null): string => (n === null || n === undefined ? '' : String(n));
+    this.form.set({
+      period: m.period,
+      generation: str(m.generationKwh),
+      feedIn: str(m.feedInKwh),
+      household: str(m.householdConsumptionKwh),
+      heatPump: str(m.heatPumpConsumptionKwh),
+      wallbox: str(m.wallboxConsumptionKwh),
+    });
+    this.editingId.set(m.id);
+    this.error.set(null);
+  }
+
+  cancelEdit(): void {
+    this.form.set({ ...EMPTY_FORM });
+    this.editingId.set(null);
+  }
+
+  async remove(m: MonthlyInput): Promise<void> {
+    const pid = this.state.profileId();
+    if (!pid || !window.confirm(this.translate.instant('solar.data.confirmDelete'))) return;
+    try {
+      await firstValueFrom(this.api.delete(`/profiles/${pid}/monthly-inputs/${m.id}`));
+      if (this.editingId() === m.id) this.cancelEdit();
+      await this.loadMonths();
+      this.summaryStore.reload();
+    } catch {
+      this.error.set('common.error');
+    }
+  }
+
   setDist(index: number, value: number): void {
     this.dist.update(d => d.map((v, i) => (i === index ? (Number.isFinite(value) ? value : 0) : v)));
   }
@@ -97,14 +134,15 @@ export class DataComponent {
       wallboxConsumptionKwh: this.num(f.wallbox),
     };
 
-    const existing = this.months().find(m => m.period === f.period);
-    const call = existing
-      ? this.api.put(`/profiles/${pid}/monthly-inputs/${existing.id}`, body)
+    const targetId = this.editingId() ?? this.months().find(m => m.period === f.period)?.id;
+    const call = targetId
+      ? this.api.put(`/profiles/${pid}/monthly-inputs/${targetId}`, body)
       : this.api.post(`/profiles/${pid}/monthly-inputs`, body);
 
     try {
       await firstValueFrom(call);
       this.form.set({ ...EMPTY_FORM });
+      this.editingId.set(null);
       await this.loadMonths();
       this.summaryStore.reload();
     } catch {

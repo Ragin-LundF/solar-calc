@@ -261,6 +261,11 @@
     },
     "data": {
       "newMonth": "Capture new month",
+      "editMonth": "Edit month",
+      "update": "Update",
+      "cancel": "Cancel",
+      "actions": "Actions",
+      "confirmDelete": "Really delete this month?",
       "period": "Period",
       "generation": "Generation (kWh)",
       "feedIn": "Feed-in (kWh)",

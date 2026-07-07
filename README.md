@@ -1,92 +1,98 @@
-# Solar Calculator — Redesign Implementation
+# Solar Calculator
 
-Rebuild of the solar/heat-pump/wallbox savings calculator to the design in
-`.plan/design/` (README + `Solar Dashboard.dc.html` reference + screenshots).
+Solar Calculator (`solar-calc`) helps you find out what a photovoltaic system
+really costs — and really saves. Instead of relying on the glossy numbers from a
+sales brochure, you enter your own monthly energy data and the app works out how
+much money the sun is actually putting back in your pocket.
 
-Backend: Spring Boot 4 / Kotlin, all savings math in a `SummaryService`.
-Frontend: Angular 22, standalone components, signals, ZardUI primitives.
+## What it does
 
-Work proceeds **view by view** (backend + frontend together). This checklist is
-the source of truth — update it as tasks complete.
+You feed the app your real numbers — month by month solar generation, grid
+feed-in, household consumption, and optional loads like a heat pump or an EV
+wallbox — together with your electricity and feed-in tariffs. From that it
+calculates:
 
-## Task List
+- **Self-consumption vs. feed-in** — how much of your generated power you use
+  yourself and how much you sell back to the grid.
+- **Monthly and cumulative savings** — what you save each month and over time,
+  based on your own prices.
+- **Cost allocation** — how savings are split across household, heat pump, and
+  wallbox using configurable allocation policies.
+- **Payback projection** — when your investment pays for itself.
 
-### 0. Foundation (shared across all views)
-- [x] Backend: new `EnergyProfile` fields — `kmPerKwh`, `litersPer100km`,
-      `investKosten`, `heatingMonthlyDistribution` (12 %), `overviewLayout`
-      (+ edited `0003-create-energy-profile.xml`; added `reference_price` to
-      `monthly_energy_input` in `0004-...xml`)
-- [x] Backend: extend profile DTOs (`Create`/`Update`/`Response`) + controller
-- [x] Backend: `SummaryService` — per-month enriched results, aggregates,
-      cumulative payback projection, wallbox-vs-gasoline, heating distribution
-      (verified by `SummaryServiceImplTest`)
-- [x] Backend: Summary DTOs + domain controller + `GET .../summary` endpoint
-- [x] Frontend: design tokens (dark theme palette) in `styles.css`
-- [x] Frontend: app shell — top pill-tab bar (replaces sidebar), page header,
-      brand mark, dark/lang/logout
-- [x] Frontend: global time-range filter (chips + custom month pickers) as
-      `FilterService` (client-side, data-relative selection)
-- [x] Frontend: `SummaryStore` + `ProfileStore` (fetch once per profile) + routes
-- [x] Frontend: shared `KpiCardComponent` + generic `BarChartComponent`
-      (grouped/stacked) for reuse across views
+Everything is tied to your account, so you can keep building up a history and
+watch the picture get more accurate the more data you enter.
 
-### 1. Übersicht (Overview)
-- [x] KPI-Karten layout: 5 KPI cards, combo bar+line chart, payback ring,
-      stacked contribution bar
-- [x] Story layout: hero card, compact KPI rows, cumulative line chart
-- [x] Segmented control toggle (persisted via `overviewLayout`)
+## Who it's for
 
-All analysis views share `AnalysisLayoutComponent` (states + KPI grid + chart) and
-are fully i18n (English-slug keys under `solar.*`, de/en).
+Anyone curious about the economics of going solar: homeowners weighing an
+installation, existing PV owners who want to verify their real-world return, and
+generally anyone who'd rather calculate the numbers themselves than take a
+vendor's word for it. No engineering background required — if you can read your
+electricity meter, you can use it.
 
-### 2. Erzeugung & Einspeisung (Production)
-- [x] 4 KPIs, stacked bar chart (self-consumed / fed-in), table
+## Tech stack
 
-### 3. Heizung (Heating)
-- [x] 4 KPIs, grouped bar chart, table, "Monatsverteilung bearbeiten" link
+- **Backend:** Kotlin + Spring Boot, MariaDB, Liquibase, JWT authentication
+- **Frontend:** Angular + Tailwind CSS
+- **Build:** Gradle (backend), npm/Angular CLI (frontend)
 
-### 4. Haushalt (Household)
-- [x] 4 KPIs, grouped bar chart, table
+## Running it locally
 
-### 5. Wallbox
-- [x] 5 KPIs, grouped bar chart, table
+You need Docker, a JDK (Java 25), and Node.js/npm. The bundled Gradle and
+Angular wrappers pull in everything else.
 
-### 6. Gesamtabrechnung (Total)
-- [x] 4 KPIs, stacked/grouped bar chart, table
+### Option A — everything in Docker (quickest)
 
-### 7. Daten (Data entry)
-- [x] "Neuen Monat erfassen" upsert form (POST, or PUT when period exists;
-      added `referencePrice` to input DTOs + mapping)
-- [x] Months table (newest first)
-- [x] "Heizungsverteilung über das Jahr" — 12 inputs, live sum pill (100 %),
-      save disabled unless sum == 100
+Builds the app and database and starts them together:
 
-### 8. Einstellungen (Settings)
-- [x] "Energie-Allokation" reorderable priority list (↑/↓, reload on change)
-- [x] Profil card (name, wallbox/WP, heating reference)
-- [x] Preise & Investition card (prices + L/100km + km/kWh + invest cost),
-      auto-save on blur
+```bash
+cd devops
+export DB_PASSWORD=solarcalc
+export DB_ROOT_PASSWORD=root
+export SOLARCALC_JWT_SECRET=$(openssl rand -base64 32)
+docker compose up --build
+```
 
-### 9. Cleanup
-- [x] i18n keys (de/en) for all new copy — English-slug keys under `solar.*`
-- [x] Build green — backend `compileKotlin` + tests, frontend `ng build`
-- [x] Removed orphaned FE feature components (`dashboard`, `monthly-input`,
-      `prices`, `profile-settings`, `allocation-policy`)
-- [x] Removed the unused calculation-persistence chain end to end:
-      `calculation_run` + `calculation_result` tables (changesets 0007/0008 deleted
-      + de-registered from master), the `CalculationRun`/`CalculationResult` entities +
-      repos, `EnergyCalculationService`, `Calculation*DomainController`,
-      `CalculationController`, calc DTOs, `CompletenessFlag`(+converter), and the
-      calc cleanup in `MonthlyEnergyInputDomainControllerImpl.delete()`
-- [x] Fixed `BigDecimalSerializer` — emits/accepts JSON numbers (was quoted strings)
-- [x] `ProfileStore` self-heals a stale `profileId` (account switch)
+The app is then available at http://localhost:8080.
 
-**Live DB tables (all used):** `solarcalc_user`, `energy_profile`,
-`monthly_energy_input`, `price_snapshot` (read by `PriceResolver` → `SummaryService`),
-`allocation_policy`.
+### Option B — local development
 
-### 10. Still open
-- [ ] Manual end-to-end pass against a running backend with real data
-- [ ] Backend: run full `./gradlew build` (all module tests) once
-- [ ] Consider a default `kmPerKwh` for new profiles (exposed in Settings for now)
-- [ ] Prune stale `navigation.*` / old-feature i18n keys from `de.json`/`en.json`
+Run the database in Docker and the backend/frontend from source, so you get
+hot reload while working.
+
+**1. Start the database:**
+
+```bash
+docker compose -f devops/docker-compose.local.yml up -d
+```
+
+**2. Start the backend** (uses the `local` profile, which ships a dev-only JWT
+key so no secret is needed):
+
+```bash
+./gradlew :solarcalc-server:bootRun --args='--spring.profiles.active=local'
+```
+
+The API listens on http://localhost:8080.
+
+**3. Start the frontend:**
+
+```bash
+cd solarcalc-webapp
+npm install
+npm start
+```
+
+The web app is served at http://localhost:4200 and talks to the backend on
+port 8080.
+
+## Building for production
+
+```bash
+./gradlew clean build          # backend, runs tests
+cd solarcalc-webapp && npm run build   # frontend bundle
+```
+
+This produces a runnable Spring Boot jar under
+`solarcalc-server/build/libs/`.

@@ -1,11 +1,11 @@
 <!-- New month entry -->
 <div class="bg-solar-panel border border-solar-border rounded-[14px] p-5">
-  <div class="text-[14px] font-semibold mb-4">{{ 'solar.data.newMonth' | translate }}</div>
+  <div class="text-[14px] font-semibold mb-4">{{ (editingId() ? 'solar.data.editMonth' : 'solar.data.newMonth') | translate }}</div>
   <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
     <label class="text-[12px] text-solar-text2">
       {{ 'solar.data.period' | translate }}
-      <input type="month" [ngModel]="form().period" (ngModelChange)="patch('period', $event)"
-        class="mt-1 w-full bg-solar-input border border-solar-border rounded-lg px-2.5 py-2 text-[13px] text-solar-text" />
+      <input type="month" [ngModel]="form().period" (ngModelChange)="patch('period', $event)" [disabled]="!!editingId()"
+        class="mt-1 w-full bg-solar-input border border-solar-border rounded-lg px-2.5 py-2 text-[13px] text-solar-text disabled:opacity-60" />
     </label>
     <label class="text-[12px] text-solar-text2">
       {{ 'solar.data.generation' | translate }}
@@ -36,8 +36,14 @@
   <div class="flex items-center gap-3 mt-4">
     <button (click)="submit()" [disabled]="saving() || !form().period"
       class="rounded-lg bg-solar-green text-solar-green-ink font-semibold px-4 py-2 text-[13px] disabled:opacity-50">
-      {{ 'solar.data.add' | translate }}
+      {{ (editingId() ? 'solar.data.update' : 'solar.data.add') | translate }}
     </button>
+    @if (editingId()) {
+      <button (click)="cancelEdit()"
+        class="rounded-lg border border-solar-border text-solar-text2 px-4 py-2 text-[13px] hover:text-solar-text">
+        {{ 'solar.data.cancel' | translate }}
+      </button>
+    }
     @if (error()) { <span class="text-[12px] text-solar-red">{{ error()! | translate }}</span> }
   </div>
 </div>
@@ -55,20 +61,31 @@
           <th class="px-4 py-2.5 text-right font-medium">{{ 'solar.col.household' | translate }}</th>
           <th class="px-4 py-2.5 text-right font-medium">{{ 'solar.k.heatPumpCost' | translate }}</th>
           <th class="px-4 py-2.5 text-right font-medium">{{ 'solar.col.wallbox' | translate }}</th>
+          <th class="px-4 py-2.5 text-right font-medium">{{ 'solar.data.actions' | translate }}</th>
         </tr>
       </thead>
       <tbody>
         @for (m of rows(); track m.period) {
-          <tr class="border-t border-solar-row">
+          <tr class="border-t border-solar-row" [class.bg-solar-input]="editingId() === m.id">
             <td class="px-4 py-2.5">{{ monthLongLabel(m.period) }}</td>
             <td class="px-4 py-2.5 text-right text-solar-gray">{{ fmtKWh(m.generationKwh) }}</td>
             <td class="px-4 py-2.5 text-right text-solar-amber">{{ fmtKWh(m.feedInKwh) }}</td>
             <td class="px-4 py-2.5 text-right">{{ fmtKWh(m.householdConsumptionKwh) }}</td>
             <td class="px-4 py-2.5 text-right">{{ fmtKWh(m.heatPumpConsumptionKwh) }}</td>
             <td class="px-4 py-2.5 text-right">{{ fmtKWh(m.wallboxConsumptionKwh) }}</td>
+            <td class="px-4 py-2.5 text-right whitespace-nowrap">
+              <button (click)="startEdit(m)" [title]="'common.edit' | translate" [attr.aria-label]="'common.edit' | translate"
+                class="text-solar-text2 hover:text-solar-blue align-middle">
+                <ng-icon name="lucidePencil" class="text-[16px]" />
+              </button>
+              <button (click)="remove(m)" [title]="'common.delete' | translate" [attr.aria-label]="'common.delete' | translate"
+                class="ml-3 text-solar-text2 hover:text-solar-red align-middle">
+                <ng-icon name="lucideTrash2" class="text-[16px]" />
+              </button>
+            </td>
           </tr>
         } @empty {
-          <tr><td colspan="6" class="px-4 py-6 text-center text-solar-text2">{{ 'solar.noData' | translate }}</td></tr>
+          <tr><td colspan="7" class="px-4 py-6 text-center text-solar-text2">{{ 'solar.noData' | translate }}</td></tr>
         }
       </tbody>
     </table>

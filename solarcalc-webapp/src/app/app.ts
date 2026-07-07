@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal, effect } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -27,7 +27,6 @@ export class App {
   private readonly profileStore = inject(ProfileStore);
 
   readonly currentLang = computed(() => this.translate.currentLang() ?? 'de');
-  readonly dark = signal(localStorage.getItem('darkMode') !== 'false');
 
   readonly tabs: Tab[] = [
     { id: 'overview', route: '/overview' },
@@ -47,12 +46,6 @@ export class App {
     this.router.events
       .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
       .subscribe(e => this.activeTab.set(this.tabFromUrl(e.urlAfterRedirects)));
-
-    effect(() => {
-      const isDark = this.dark();
-      document.documentElement.classList.toggle('dark', isDark);
-      localStorage.setItem('darkMode', String(isDark));
-    });
   }
 
   private tabFromUrl(url: string): string {
@@ -62,10 +55,6 @@ export class App {
 
   setFilterMode(mode: 'ytd' | '12m' | 'all' | 'custom'): void {
     this.filterState.mode.set(mode);
-  }
-
-  toggleDark(): void {
-    this.dark.update(v => !v);
   }
 
   toggleLang(): void {
