@@ -20,27 +20,26 @@ class AllocationPolicyDomainControllerImpl(
     override fun list(profileUuid: String): List<AllocationPolicyResponse> {
         val profile = requireProfile(profileUuid = profileUuid)
         return policyRepository.findAllByEnergyProfileId(energyProfileId = profile.id!!)
-            .map { it.toResponse(profileUuid) }
+            .map { it.toResponse(energyProfileUuid = profileUuid) }
     }
 
     override fun get(profileUuid: String, policyId: Long): AllocationPolicyResponse {
         requireProfile(profileUuid = profileUuid)
         return policyRepository.findById(policyId).orElseThrow {
-            ResourceNotFoundException("AllocationPolicy $policyId not found")
-        }.toResponse(profileUuid)
+            ResourceNotFoundException(message = "AllocationPolicy $policyId not found")
+        }.toResponse(energyProfileUuid = profileUuid)
     }
 
     override fun create(profileUuid: String, request: CreateAllocationPolicyRequest): AllocationPolicyResponse {
         val profile = profileRepository.findByUuid(profileUuid)
-            ?: throw ResourceNotFoundException("Profile $profileUuid not found")
+            ?: throw ResourceNotFoundException(message = "Profile $profileUuid not found")
 
         val policy = AllocationPolicy().apply {
             this.energyProfile = profile
             name = request.name
             priorityOrder = request.priorityOrder
-            isDefault = request.isDefault
         }
-        return policyRepository.save(policy).toResponse(profileUuid)
+        return policyRepository.save(policy).toResponse(energyProfileUuid = profileUuid)
     }
 
     override fun update(
@@ -50,26 +49,25 @@ class AllocationPolicyDomainControllerImpl(
     ): AllocationPolicyResponse {
         requireProfile(profileUuid = profileUuid)
         val policy = policyRepository.findById(policyId).orElseThrow {
-            ResourceNotFoundException("AllocationPolicy $policyId not found")
+            ResourceNotFoundException(message = "AllocationPolicy $policyId not found")
         }
         policy.name = request.name
         policy.priorityOrder = request.priorityOrder
-        policy.isDefault = request.isDefault
         policy.updatedAt = LocalDateTime.now()
-        return policyRepository.save(policy).toResponse(profileUuid)
+        return policyRepository.save(policy).toResponse(energyProfileUuid = profileUuid)
     }
 
     override fun delete(profileUuid: String, policyId: Long) {
         requireProfile(profileUuid = profileUuid)
         val policy = policyRepository.findById(policyId).orElseThrow {
-            ResourceNotFoundException("AllocationPolicy $policyId not found")
+            ResourceNotFoundException(message = "AllocationPolicy $policyId not found")
         }
         policyRepository.delete(policy)
     }
 
     private fun requireProfile(profileUuid: String): EnergyProfile {
         return profileRepository.findByUuid(profileUuid)
-            ?: throw ResourceNotFoundException("Profile $profileUuid not found")
+            ?: throw ResourceNotFoundException(message = "Profile $profileUuid not found")
     }
 }
 
@@ -79,6 +77,5 @@ private fun AllocationPolicy.toResponse(energyProfileUuid: String): AllocationPo
         energyProfileUuid = energyProfileUuid,
         name = name,
         priorityOrder = priorityOrder,
-        isDefault = isDefault,
     )
 }

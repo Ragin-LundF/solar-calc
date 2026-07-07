@@ -11,19 +11,16 @@ data class AllocationPolicyResponse(
     val energyProfileUuid: String,
     val name: String,
     val priorityOrder: List<AllocationCategory>,
-    val isDefault: Boolean,
 )
 
 @Serializable
 data class CreateAllocationPolicyRequest(
     val name: String = "Default",
     @field:NotEmpty val priorityOrder: List<AllocationCategory>,
-    val isDefault: Boolean = false,
 )
 
 @Serializable
 data class UpdateAllocationPolicyRequest(
     @field:NotBlank val name: String,
     @field:NotEmpty val priorityOrder: List<AllocationCategory>,
-    val isDefault: Boolean = false,
 )

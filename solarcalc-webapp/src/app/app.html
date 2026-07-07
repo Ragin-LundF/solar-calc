@@ -11,17 +11,19 @@
       </div>
 
       <nav class="flex-1 px-3 py-4 space-y-1">
-        @for (item of navItems; track item.route) {
-          <a
-            [routerLink]="item.route"
-            routerLinkActive="bg-sidebar-accent text-sidebar-accent-foreground font-medium"
-            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-all duration-150"
-            [class.router-link-active]="false"
-            #rla="routerLinkActive"
-          >
-            <span class="text-base w-5 text-center">{{ item.icon }}</span>
-            <span>{{ item.labelKey | translate }}</span>
-          </a>
+        @if (state.isSetupComplete()) {
+          @for (item of navItems; track item.route) {
+            <a
+              [routerLink]="item.route"
+              routerLinkActive="bg-sidebar-accent text-sidebar-accent-foreground font-medium"
+              class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-all duration-150"
+              [class.router-link-active]="false"
+              #rla="routerLinkActive"
+            >
+              <span class="text-base w-5 text-center">{{ item.icon }}</span>
+              <span>{{ item.labelKey | translate }}</span>
+            </a>
+          }
         }
       </nav>
 

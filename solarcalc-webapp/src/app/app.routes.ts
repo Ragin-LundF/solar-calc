@@ -42,6 +42,11 @@ export const routes: Routes = [
         loadComponent: () =>
           import('@/features/allocation-policy/allocation-policy.component').then(m => m.AllocationPolicyComponent),
       },
+      {
+        path: 'setup',
+        loadComponent: () =>
+          import('@/features/setup-wizard/setup-wizard.component').then(m => m.SetupWizardComponent),
+      },
 
     ],
   },

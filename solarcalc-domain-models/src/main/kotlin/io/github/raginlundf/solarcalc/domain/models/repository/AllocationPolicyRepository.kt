@@ -9,6 +9,4 @@ interface AllocationPolicyRepository :
     QuerydslPredicateExecutor<AllocationPolicy> {
 
     fun findAllByEnergyProfileId(energyProfileId: Long): List<AllocationPolicy>
-
-    fun findByEnergyProfileIdAndIsDefaultTrue(energyProfileId: Long): AllocationPolicy?
 }

@@ -1,11 +1,13 @@
-import { Injectable, inject, signal, effect } from '@angular/core';
+import { Injectable, inject, signal, computed, effect } from '@angular/core';
 import { AuthService } from '@/core/auth/auth.service';
+import { SetupStep } from '@/core/auth/setup-step.enum';
 
 @Injectable({ providedIn: 'root' })
 export class AppStateService {
   private readonly auth = inject(AuthService);
 
   readonly profileId = signal<string | null>(this.loadStr('profileId'));
+  readonly isSetupComplete = computed(() => this.auth.setupStep() === SetupStep.COMPLETE);
 
   constructor() {
     effect(() => {
