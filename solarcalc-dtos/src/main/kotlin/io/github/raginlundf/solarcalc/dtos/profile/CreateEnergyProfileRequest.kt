@@ -1,15 +1,9 @@
-@file:UseSerializers(BigDecimalSerializer::class)
-
 package io.github.raginlundf.solarcalc.dtos.profile
 
 import io.github.raginlundf.solarcalc.domain.models.profile.HeatingReferenceType
-import io.github.raginlundf.solarcalc.dtos.serialization.BigDecimalSerializer
 import jakarta.validation.constraints.NotBlank
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.UseSerializers
 import java.math.BigDecimal
 
-@Serializable
 data class CreateEnergyProfileRequest(
     @field:NotBlank val name: String,
     val hasWallbox: Boolean = false,
