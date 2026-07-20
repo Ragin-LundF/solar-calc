@@ -35,7 +35,7 @@ class LoggingImpl {
             joinPoint.proceed()
         }
         val methodSignature = joinPoint.signature.toShortString()
-        log.info { "[Keybird Logging] $methodSignature execution took ${measureTimed.duration}" }
+        log.info { "[Logging] $methodSignature execution took ${measureTimed.duration}" }
         return measureTimed.value
     }
 
@@ -61,7 +61,7 @@ class LoggingImpl {
                 .collect(
                     Collectors.joining(
                         "",
-                        "[Keybird Logging] Input parameter for ${signature.toShortString()}:",
+                        "[Logging] Input parameter for ${signature.toShortString()}:",
                         ""
                     )
                 )
@@ -87,7 +87,7 @@ class LoggingImpl {
             // evaluate element and remove un-wanted elements
             val skippedJson: Any? = skip(RESPONSE_MAPPER.convertObject(result), skipParamOutput(logMethodWithParams))
             log.info {
-                "${"[Keybird Logging] Results for {}:\n {}"} ${signature.toShortString()} ${
+                "${"[Logging] Results for {}:\n {}"} ${signature.toShortString()} ${
                     RESPONSE_MAPPER.writeObject(obfuscate(skippedJson, obfuscateParamOutput(logMethodWithParams)))
                 }"
             }

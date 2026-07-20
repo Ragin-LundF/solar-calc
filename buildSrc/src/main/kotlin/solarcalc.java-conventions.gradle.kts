@@ -12,7 +12,7 @@ plugins {
 val libs = the<LibrariesForLibs>()
 
 tasks.register<CreateStartScripts>("createStartScripts") {
-    mainClass.set("de.keybird.Application")
+    mainClass.set("io.github.raginlundf.solarcalc.Application")
     applicationName = rootProject.name
 }
 
@@ -39,6 +39,9 @@ kotlin {
         // jvmTarget is driven by the toolchain above; Kotlin 2.4 caps at JVM 24
         // and falls back gracefully, so we do not pin it to javaVersion here.
         freeCompilerArgs.add("-Xjvm-default=all")
+        // Emit method parameter names so the logging aspect's signature.parameterNames
+        // resolves in native images (which strip the LocalVariableTable).
+        javaParameters.set(true)
     }
 }
 

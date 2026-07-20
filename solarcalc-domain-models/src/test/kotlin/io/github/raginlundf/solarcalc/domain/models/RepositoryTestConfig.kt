@@ -39,6 +39,10 @@ class RepositoryTestConfig {
             jpaVendorAdapter = HibernateJpaVendorAdapter()
             setJpaProperties(Properties().apply {
                 setProperty("hibernate.hbm2ddl.auto", "none")
+                // Mirror the GraalVM native image: no runtime ByteBuddy proxy generation. This makes
+                // the tests fail exactly like native if the entities aren't build-time enhanced, so
+                // lazy @ManyToOne loading is guarded here instead of only discovered on the server.
+                setProperty("hibernate.bytecode.provider", "none")
             })
         }
 

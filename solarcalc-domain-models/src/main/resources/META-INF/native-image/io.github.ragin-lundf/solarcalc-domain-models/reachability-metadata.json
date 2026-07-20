@@ -1,0 +1,16 @@
+{
+  "resources": [
+    {
+      "glob": "db/**"
+    }
+  ],
+  "reflection": [
+    {
+      "type": {
+        "proxy": [
+          "java.sql.ResultSet"
+        ]
+      }
+    }
+  ]
+}

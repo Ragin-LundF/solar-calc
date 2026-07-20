@@ -10,6 +10,8 @@ import io.github.raginlundf.solarcalc.domain.models.repository.EnergyProfileRepo
 import io.github.raginlundf.solarcalc.domain.models.repository.MonthlyEnergyInputRepository
 import io.github.raginlundf.solarcalc.domain.models.repository.UserRepository
 import io.github.raginlundf.solarcalc.domain.models.user.User
+import jakarta.persistence.EntityManager
+import jakarta.persistence.PersistenceContext
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
@@ -31,31 +33,31 @@ import kotlin.test.assertNull
 @Testcontainers
 @Transactional
 class RepositoryIntegrationTest {
-
-    companion object {
-        @Container
-        @JvmStatic
-        val mariadb = MariaDBContainer("mariadb:11").apply {
-            withDatabaseName("solarcalc_test")
-            withUsername("test")
-            withPassword("test")
-        }
-
-        @DynamicPropertySource
-        @JvmStatic
-        fun configureProperties(registry: DynamicPropertyRegistry) {
-            registry.add("spring.datasource.url", mariadb::getJdbcUrl)
-            registry.add("spring.datasource.username", mariadb::getUsername)
-            registry.add("spring.datasource.password", mariadb::getPassword)
-            registry.add("spring.datasource.driver-class-name") { "org.mariadb.jdbc.Driver" }
-            registry.add("spring.liquibase.change-log") { "classpath:db/db.changelog-master.xml" }
-        }
-    }
-
     @Autowired lateinit var userRepository: UserRepository
     @Autowired lateinit var profileRepository: EnergyProfileRepository
     @Autowired lateinit var inputRepository: MonthlyEnergyInputRepository
     @Autowired lateinit var policyRepository: AllocationPolicyRepository
+
+    @PersistenceContext lateinit var entityManager: EntityManager
+
+    @Test
+    fun `lazy many-to-one loads without a runtime proxy`() {
+        val user = userRepository.save(User().apply { username = "owner" })
+        val profile = profileRepository.save(EnergyProfile().apply {
+            name = "Profile"
+            this.user = user
+        })
+
+        // Detach everything so the reloaded profile's `user` is a fresh lazy association. With
+        // hibernate.bytecode.provider=none (see RepositoryTestConfig) this dereference throws the
+        // "Generation of HibernateProxy instances at runtime is not allowed" error unless the
+        // entities are build-time enhanced.
+        entityManager.flush()
+        entityManager.clear()
+
+        val reloaded = profileRepository.findById(profile.id!!).orElseThrow()
+        assertEquals(expected = "owner", actual = reloaded.user?.username)
+    }
 
     @Test
     fun `user can be persisted and retrieved`() {
@@ -98,7 +100,7 @@ class RepositoryIntegrationTest {
         val user = userRepository.save(User().apply { username = "u" })
         val profileA = profileRepository.save(EnergyProfile().apply { name = "A"; this.user = user })
         val profileB = profileRepository.save(EnergyProfile().apply { name = "B"; this.user = user })
-        val input = inputRepository.save(MonthlyEnergyInput().apply {
+        inputRepository.save(MonthlyEnergyInput().apply {
             energyProfile = profileA
             period = "2024-07"
             consumptionKwh = BigDecimal("400")
@@ -109,7 +111,7 @@ class RepositoryIntegrationTest {
             energyProfileId = profileB.id!!,
             period = "2024-07"
         )
-        assertNull(result)
+        assertNull(actual = result)
     }
 
     @Test
@@ -130,16 +132,32 @@ class RepositoryIntegrationTest {
                 AllocationCategory.HEAT_PUMP,
                 AllocationCategory.HOUSEHOLD,
             )
-            isDefault = true
         })
 
-        val found = policyRepository.findByEnergyProfileIdAndIsDefaultTrue(
-            energyProfileId = profile.id!!
-        )
-        assertNotNull(actual = found)
+        val found = policyRepository.findAllByEnergyProfileId(profile.id!!).single()
         assertEquals(
             expected = listOf(AllocationCategory.WALLBOX, AllocationCategory.HEAT_PUMP, AllocationCategory.HOUSEHOLD),
             actual = found.priorityOrder,
         )
+    }
+
+    companion object {
+        @Container
+        @JvmStatic
+        val mariadb = MariaDBContainer("mariadb:11").apply {
+            withDatabaseName("solarcalc_test")
+            withUsername("test")
+            withPassword("test")
+        }
+
+        @DynamicPropertySource
+        @JvmStatic
+        fun configureProperties(registry: DynamicPropertyRegistry) {
+            registry.add("spring.datasource.url", mariadb::getJdbcUrl)
+            registry.add("spring.datasource.username", mariadb::getUsername)
+            registry.add("spring.datasource.password", mariadb::getPassword)
+            registry.add("spring.datasource.driver-class-name") { "org.mariadb.jdbc.Driver" }
+            registry.add("spring.liquibase.change-log") { "classpath:db/db.changelog-master.xml" }
+        }
     }
 }

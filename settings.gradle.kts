@@ -25,6 +25,7 @@ rootProject.name = "solar-calc"
 include("solarcalc-domain-models")
 include("solarcalc-domain-services")
 include("solarcalc-dtos")
+include("solarcalc-jackson")
 include("solarcalc-kotlin-extensions")
 include("solarcalc-logging")
 include("solarcalc-rest-api")

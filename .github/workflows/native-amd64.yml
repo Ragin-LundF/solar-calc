@@ -1,0 +1,39 @@
+name: Native amd64 binary
+
+# Builds the deployable linux/amd64 native binary on a native x86_64 runner. This exists because
+# native-image does NOT cross-compile: building amd64 under QEMU emulation on Apple Silicon crashes
+# intermittently (SIGABRT / exit 134). ubuntu-latest is x86_64, so this build runs without emulation.
+on:
+  workflow_dispatch:
+  push:
+    tags: ['v*']
+
+jobs:
+  native-amd64:
+    name: Build linux/amd64 native binary
+    runs-on: ubuntu-latest # native x86_64 — no --platform, no QEMU
+    timeout-minutes: 60
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # Reuses devops/Dockerfile.native: stage 1 builds the Angular SPA, stage 2 native-compiles,
+      # the `export` stage emits just the ELF binary. No --platform => builds for the runner (amd64).
+      - name: Build native binary
+        run: >
+          docker buildx build
+          -f devops/Dockerfile.native
+          --target export
+          --build-arg BIN_NAME=solar-calc-linux-amd64
+          --output type=local,dest=./out
+          .
+
+      - name: Upload native binary
+        uses: actions/upload-artifact@v7
+        with:
+          name: solar-calc-linux-amd64
+          path: out/solar-calc-linux-amd64
+          if-no-files-found: error

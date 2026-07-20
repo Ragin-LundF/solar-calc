@@ -2,9 +2,7 @@ package io.github.raginlundf.solarcalc.dtos.auth
 
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Size
-import kotlinx.serialization.Serializable
 
-@Serializable
 data class RegisterRequestDto(
     @field:NotBlank
     @field:Size(min = 3, max = 100, message = "Username must be between 3 and 100 characters")

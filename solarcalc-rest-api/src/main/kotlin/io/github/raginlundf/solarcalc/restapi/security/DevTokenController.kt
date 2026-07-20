@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Profile
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import kotlinx.serialization.Serializable
 
 @RestController
 @RequestMapping("/api/v1/dev")
@@ -25,5 +24,4 @@ class DevTokenController(private val tokenIssuer: JwtTokenIssuer) {
     }
 }
 
-@Serializable
 data class DevTokenResponse(val token: String, val expiresInSeconds: Long)
