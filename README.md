@@ -23,6 +23,8 @@ calculates:
 Everything is tied to your account, so you can keep building up a history and
 watch the picture get more accurate the more data you enter.
 
+[Screenshots](docs/README.md)
+
 ## Who it's for
 
 Anyone curious about the economics of going solar: homeowners weighing an

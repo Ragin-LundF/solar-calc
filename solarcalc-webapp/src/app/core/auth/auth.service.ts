@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { Router } from '@angular/router';
 import { SetupStep } from './setup-step.enum';
+import { API_BASE } from '../api/api-base';
 
 export interface AuthResponse {
   token: string;
@@ -28,7 +29,7 @@ export class AuthService {
 
   async login(username: string, password: string): Promise<AuthResponse> {
     const res = await firstValueFrom(
-      this.http.post<AuthResponse>('/api/v1/auth/login', { username, password }),
+      this.http.post<AuthResponse>(`${API_BASE}/auth/login`, { username, password }),
     );
     this.setSession(res);
     return res;
@@ -36,7 +37,7 @@ export class AuthService {
 
   async register(username: string, password: string): Promise<AuthResponse> {
     const res = await firstValueFrom(
-      this.http.post<AuthResponse>('/api/v1/auth/register', { username, password }),
+      this.http.post<AuthResponse>(`${API_BASE}/auth/register`, { username, password }),
     );
     this.setSession(res);
     return res;
@@ -44,7 +45,7 @@ export class AuthService {
 
   async updateSetupStep(step: SetupStep): Promise<void> {
     await firstValueFrom(
-      this.http.put<{ setupStep: number }>('/api/v1/auth/setup-step', { setupStep: step }),
+      this.http.put<{ setupStep: number }>(`${API_BASE}/auth/setup-step`, { setupStep: step }),
     );
     this.setupStep.set(step);
     localStorage.setItem('setupStep', String(step));
@@ -52,7 +53,7 @@ export class AuthService {
 
   async updateLastProfile(profileUuid: string | null): Promise<void> {
     await firstValueFrom(
-      this.http.put<{ lastProfileUuid: string | null }>('/api/v1/auth/last-profile', { profileUuid }),
+      this.http.put<{ lastProfileUuid: string | null }>(`${API_BASE}/auth/last-profile`, { profileUuid }),
     );
     this.lastProfileUuid.set(profileUuid);
     if (profileUuid == null) localStorage.removeItem('lastProfileUuid');

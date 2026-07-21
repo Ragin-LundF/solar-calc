@@ -5,6 +5,7 @@ plugins {
 
 dependencies {
     implementation(project(":solarcalc-domain-models"))
+    implementation(project(":solarcalc-jackson"))
     implementation(project(":solarcalc-dtos"))
     implementation(project(":solarcalc-kotlin-extensions"))
 

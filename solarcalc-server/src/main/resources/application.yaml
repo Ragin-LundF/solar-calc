@@ -39,7 +39,8 @@ spring:
         session:
           events:
             log:
-              LOG_QUERIES_SLOWER_THAN_MS: 250
+              # Quoted: Hibernate coerces this only from String/Long, not Integer.
+              LOG_QUERIES_SLOWER_THAN_MS: "250"
     hibernate:
       ddl-auto: none
       naming:

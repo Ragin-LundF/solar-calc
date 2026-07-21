@@ -1,18 +1,12 @@
-@file:UseSerializers(BigDecimalSerializer::class)
-
 package io.github.raginlundf.solarcalc.dtos.summary
 
 import io.github.raginlundf.solarcalc.domain.models.allocation.AllocationCategory
-import io.github.raginlundf.solarcalc.dtos.serialization.BigDecimalSerializer
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.UseSerializers
 import java.math.BigDecimal
 
 /**
  * Server-computed savings summary for a filtered date range.
  * All monetary values are in EUR, energy in kWh. See `.plan/design/README.md` for the math.
  */
-@Serializable
 data class SummaryResponse(
     val allocationPriority: List<AllocationCategory>,
     val months: List<MonthlySummary>,
@@ -21,7 +15,6 @@ data class SummaryResponse(
 )
 
 /** One month of enriched, per-consumer savings. Consumer values are 0 when the consumer is absent. */
-@Serializable
 data class MonthlySummary(
     val period: String,
     val generationKwh: BigDecimal,
@@ -55,7 +48,6 @@ data class MonthlySummary(
 )
 
 /** Sums over the filtered range. */
-@Serializable
 data class SummaryAggregates(
     val generationKwh: BigDecimal,
     val selfConsumedKwh: BigDecimal,
@@ -78,7 +70,6 @@ data class SummaryAggregates(
 )
 
 /** Cumulative payback, always computed over all history (independent of the range filter). */
-@Serializable
 data class PaybackProjection(
     val cumulativeSavings: BigDecimal,
     val investKosten: BigDecimal,

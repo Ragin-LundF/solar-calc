@@ -1,11 +1,12 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { API_BASE } from './api-base';
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
   private readonly http = inject(HttpClient);
-  private readonly base = '/api/v1';
+  private readonly base = API_BASE;
 
   get<T>(path: string): Observable<T> {
     return this.http.get<T>(`${this.base}${path}`);

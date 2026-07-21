@@ -2,12 +2,24 @@ plugins {
     id("solarcalc.common-conventions")
     id("org.jetbrains.kotlin.plugin.jpa")
     id("com.google.devtools.ksp")
-    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.hibernate.orm)
+}
+
+// Build-time bytecode enhancement of the JPA entities. Required for the GraalVM native image:
+// native runs with hibernate.bytecode.provider=none (no runtime ByteBuddy), so lazy @ManyToOne
+// associations can't get a runtime HibernateProxy. Enhancement wires lazy loading at build time
+// instead. `languages` must include "kotlin" — the entities are Kotlin, and the plugin defaults to
+// enhancing only the java compile output.
+hibernate {
+    languages = setOf("java", "kotlin")
+    enhancement {
+        enableLazyInitialization = true
+        enableDirtyTracking = true
+    }
 }
 
 dependencies {
     implementation(project(":solarcalc-kotlin-extensions"))
-    api(libs.kotlinx.serialization.json)
 
     implementation(libs.database.hibernate.core)
     implementation(libs.spring.context)

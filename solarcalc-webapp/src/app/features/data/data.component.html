@@ -103,7 +103,7 @@
   </div>
   <p class="text-[12px] text-solar-text2 mb-4">{{ 'solar.data.distHelp' | translate }}</p>
   <div class="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-3">
-    @for (name of monthNames; track $index) {
+    @for (name of monthNames(); track $index) {
       <label class="text-[12px] text-solar-text2">
         {{ name.slice(0, 3) }}
         <div class="mt-1 flex items-center bg-solar-input border border-solar-border rounded-lg px-2.5">

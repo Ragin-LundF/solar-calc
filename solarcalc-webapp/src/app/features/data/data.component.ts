@@ -9,7 +9,7 @@ import { AppStateService } from '@/core/state/app-state.service';
 import { SummaryStore } from '@/core/api/summary.store';
 import { ProfileStore } from '@/core/api/profile.store';
 import { MonthlyInput } from '@/core/api/models';
-import { MONTH_NAMES_DE, fmtKWh, monthLongLabel } from '@/shared/utils/format';
+import { monthNames, fmtKWh, monthLongLabel } from '@/shared/utils/format';
 
 interface EntryForm {
   period: string;
@@ -38,7 +38,7 @@ export class DataComponent {
 
   readonly fmtKWh = fmtKWh;
   readonly monthLongLabel = monthLongLabel;
-  readonly monthNames = MONTH_NAMES_DE;
+  readonly monthNames = monthNames;
 
   readonly form = signal<EntryForm>({ ...EMPTY_FORM });
   readonly editingId = signal<string | null>(null);

@@ -1,0 +1,14 @@
+# Per-Dockerfile ignore for devops/Dockerfile.native (BuildKit picks this up over the
+# root .dockerignore). The native build needs the full source tree, so we invert the
+# root file's allowlist: send sources, drop only build outputs and local noise.
+.git
+.gradle
+.kotlin
+.idea
+.run
+.opencode
+.plan
+.claude
+out
+**/build
+**/node_modules

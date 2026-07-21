@@ -45,6 +45,7 @@ class SummaryServiceImpl : SummaryService {
         )
     }
 
+    @Suppress("LongMethod")
     private fun computeMonth(month: SummaryMonthInput, params: SummaryParams): MonthlySummary {
         val generation = month.generationKwh.max(BigDecimal.ZERO)
         val feedIn = month.feedInKwh.max(BigDecimal.ZERO).min(generation)
@@ -90,7 +91,11 @@ class SummaryServiceImpl : SummaryService {
 
         val estimatedKm = wallboxDemand * params.kmPerKwh
         val gasolineEquivalentCost = estimatedKm / HUNDRED * params.litersPer100km * month.petrolPrice
-        val wallboxSavingsVsGasoline = if (params.hasWallbox) gasolineEquivalentCost - wallbox.costWithSolar else BigDecimal.ZERO
+        val wallboxSavingsVsGasoline = if (params.hasWallbox) {
+            gasolineEquivalentCost - wallbox.costWithSolar
+        } else {
+            BigDecimal.ZERO
+        }
 
         val feedInRevenue = feedIn * month.feedInTariff
         val totalSavings = household.savings + heatingSavings + wallboxSavingsVsGasoline + feedInRevenue

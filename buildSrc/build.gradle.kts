@@ -20,6 +20,9 @@ dependencies {
     implementation(plugin(libs.plugins.kotlin.jpa))
     implementation(plugin(libs.plugins.kotlin.spring))
     implementation(plugin(libs.plugins.spring.boot))
+    // On buildSrc's classpath (same as Spring Boot) so Boot's NativeImagePluginAction
+    // reaction fires and wires processAot when the server applies the native plugin.
+    implementation(plugin(libs.plugins.graalvm.native))
     implementation(plugin(libs.plugins.ksp))
     implementation(plugin(libs.plugins.liquibase.gradle))
     implementation(plugin(libs.plugins.owasp.depcheck))
