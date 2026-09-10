@@ -106,7 +106,9 @@
     "petrolPrice": "Petrol Price (€/L)",
     "oilReferenceCost": "Oil reference cost (€/year)",
     "gasReferenceCost": "Gas reference cost (€/year)",
-    "validFrom": "Valid from"
+    "validFrom": "Valid from",
+    "heatingReferenceType": "Heating reference",
+    "heatingUnchanged": "unchanged"
   },
   "allocation": {
     "title": "Allocation Policy",

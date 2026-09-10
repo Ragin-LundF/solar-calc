@@ -106,7 +106,9 @@
     "petrolPrice": "Benzinpreis (€/L)",
     "oilReferenceCost": "Öl-Referenzkosten (€/Jahr)",
     "gasReferenceCost": "Gas-Referenzkosten (€/Jahr)",
-    "validFrom": "Gültig ab"
+    "validFrom": "Gültig ab",
+    "heatingReferenceType": "Heizungsreferenz",
+    "heatingUnchanged": "unverändert"
   },
   "allocation": {
     "title": "Allokationspolitik",

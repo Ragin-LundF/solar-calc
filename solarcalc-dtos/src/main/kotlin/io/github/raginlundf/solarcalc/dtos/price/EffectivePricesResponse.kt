@@ -1,5 +1,6 @@
 package io.github.raginlundf.solarcalc.dtos.price
 
+import io.github.raginlundf.solarcalc.domain.models.profile.HeatingReferenceTypeEnum
 import java.math.BigDecimal
 
 /**
@@ -12,6 +13,8 @@ data class EffectivePricesResponse(
     val electricityPrice: BigDecimal?,
     val feedInTariff: BigDecimal?,
     val petrolPrice: BigDecimal?,
-    /** Annual heating reference cost for the profile's heating type; null when the type is NONE. */
+    /** The fuel heated with that month, which may differ from the profile's current setting. */
+    val heatingReferenceType: HeatingReferenceTypeEnum,
+    /** Annual heating reference cost for [heatingReferenceType]; null when it is NONE. */
     val heatingReferenceCost: BigDecimal?,
 )

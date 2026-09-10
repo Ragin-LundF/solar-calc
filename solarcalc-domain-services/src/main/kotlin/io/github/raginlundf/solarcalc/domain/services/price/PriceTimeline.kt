@@ -29,6 +29,7 @@ class PriceTimeline(
 
     /** Prices in effect for [period] (format: YYYY-MM). */
     fun at(period: String): ResolvedPrices {
+        val heatingType = resolveHeatingType(period = period)
         return ResolvedPrices(
             electricityPrice = resolve(period = period, default = profile.defaultElectricityPrice) {
                 it.electricityPrice
@@ -39,7 +40,8 @@ class PriceTimeline(
             petrolPrice = resolve(period = period, default = profile.defaultPetrolPrice) {
                 it.petrolPrice
             },
-            heatingReferenceCost = resolveHeatingReference(period = period),
+            heatingReferenceType = heatingType,
+            heatingReferenceCost = resolveHeatingReferenceCost(period = period, type = heatingType),
         )
     }
 
@@ -60,8 +62,22 @@ class PriceTimeline(
         return fromTimeline ?: default
     }
 
-    private fun resolveHeatingReference(period: String): BigDecimal? {
-        return when (profile.heatingReferenceType) {
+    /**
+     * The fuel heated with during [period]. Versioned on the timeline so that switching boilers
+     * does not reprice the years before the switch with the new fuel's cost; the profile's own
+     * setting only covers the months before the timeline first states one.
+     */
+    private fun resolveHeatingType(period: String): HeatingReferenceTypeEnum {
+        val fromTimeline = newestFirst
+            .asSequence()
+            .filter { it.validFrom <= period }
+            .mapNotNull { it.heatingReferenceType }
+            .firstOrNull()
+        return fromTimeline ?: profile.heatingReferenceType
+    }
+
+    private fun resolveHeatingReferenceCost(period: String, type: HeatingReferenceTypeEnum): BigDecimal? {
+        return when (type) {
             HeatingReferenceTypeEnum.OIL -> resolve(
                 period = period,
                 default = profile.defaultOilReferenceCost,

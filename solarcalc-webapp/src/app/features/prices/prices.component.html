@@ -4,7 +4,7 @@
     {{ (editingId() ? 'solar.prices.editEntry' : 'solar.prices.newEntry') | translate }}
   </div>
   <p class="text-[12px] text-solar-text2 mb-4">{{ 'solar.prices.help' | translate }}</p>
-  <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+  <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-3">
     <label class="text-[12px] text-solar-text2">
       {{ 'prices.validFrom' | translate }}
       <input type="month" [ngModel]="form().validFrom" (ngModelChange)="patch('validFrom', $event)"
@@ -24,6 +24,16 @@
       {{ 'prices.petrolPrice' | translate }}
       <input type="number" step="0.01" [ngModel]="form().petrolPrice" (ngModelChange)="patch('petrolPrice', $event)"
         class="mt-1 w-full bg-solar-input border border-solar-border rounded-lg px-2.5 py-2 text-[13px] text-solar-text" />
+    </label>
+    <label class="text-[12px] text-solar-text2">
+      {{ 'prices.heatingReferenceType' | translate }}
+      <select [ngModel]="form().heatingReferenceType" (ngModelChange)="patch('heatingReferenceType', $event)"
+        class="mt-1 w-full bg-solar-input border border-solar-border rounded-lg px-2.5 py-2 text-[13px] text-solar-text">
+        <option value="">{{ 'prices.heatingUnchanged' | translate }}</option>
+        @for (t of heatingTypes; track t) {
+          <option [value]="t">{{ 'profile.heatingReferenceType_' + t | translate }}</option>
+        }
+      </select>
     </label>
     <label class="text-[12px] text-solar-text2">
       {{ 'prices.oilReferenceCost' | translate }}
@@ -64,6 +74,7 @@
         <th class="px-4 py-2.5 text-right font-medium">{{ 'prices.electricityPrice' | translate }}</th>
         <th class="px-4 py-2.5 text-right font-medium">{{ 'prices.feedInTariff' | translate }}</th>
         <th class="px-4 py-2.5 text-right font-medium">{{ 'prices.petrolPrice' | translate }}</th>
+        <th class="px-4 py-2.5 text-right font-medium">{{ 'prices.heatingReferenceType' | translate }}</th>
         <th class="px-4 py-2.5 text-right font-medium">{{ 'prices.oilReferenceCost' | translate }}</th>
         <th class="px-4 py-2.5 text-right font-medium">{{ 'prices.gasReferenceCost' | translate }}</th>
         <th class="px-4 py-2.5 text-right font-medium">{{ 'solar.data.actions' | translate }}</th>
@@ -81,6 +92,9 @@
           <td class="px-4 py-2.5 text-right">{{ e.electricityPrice === null ? '—' : fmtEURperKwh(e.electricityPrice) }}</td>
           <td class="px-4 py-2.5 text-right">{{ e.feedInTariff === null ? '—' : fmtEURperKwh(e.feedInTariff) }}</td>
           <td class="px-4 py-2.5 text-right">{{ e.petrolPrice === null ? '—' : fmtEUR(e.petrolPrice) }}</td>
+          <td class="px-4 py-2.5 text-right">
+            {{ e.heatingReferenceType === null ? '—' : ('profile.heatingReferenceType_' + e.heatingReferenceType | translate) }}
+          </td>
           <td class="px-4 py-2.5 text-right">{{ e.oilReferenceCost === null ? '—' : fmtEUR(e.oilReferenceCost) }}</td>
           <td class="px-4 py-2.5 text-right">{{ e.gasReferenceCost === null ? '—' : fmtEUR(e.gasReferenceCost) }}</td>
           <td class="px-4 py-2.5 text-right whitespace-nowrap">
@@ -95,7 +109,7 @@
           </td>
         </tr>
       } @empty {
-        <tr><td colspan="7" class="px-4 py-6 text-center text-solar-text2">{{ 'solar.prices.empty' | translate }}</td></tr>
+        <tr><td colspan="8" class="px-4 py-6 text-center text-solar-text2">{{ 'solar.prices.empty' | translate }}</td></tr>
       }
     </tbody>
   </table>

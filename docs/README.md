@@ -111,10 +111,14 @@ How your prices changed over time.
   effect until a later entry supersedes it. Entries therefore cannot overlap, and a price that holds
   for a whole year is simply one nothing supersedes for twelve months — which suits petrol and the
   heating reference cost, where a yearly figure is the realistic level of detail.
+- **Heating reference** — an entry can also record *which fuel* the reference stands for, so a
+  switch from oil to gas is part of the history. Months before the switch keep being costed with
+  oil, instead of the whole past being repriced with the new fuel. Leave it on "unchanged" to keep
+  the fuel an earlier entry set.
 - **Timeline** — every entry, newest first, with the one currently in effect marked.
 
-Each price resolves independently, so an entry that records only a new petrol price leaves the
-electricity price on its previous value. Anything the timeline never sets falls back to **Settings**.
+Each price — and the heating fuel — resolves independently, so an entry that records only a new
+petrol price leaves the electricity price and the fuel on their previous values. Anything the timeline never sets falls back to **Settings**.
 Months that carry their own price on the **Data** page keep it — the timeline does not overwrite them.
 
 Recording a contract change here is what makes historical months cost what they actually cost, which
@@ -146,7 +150,8 @@ Allocation, profile, and prices.
 - **Energy allocation** — ordered list (heat pump → wallbox → household) deciding
   which consumer receives solar power first. Drives every calculation.
 - **Profile** — installation name, which consumers exist (wallbox, heat pump), and
-  the heating reference type.
+  the heating reference type. The type here covers the months before the **Prices** timeline
+  states one.
 - **Prices & investment** — electricity price, feed-in tariff, petrol price, car
   consumption (L/100km), EV efficiency (km/kWh), heating reference cost (€/year),
   and total system investment cost used for the payback calculation. These are the base prices:

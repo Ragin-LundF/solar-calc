@@ -35,9 +35,11 @@ class PriceTimelineTest {
         petrol: String? = null,
         oil: String? = null,
         gas: String? = null,
+        heatingType: HeatingReferenceTypeEnum? = null,
     ): PriceSnapshotEntity {
         return PriceSnapshotEntity().apply {
             this.validFrom = validFrom
+            heatingReferenceType = heatingType
             electricityPrice = electricity?.let { BigDecimal(it) }
             feedInTariff = feedIn?.let { BigDecimal(it) }
             petrolPrice = petrol?.let { BigDecimal(it) }
@@ -162,6 +164,69 @@ class PriceTimelineTest {
         )
 
         assertNull(actual = timeline.at("2024-06").heatingReferenceCost)
+    }
+
+    @Test
+    fun `keeps oil-heated history on oil after switching the boiler to gas`() {
+        // The regression this versioning exists for: the profile now says GAS, but 2024 was heated
+        // with oil and must still be costed with the oil price of the time.
+        val timeline = PriceTimeline(
+            profile = profile(heatingReferenceType = HeatingReferenceTypeEnum.GAS),
+            snapshots = listOf(
+                entry(validFrom = "2024-01", oil = "2600", heatingType = HeatingReferenceTypeEnum.OIL),
+                entry(validFrom = "2025-01", gas = "1800", heatingType = HeatingReferenceTypeEnum.GAS),
+            ),
+        )
+
+        val beforeSwitch = timeline.at("2024-06")
+        assertEquals(expected = HeatingReferenceTypeEnum.OIL, actual = beforeSwitch.heatingReferenceType)
+        assertEquals(expected = BigDecimal("2600"), actual = beforeSwitch.heatingReferenceCost)
+
+        val afterSwitch = timeline.at("2025-06")
+        assertEquals(expected = HeatingReferenceTypeEnum.GAS, actual = afterSwitch.heatingReferenceType)
+        assertEquals(expected = BigDecimal("1800"), actual = afterSwitch.heatingReferenceCost)
+    }
+
+    @Test
+    fun `carries the fuel forward until an entry changes it`() {
+        val timeline = PriceTimeline(
+            profile = profile(heatingReferenceType = HeatingReferenceTypeEnum.NONE),
+            snapshots = listOf(
+                entry(validFrom = "2024-01", oil = "2600", heatingType = HeatingReferenceTypeEnum.OIL),
+                entry(validFrom = "2024-07", oil = "2700"),
+            ),
+        )
+
+        // The later entry only revises the price, so the fuel stays oil.
+        val later = timeline.at("2024-09")
+        assertEquals(expected = HeatingReferenceTypeEnum.OIL, actual = later.heatingReferenceType)
+        assertEquals(expected = BigDecimal("2700"), actual = later.heatingReferenceCost)
+    }
+
+    @Test
+    fun `falls back to the profile fuel before the timeline states one`() {
+        val timeline = PriceTimeline(
+            profile = profile(heatingReferenceType = HeatingReferenceTypeEnum.OIL),
+            snapshots = listOf(entry(validFrom = "2025-01", gas = "1800", heatingType = HeatingReferenceTypeEnum.GAS)),
+        )
+
+        val before = timeline.at("2024-06")
+        assertEquals(expected = HeatingReferenceTypeEnum.OIL, actual = before.heatingReferenceType)
+        assertEquals(expected = BigDecimal("2400"), actual = before.heatingReferenceCost)
+    }
+
+    @Test
+    fun `reports no cost for a period the timeline says was unheated`() {
+        val timeline = PriceTimeline(
+            profile = profile(heatingReferenceType = HeatingReferenceTypeEnum.OIL),
+            snapshots = listOf(
+                entry(validFrom = "2024-01", oil = "2600", heatingType = HeatingReferenceTypeEnum.OIL),
+                entry(validFrom = "2025-01", heatingType = HeatingReferenceTypeEnum.NONE),
+            ),
+        )
+
+        assertEquals(expected = BigDecimal("2600"), actual = timeline.at("2024-06").heatingReferenceCost)
+        assertNull(actual = timeline.at("2025-06").heatingReferenceCost)
     }
 
     @Test

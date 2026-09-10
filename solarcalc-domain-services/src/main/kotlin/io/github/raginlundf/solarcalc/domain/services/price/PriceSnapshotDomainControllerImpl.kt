@@ -84,22 +84,25 @@ class PriceSnapshotDomainControllerImpl(
             electricityPrice = effective.electricityPrice,
             feedInTariff = effective.feedInTariff,
             petrolPrice = effective.petrolPrice,
+            heatingReferenceType = effective.heatingReferenceType,
             heatingReferenceCost = effective.heatingReferenceCost,
         )
     }
 
     /**
-     * An entry with no prices at all resolves to nothing yet still occupies its start month, which
-     * would block the real entry for that month behind a duplicate error.
+     * An entry that states nothing resolves to nothing yet still occupies its start month, which
+     * would block the real entry for that month behind a duplicate error. Recording only a fuel
+     * switch counts as stating something.
      */
     private fun requireAtLeastOnePrice(request: UpsertPriceSnapshotRequest) {
         val allEmpty = request.electricityPrice == null &&
             request.feedInTariff == null &&
             request.petrolPrice == null &&
+            request.heatingReferenceType == null &&
             request.oilReferenceCost == null &&
             request.gasReferenceCost == null
         if (allEmpty) {
-            throw ValidationException(message = "A price entry must set at least one price.")
+            throw ValidationException(message = "A price entry must set at least one price or the heating type.")
         }
     }
 
@@ -130,6 +133,7 @@ private fun PriceSnapshotEntity.applyRequest(request: UpsertPriceSnapshotRequest
     electricityPrice = request.electricityPrice
     feedInTariff = request.feedInTariff
     petrolPrice = request.petrolPrice
+    heatingReferenceType = request.heatingReferenceType
     oilReferenceCost = request.oilReferenceCost
     gasReferenceCost = request.gasReferenceCost
 }
@@ -142,6 +146,7 @@ private fun PriceSnapshotEntity.toResponse(energyProfileUuid: String): PriceSnap
         electricityPrice = electricityPrice,
         feedInTariff = feedInTariff,
         petrolPrice = petrolPrice,
+        heatingReferenceType = heatingReferenceType,
         oilReferenceCost = oilReferenceCost,
         gasReferenceCost = gasReferenceCost,
     )

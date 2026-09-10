@@ -80,6 +80,8 @@ export interface PriceSnapshot {
   electricityPrice: number | null;
   feedInTariff: number | null;
   petrolPrice: number | null;
+  /** The fuel the reference cost stands for from this month on; null leaves it unchanged. */
+  heatingReferenceType: HeatingReferenceType | null;
   oilReferenceCost: number | null;
   gasReferenceCost: number | null;
 }
@@ -90,6 +92,8 @@ export interface EffectivePrices {
   electricityPrice: number | null;
   feedInTariff: number | null;
   petrolPrice: number | null;
+  /** The fuel heated with that month, which may differ from the profile's current setting. */
+  heatingReferenceType: HeatingReferenceType;
   heatingReferenceCost: number | null;
 }
 

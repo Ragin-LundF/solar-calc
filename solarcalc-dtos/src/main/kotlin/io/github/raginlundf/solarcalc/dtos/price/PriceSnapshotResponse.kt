@@ -1,5 +1,6 @@
 package io.github.raginlundf.solarcalc.dtos.price
 
+import io.github.raginlundf.solarcalc.domain.models.profile.HeatingReferenceTypeEnum
 import java.math.BigDecimal
 
 data class PriceSnapshotResponse(
@@ -10,6 +11,7 @@ data class PriceSnapshotResponse(
     val electricityPrice: BigDecimal?,
     val feedInTariff: BigDecimal?,
     val petrolPrice: BigDecimal?,
+    val heatingReferenceType: HeatingReferenceTypeEnum?,
     val oilReferenceCost: BigDecimal?,
     val gasReferenceCost: BigDecimal?,
 )

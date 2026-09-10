@@ -8,7 +8,7 @@ import {ApiService} from '@/core/api/api.service';
 import {AppStateService} from '@/core/state/app-state.service';
 import {ProfileStore} from '@/core/api/profile.store';
 import {SummaryStore} from '@/core/api/summary.store';
-import {PriceSnapshot} from '@/core/api/models';
+import {HeatingReferenceType, PriceSnapshot} from '@/core/api/models';
 import {fmtEUR, fmtEURperKwh, monthLongLabel} from '@/shared/utils/format';
 
 interface EntryForm {
@@ -16,12 +16,14 @@ interface EntryForm {
   electricityPrice: string;
   feedInTariff: string;
   petrolPrice: string;
+  heatingReferenceType: string;
   oilReferenceCost: string;
   gasReferenceCost: string;
 }
 
 const EMPTY_FORM: EntryForm = {
-  validFrom: '', electricityPrice: '', feedInTariff: '', petrolPrice: '', oilReferenceCost: '', gasReferenceCost: '',
+  validFrom: '', electricityPrice: '', feedInTariff: '', petrolPrice: '',
+  heatingReferenceType: '', oilReferenceCost: '', gasReferenceCost: '',
 };
 
 @Component({
@@ -38,6 +40,8 @@ export class PricesComponent {
   private readonly summaryStore = inject(SummaryStore);
   private readonly translate = inject(TranslateService);
 
+  /** Empty means "unchanged": the fuel carries over from an earlier entry. */
+  readonly heatingTypes: HeatingReferenceType[] = ['NONE', 'OIL', 'GAS'];
   readonly fmtEUR = fmtEUR;
   readonly fmtEURperKwh = fmtEURperKwh;
   readonly monthLongLabel = monthLongLabel;
@@ -86,6 +90,7 @@ export class PricesComponent {
       electricityPrice: str(entry.electricityPrice),
       feedInTariff: str(entry.feedInTariff),
       petrolPrice: str(entry.petrolPrice),
+      heatingReferenceType: entry.heatingReferenceType ?? '',
       oilReferenceCost: str(entry.oilReferenceCost),
       gasReferenceCost: str(entry.gasReferenceCost),
     });
@@ -120,8 +125,10 @@ export class PricesComponent {
 
   readonly formHasPrice = computed(() => {
     const f = this.form();
-    return [f.electricityPrice, f.feedInTariff, f.petrolPrice, f.oilReferenceCost, f.gasReferenceCost]
-      .some(v => v.trim() !== '');
+    return [
+      f.electricityPrice, f.feedInTariff, f.petrolPrice,
+      f.heatingReferenceType, f.oilReferenceCost, f.gasReferenceCost,
+    ].some(v => v.trim() !== '');
   });
 
   async submit(): Promise<void> {
@@ -136,6 +143,7 @@ export class PricesComponent {
       electricityPrice: this.num(f.electricityPrice),
       feedInTariff: this.num(f.feedInTariff),
       petrolPrice: this.num(f.petrolPrice),
+      heatingReferenceType: f.heatingReferenceType === '' ? null : f.heatingReferenceType,
       oilReferenceCost: this.num(f.oilReferenceCost),
       gasReferenceCost: this.num(f.gasReferenceCost),
     };

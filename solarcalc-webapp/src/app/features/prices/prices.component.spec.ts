@@ -10,12 +10,12 @@ import {PriceSnapshot} from '@/core/api/models';
 
 const ENTRIES: PriceSnapshot[] = [
   {
-    id: 2, validFrom: '2025-01', electricityPrice: 0.28,
-    feedInTariff: null, petrolPrice: null, oilReferenceCost: null, gasReferenceCost: null,
+    id: 2, validFrom: '2025-01', electricityPrice: 0.28, feedInTariff: null, petrolPrice: null,
+    heatingReferenceType: 'GAS', oilReferenceCost: null, gasReferenceCost: 1800,
   },
   {
-    id: 1, validFrom: '2024-01', electricityPrice: 0.32,
-    feedInTariff: 0.08, petrolPrice: 1.72, oilReferenceCost: 2400, gasReferenceCost: null,
+    id: 1, validFrom: '2024-01', electricityPrice: 0.32, feedInTariff: 0.08, petrolPrice: 1.72,
+    heatingReferenceType: 'OIL', oilReferenceCost: 2400, gasReferenceCost: null,
   },
 ];
 
@@ -67,8 +67,8 @@ describe('PricesComponent', () => {
   it('marks no entry as in effect when the timeline starts in the future', async () => {
     const fixture = await render([
       {
-        id: 9, validFrom: '2999-01', electricityPrice: 0.1,
-        feedInTariff: null, petrolPrice: null, oilReferenceCost: null, gasReferenceCost: null,
+        id: 9, validFrom: '2999-01', electricityPrice: 0.1, feedInTariff: null, petrolPrice: null,
+        heatingReferenceType: null, oilReferenceCost: null, gasReferenceCost: null,
       },
     ]);
 
@@ -98,6 +98,22 @@ describe('PricesComponent', () => {
     expect(post.request.body.petrolPrice).toBe(1.9);
     // Untouched prices stay null so the older entry keeps supplying them.
     expect(post.request.body.electricityPrice).toBeNull();
+    // No fuel chosen means "unchanged", not "no heating".
+    expect(post.request.body.heatingReferenceType).toBeNull();
+  });
+
+  it('records a fuel switch even when no cost is entered with it', async () => {
+    const fixture = await render();
+    const prices = fixture.componentInstance;
+    prices.patch('validFrom', '2026-01');
+    prices.patch('heatingReferenceType', 'GAS');
+
+    // Stating the fuel alone is a legitimate entry; the cost can keep coming from elsewhere.
+    expect(prices.formHasPrice()).toBe(true);
+    prices.submit();
+
+    const post = http.expectOne(r => r.method === 'POST');
+    expect(post.request.body.heatingReferenceType).toBe('GAS');
   });
 
   it('reports a duplicate start month rather than a generic failure', async () => {
@@ -124,5 +140,6 @@ describe('PricesComponent', () => {
     expect(prices.form().electricityPrice).toBe('0.32');
     // A price the entry does not carry stays empty rather than showing a zero.
     expect(prices.form().gasReferenceCost).toBe('');
+    expect(prices.form().heatingReferenceType).toBe('OIL');
   });
 });
