@@ -73,9 +73,11 @@ configurations.configureEach {
 
 // ── from dependencies.gradle ───────────────────────────────────────────────────
 dependencies {
+    /*
     constraints {
         api(libs.bundles.constraints)
     }
+    */
 
     implementation(platform(libs.bom.spring.boot))
     implementation(platform(libs.bom.log4j))
