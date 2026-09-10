@@ -1,7 +1,7 @@
 package io.github.raginlundf.solarcalc.domain.services.auth
 
 import io.github.raginlundf.solarcalc.domain.models.repository.UserRepository
-import io.github.raginlundf.solarcalc.domain.models.user.User
+import io.github.raginlundf.solarcalc.domain.models.user.UserEntity
 import io.github.raginlundf.solarcalc.dtos.auth.AuthResponseDto
 import io.github.raginlundf.solarcalc.dtos.auth.LoginRequestDto
 import io.github.raginlundf.solarcalc.dtos.auth.RegisterRequestDto
@@ -26,7 +26,7 @@ class AuthDomainControllerImpl(
             throw UsernameAlreadyExistsException(message = "Username '${request.username}' is already taken")
         }
 
-        val user = User().apply {
+        val user = UserEntity().apply {
             username = request.username
             passwordHash = passwordEncoder.encode(request.password)!!
         }
@@ -49,7 +49,7 @@ class AuthDomainControllerImpl(
     @Transactional
     override fun updateLastProfile(username: String, request: UpdateLastProfileRequestDto) {
         val user = userRepository.findByUsername(username)
-            .orElseThrow { InvalidCredentialsException(message = "User not found") }
+            .orElseThrow { InvalidCredentialsException(message = "UserEntity not found") }
         user.lastProfileUuid = request.profileUuid
         userRepository.save(user)
     }
@@ -57,13 +57,13 @@ class AuthDomainControllerImpl(
     @Transactional
     override fun updateSetupStep(username: String, request: UpdateSetupStepRequestDto): Int {
         val user = userRepository.findByUsername(username = username)
-            .orElseThrow { InvalidCredentialsException(message = "User not found") }
+            .orElseThrow { InvalidCredentialsException(message = "UserEntity not found") }
         user.setupStep = request.setupStep
         userRepository.save(user)
         return user.setupStep
     }
 
-    private fun User.toAuthResponse(): AuthResponseDto {
+    private fun UserEntity.toAuthResponse(): AuthResponseDto {
         // Every user currently receives full access; read-only users get only READ later.
         val issued = tokenIssuer.issue(subject = username, scopes = SolarcalcScopes.FULL_ACCESS)
         return AuthResponseDto(

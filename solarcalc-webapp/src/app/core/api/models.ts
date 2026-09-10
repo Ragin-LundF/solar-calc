@@ -73,6 +73,26 @@ export interface SummaryResponse {
   efficiency: EnergyEfficiencyRating;
 }
 
+/** One entry of the price timeline: these prices apply from `validFrom` until a later entry does. */
+export interface PriceSnapshot {
+  id: number;
+  validFrom: string;
+  electricityPrice: number | null;
+  feedInTariff: number | null;
+  petrolPrice: number | null;
+  oilReferenceCost: number | null;
+  gasReferenceCost: number | null;
+}
+
+/** Prices the server would actually use for one month, after the timeline and the profile defaults. */
+export interface EffectivePrices {
+  period: string;
+  electricityPrice: number | null;
+  feedInTariff: number | null;
+  petrolPrice: number | null;
+  heatingReferenceCost: number | null;
+}
+
 export interface AllocationPolicy {
   id: number;
   name: string;

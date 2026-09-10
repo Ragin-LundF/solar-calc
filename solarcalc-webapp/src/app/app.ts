@@ -1,12 +1,12 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
-import { NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router';
-import { filter } from 'rxjs';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { AuthService } from '@/core/auth/auth.service';
-import { AppStateService } from '@/core/state/app-state.service';
-import { FilterService } from '@/core/state/filter.service';
-import { ProfileStore } from '@/core/api/profile.store';
-import { monthLang } from '@/shared/utils/format';
+import {Component, computed, effect, inject, signal} from '@angular/core';
+import {NavigationEnd, Router, RouterLink, RouterOutlet} from '@angular/router';
+import {filter} from 'rxjs';
+import {TranslatePipe, TranslateService} from '@ngx-translate/core';
+import {AuthService} from '@/core/auth/auth.service';
+import {AppStateService} from '@/core/state/app-state.service';
+import {FilterService} from '@/core/state/filter.service';
+import {ProfileStore} from '@/core/api/profile.store';
+import {monthLang} from '@/shared/utils/format';
 
 interface Tab {
   id: string;
@@ -37,12 +37,13 @@ export class App {
     { id: 'wallbox', route: '/wallbox' },
     { id: 'total', route: '/total' },
     { id: 'grid', route: '/grid' },
+    { id: 'prices', route: '/prices' },
     { id: 'data', route: '/data' },
     { id: 'settings', route: '/settings' },
   ];
 
   readonly activeTab = signal<string>(this.tabFromUrl(this.router.url));
-  readonly showFilter = computed(() => !['data', 'settings'].includes(this.activeTab()));
+  readonly showFilter = computed(() => !['prices', 'data', 'settings'].includes(this.activeTab()));
 
   constructor() {
     effect(() => monthLang.set(this.currentLang() === 'en' ? 'en' : 'de'));

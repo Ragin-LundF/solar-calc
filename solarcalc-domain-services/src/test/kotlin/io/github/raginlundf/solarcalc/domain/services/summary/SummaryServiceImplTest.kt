@@ -1,6 +1,6 @@
 package io.github.raginlundf.solarcalc.domain.services.summary
 
-import io.github.raginlundf.solarcalc.domain.models.allocation.AllocationCategory
+import io.github.raginlundf.solarcalc.domain.models.allocation.AllocationCategoryEnum
 import io.github.raginlundf.solarcalc.domain.models.profile.DEFAULT_HEATING_DISTRIBUTION
 import io.github.raginlundf.solarcalc.dtos.summary.EnergyEfficiencyRating
 import org.junit.jupiter.api.Test
@@ -24,9 +24,9 @@ class SummaryServiceImplTest {
 
     private val params = SummaryParams(
         allocationPriority = listOf(
-            AllocationCategory.HOUSEHOLD,
-            AllocationCategory.HEAT_PUMP,
-            AllocationCategory.WALLBOX,
+            AllocationCategoryEnum.HOUSEHOLD,
+            AllocationCategoryEnum.HEAT_PUMP,
+            AllocationCategoryEnum.WALLBOX,
         ),
         hasHeatPump = true,
         hasWallbox = true,

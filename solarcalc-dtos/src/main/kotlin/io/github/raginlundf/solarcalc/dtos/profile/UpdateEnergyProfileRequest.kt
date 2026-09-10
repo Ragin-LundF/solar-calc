@@ -1,7 +1,7 @@
 package io.github.raginlundf.solarcalc.dtos.profile
 
-import io.github.raginlundf.solarcalc.domain.models.profile.HeatingReferenceType
-import io.github.raginlundf.solarcalc.domain.models.profile.OverviewLayout
+import io.github.raginlundf.solarcalc.domain.models.profile.HeatingReferenceTypeEnum
+import io.github.raginlundf.solarcalc.domain.models.profile.OverviewLayoutEnum
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Positive
 import jakarta.validation.constraints.PositiveOrZero
@@ -11,7 +11,7 @@ data class UpdateEnergyProfileRequest(
     @field:NotBlank val name: String,
     val hasWallbox: Boolean = false,
     val hasHeatPump: Boolean = false,
-    val heatingReferenceType: HeatingReferenceType = HeatingReferenceType.NONE,
+    val heatingReferenceType: HeatingReferenceTypeEnum = HeatingReferenceTypeEnum.NONE,
     val defaultElectricityPrice: BigDecimal? = null,
     val defaultFeedInTariff: BigDecimal? = null,
     val defaultPetrolPrice: BigDecimal? = null,
@@ -23,5 +23,5 @@ data class UpdateEnergyProfileRequest(
     @field:PositiveOrZero val usableAreaSqm: BigDecimal? = null,
     @field:Positive val heatPumpScop: BigDecimal? = null,
     val heatingMonthlyDistribution: List<Int>? = null,
-    val overviewLayout: OverviewLayout? = null,
+    val overviewLayout: OverviewLayoutEnum? = null,
 )

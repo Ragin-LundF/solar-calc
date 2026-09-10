@@ -1,8 +1,8 @@
 package io.github.raginlundf.solarcalc.domain.services.summary
 
 import io.github.raginlundf.extensions.scale2
-import io.github.raginlundf.solarcalc.domain.models.profile.EnergyEfficiencyClass
-import io.github.raginlundf.solarcalc.domain.models.profile.EnergyProfile
+import io.github.raginlundf.solarcalc.domain.models.profile.EnergyEfficiencyClassEnum
+import io.github.raginlundf.solarcalc.domain.models.profile.EnergyProfileEntity
 import io.github.raginlundf.solarcalc.dtos.summary.EnergyEfficiencyRating
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
@@ -29,15 +29,15 @@ class EnergyEfficiencyCalculator {
         const val MONTHS_PER_YEAR = 12
 
         /** Inclusive upper bound of each band in kWh/(m2*a); anything above the last one is H. */
-        val CLASS_UPPER_BOUNDS: List<Pair<EnergyEfficiencyClass, BigDecimal>> = listOf(
-            EnergyEfficiencyClass.A_PLUS to BigDecimal("30"),
-            EnergyEfficiencyClass.A to BigDecimal("50"),
-            EnergyEfficiencyClass.B to BigDecimal("75"),
-            EnergyEfficiencyClass.C to BigDecimal("100"),
-            EnergyEfficiencyClass.D to BigDecimal("130"),
-            EnergyEfficiencyClass.E to BigDecimal("160"),
-            EnergyEfficiencyClass.F to BigDecimal("200"),
-            EnergyEfficiencyClass.G to BigDecimal("250"),
+        val CLASS_UPPER_BOUNDS: List<Pair<EnergyEfficiencyClassEnum, BigDecimal>> = listOf(
+            EnergyEfficiencyClassEnum.A_PLUS to BigDecimal("30"),
+            EnergyEfficiencyClassEnum.A to BigDecimal("50"),
+            EnergyEfficiencyClassEnum.B to BigDecimal("75"),
+            EnergyEfficiencyClassEnum.C to BigDecimal("100"),
+            EnergyEfficiencyClassEnum.D to BigDecimal("130"),
+            EnergyEfficiencyClassEnum.E to BigDecimal("160"),
+            EnergyEfficiencyClassEnum.F to BigDecimal("200"),
+            EnergyEfficiencyClassEnum.G to BigDecimal("250"),
         )
     }
 
@@ -47,7 +47,7 @@ class EnergyEfficiencyCalculator {
      * produces a class when every one of those months is present — a gap would make the
      * "per year" figure meaningless.
      */
-    fun rate(profile: EnergyProfile, heatPumpKwhByPeriod: Map<String, BigDecimal>): EnergyEfficiencyRating {
+    fun rate(profile: EnergyProfileEntity, heatPumpKwhByPeriod: Map<String, BigDecimal>): EnergyEfficiencyRating {
         val area = profile.usableAreaSqm
         val scop = profile.heatPumpScop
         val window = latestFullYearPeriods(periods = heatPumpKwhByPeriod.keys)
@@ -91,8 +91,8 @@ class EnergyEfficiencyCalculator {
         return (0 until MONTHS_PER_YEAR).map { back -> end.minusMonths(back.toLong()).toString() }
     }
 
-    private fun classify(kwhPerSqmPerYear: BigDecimal): EnergyEfficiencyClass {
+    private fun classify(kwhPerSqmPerYear: BigDecimal): EnergyEfficiencyClassEnum {
         val band = CLASS_UPPER_BOUNDS.firstOrNull { (_, upperBound) -> kwhPerSqmPerYear <= upperBound }
-        return band?.first ?: EnergyEfficiencyClass.H
+        return band?.first ?: EnergyEfficiencyClassEnum.H
     }
 }

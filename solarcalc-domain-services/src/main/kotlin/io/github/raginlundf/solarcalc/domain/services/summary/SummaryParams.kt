@@ -1,11 +1,11 @@
 package io.github.raginlundf.solarcalc.domain.services.summary
 
-import io.github.raginlundf.solarcalc.domain.models.allocation.AllocationCategory
+import io.github.raginlundf.solarcalc.domain.models.allocation.AllocationCategoryEnum
 import java.math.BigDecimal
 
 /** Profile-level settings that drive the savings math. */
 data class SummaryParams(
-    val allocationPriority: List<AllocationCategory>,
+    val allocationPriority: List<AllocationCategoryEnum>,
     val hasHeatPump: Boolean,
     val hasWallbox: Boolean,
     val kmPerKwh: BigDecimal,

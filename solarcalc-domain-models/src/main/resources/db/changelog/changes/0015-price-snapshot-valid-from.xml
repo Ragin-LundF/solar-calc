@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        logicalFilePath="0015-price-snapshot-valid-from.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <!--
+        A price snapshot used to mean either "the profile default" (period IS NULL) or "an override
+        for exactly this month". It now means "these prices apply from this month until a later
+        snapshot supersedes them", so entries form a timeline, cannot overlap, and a price can cover
+        a whole year simply by not being superseded.
+
+        The clean-up is split from the schema change on purpose: MariaDB commits implicitly on DDL,
+        so if the unique constraint were to fail it must not leave a half-applied data change behind
+        in the same change set.
+    -->
+
+    <changeSet id="0015-cleanup-price-snapshots" author="solarcalc">
+        <comment>
+            Drop rows carrying no price at all. The setup wizard used to post field names the API did
+            not know, so every profile created through onboarding got one all-null snapshot.
+        </comment>
+        <delete tableName="price_snapshot">
+            <where>
+                electricity_price IS NULL
+                AND feed_in_tariff IS NULL
+                AND petrol_price IS NULL
+                AND oil_reference_cost IS NULL
+                AND gas_reference_cost IS NULL
+            </where>
+        </delete>
+
+        <comment>
+            A null period meant "the profile default", i.e. in effect for all of history. The
+            earliest possible start month preserves exactly that role.
+        </comment>
+        <sql>
+            UPDATE price_snapshot SET period = '1970-01' WHERE period IS NULL OR TRIM(period) = ''
+        </sql>
+
+        <comment>
+            The old index was not unique and nothing checked for duplicates, so a profile may already
+            hold several rows for the same period — including several former null-period rows that
+            just collapsed onto 1970-01. Keep the most recently created one; without this the unique
+            constraint below would abort the whole migration and the app would not start.
+        </comment>
+        <sql>
+            DELETE FROM price_snapshot
+            WHERE id NOT IN (
+                SELECT keep_id FROM (
+                    SELECT MAX(id) AS keep_id
+                    FROM price_snapshot
+                    GROUP BY energy_profile_id, period
+                ) AS keepers
+            )
+        </sql>
+    </changeSet>
+
+    <changeSet id="0015-price-snapshot-valid-from" author="solarcalc">
+        <renameColumn
+                tableName="price_snapshot"
+                oldColumnName="period"
+                newColumnName="valid_from"
+                columnDataType="VARCHAR(7)" />
+        <addNotNullConstraint
+                tableName="price_snapshot"
+                columnName="valid_from"
+                columnDataType="VARCHAR(7)" />
+    </changeSet>
+
+    <changeSet id="0015-price-snapshot-unique-valid-from" author="solarcalc">
+        <comment>
+            Two snapshots for the same start month made the resolver's single-result lookup throw at
+            read time. One start month, one entry.
+        </comment>
+        <addUniqueConstraint
+                tableName="price_snapshot"
+                columnNames="energy_profile_id, valid_from"
+                constraintName="uq_price_snapshot_profile_valid_from" />
+    </changeSet>
+
+    <changeSet id="0015-drop-price-snapshot-period-index" author="solarcalc">
+        <comment>
+            Redundant once the unique constraint above exists: both start with energy_profile_id, so
+            the new one also carries the foreign key. It has to be dropped last for exactly that
+            reason — MariaDB refuses while it is the only index backing the FK.
+        </comment>
+        <dropIndex tableName="price_snapshot" indexName="idx_price_snapshot_profile_period" />
+    </changeSet>
+
+</databaseChangeLog>

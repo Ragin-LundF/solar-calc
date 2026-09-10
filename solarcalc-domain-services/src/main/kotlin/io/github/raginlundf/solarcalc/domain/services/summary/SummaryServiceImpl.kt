@@ -2,9 +2,9 @@ package io.github.raginlundf.solarcalc.domain.services.summary
 
 import io.github.raginlundf.extensions.scale2
 import io.github.raginlundf.extensions.scale3
-import io.github.raginlundf.solarcalc.domain.models.allocation.AllocationCategory
-import io.github.raginlundf.solarcalc.dtos.summary.MonthlySummary
+import io.github.raginlundf.solarcalc.domain.models.allocation.AllocationCategoryEnum
 import io.github.raginlundf.solarcalc.dtos.summary.EnergyEfficiencyRating
+import io.github.raginlundf.solarcalc.dtos.summary.MonthlySummary
 import io.github.raginlundf.solarcalc.dtos.summary.PaybackProjection
 import io.github.raginlundf.solarcalc.dtos.summary.SummaryAggregates
 import io.github.raginlundf.solarcalc.dtos.summary.SummaryResponse
@@ -65,25 +65,25 @@ class SummaryServiceImpl : SummaryService {
             ).max(BigDecimal.ZERO)
 
         val demand = mapOf(
-            AllocationCategory.HOUSEHOLD to householdDemand,
-            AllocationCategory.HEAT_PUMP to heatPumpDemand,
-            AllocationCategory.WALLBOX to wallboxDemand,
+            AllocationCategoryEnum.HOUSEHOLD to householdDemand,
+            AllocationCategoryEnum.HEAT_PUMP to heatPumpDemand,
+            AllocationCategoryEnum.WALLBOX to wallboxDemand,
         )
         val solar = allocate(demand = demand, priority = params.allocationPriority, pool = selfConsumed)
 
         val household = costPair(
             demand = householdDemand,
-            solar = solar.getValue(AllocationCategory.HOUSEHOLD),
+            solar = solar.getValue(AllocationCategoryEnum.HOUSEHOLD),
             gridPrice = month.gridPrice,
         )
         val heatPump = costPair(
             demand = heatPumpDemand,
-            solar = solar.getValue(AllocationCategory.HEAT_PUMP),
+            solar = solar.getValue(AllocationCategoryEnum.HEAT_PUMP),
             gridPrice = month.gridPrice,
         )
         val wallbox = costPair(
             demand = wallboxDemand,
-            solar = solar.getValue(AllocationCategory.WALLBOX),
+            solar = solar.getValue(AllocationCategoryEnum.WALLBOX),
             gridPrice = month.gridPrice,
         )
 
@@ -227,12 +227,12 @@ class SummaryServiceImpl : SummaryService {
     }
 
     private fun allocate(
-        demand: Map<AllocationCategory, BigDecimal>,
-        priority: List<AllocationCategory>,
+        demand: Map<AllocationCategoryEnum, BigDecimal>,
+        priority: List<AllocationCategoryEnum>,
         pool: BigDecimal,
-    ): Map<AllocationCategory, BigDecimal> {
+    ): Map<AllocationCategoryEnum, BigDecimal> {
         var remaining = pool
-        val result = AllocationCategory.entries.associateWith { BigDecimal.ZERO }.toMutableMap()
+        val result = AllocationCategoryEnum.entries.associateWith { BigDecimal.ZERO }.toMutableMap()
         for (category in priority) {
             val allocated = remaining.min(demand[category] ?: BigDecimal.ZERO)
             result[category] = allocated

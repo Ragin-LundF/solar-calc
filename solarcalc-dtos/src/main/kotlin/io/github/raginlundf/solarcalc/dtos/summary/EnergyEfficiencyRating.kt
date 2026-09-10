@@ -1,6 +1,6 @@
 package io.github.raginlundf.solarcalc.dtos.summary
 
-import io.github.raginlundf.solarcalc.domain.models.profile.EnergyEfficiencyClass
+import io.github.raginlundf.solarcalc.domain.models.profile.EnergyEfficiencyClassEnum
 import java.math.BigDecimal
 
 /**
@@ -17,6 +17,6 @@ data class EnergyEfficiencyRating(
     /** Heat delivered to the building over the window (heat-pump electricity x SCOP), in kWh. */
     val heatingEnergyKwh: BigDecimal,
     val kwhPerSqmPerYear: BigDecimal,
-    val energyClass: EnergyEfficiencyClass?,
+    val energyClass: EnergyEfficiencyClassEnum?,
     val monthsConsidered: Int,
 )

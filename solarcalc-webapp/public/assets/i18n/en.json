@@ -101,18 +101,12 @@
   },
   "prices": {
     "title": "Prices",
-    "defaultPrices": "Default Prices",
-    "period": "Period (optional)",
     "electricityPrice": "Electricity Price (€/kWh)",
     "feedInTariff": "Feed-in Tariff (€/kWh)",
     "petrolPrice": "Petrol Price (€/L)",
     "oilReferenceCost": "Oil reference cost (€/year)",
     "gasReferenceCost": "Gas reference cost (€/year)",
-    "electricityPricePerKwh": "Electricity Price (€/kWh)",
-    "feedInTariffPerKwh": "Feed-in Tariff (€/kWh)",
-    "petrolPricePerLiter": "Petrol Price (€/L)",
-    "oilReferenceCostPerMonth": "Oil Reference Cost (€/month)",
-    "gasReferenceCostPerMonth": "Gas Reference Cost (€/month)"
+    "validFrom": "Valid from"
   },
   "allocation": {
     "title": "Allocation Policy",
@@ -156,7 +150,8 @@
       "total": "Total",
       "data": "Data",
       "settings": "Settings",
-      "grid": "Grid & tariff"
+      "grid": "Grid & tariff",
+      "prices": "Prices"
     },
     "title": {
       "overview": "Overview",
@@ -167,7 +162,8 @@
       "total": "Total",
       "data": "Data",
       "settings": "Settings",
-      "grid": "Grid & tariff"
+      "grid": "Grid & tariff",
+      "prices": "Prices"
     },
     "subtitle": {
       "overview": "Savings and payback at a glance",
@@ -178,7 +174,8 @@
       "total": "All savings combined",
       "data": "Capture monthly readings and heating distribution",
       "settings": "Allocation, profile and prices",
-      "grid": "Dynamic tariff compared with a fixed-price contract"
+      "grid": "Dynamic tariff compared with a fixed-price contract",
+      "prices": "Price history over time"
     },
     "filter": {
       "ytd": "This year",
@@ -248,7 +245,8 @@
       "purchasePrice": "Ø price",
       "gridCost": "Actual",
       "gridCostAtReference": "At fixed price",
-      "tariffDelta": "Difference"
+      "tariffDelta": "Difference",
+      "feedInTariff": "Feed-in (€/kWh)"
     },
     "ks": {
       "production": {
@@ -330,7 +328,10 @@
       "distTitle": "Heating distribution over the year",
       "distHelp": "The 12 values must sum to 100 %. They distribute the annual reference heating cost across the months for the oil comparison.",
       "electricityPrice": "Ø electricity price (€/kWh)",
-      "electricityPriceHelp": "Average unit price actually paid this month. Leave empty to use the electricity price from Settings."
+      "electricityPriceHelp": "Average unit price actually paid this month. Leave empty to use the electricity price from Settings.",
+      "feedInTariff": "Feed-in tariff (€/kWh)",
+      "feedInTariffHelp": "Tariff for this month. Prefilled from the price history; clear it to inherit again.",
+      "clear": "Reset"
     },
     "settings": {
       "allocationTitle": "Energy allocation",
@@ -351,6 +352,17 @@
       "efficiencyUnit": "kWh/(m²·a)",
       "efficiencyBasis": "Based on {{kwh}} kWh of heat over the last 12 months",
       "efficiencyIncomplete": "Not enough to rate yet: {{months}} of 12 months recorded, or living area/SCOP missing."
+    },
+    "prices": {
+      "newEntry": "New price entry",
+      "editEntry": "Edit price entry",
+      "help": "An entry applies from the given month until a later entry supersedes it. Empty fields keep the previous price. Anything not set here comes from Settings.",
+      "timelineTitle": "Price history",
+      "timelineHelp": "Months that carry their own price in the data keep it — the history does not change them.",
+      "inEffect": "in effect",
+      "empty": "No price entries yet. The prices from Settings apply.",
+      "confirmDelete": "Really delete this price entry?",
+      "duplicate": "An entry for this month already exists."
     }
   },
   "energyClass": {

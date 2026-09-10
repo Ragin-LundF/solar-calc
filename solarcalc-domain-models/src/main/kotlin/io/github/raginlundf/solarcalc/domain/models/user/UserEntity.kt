@@ -3,7 +3,7 @@ package io.github.raginlundf.solarcalc.domain.models.user
 import io.github.raginlundf.extensions.kotlinEquals
 import io.github.raginlundf.extensions.kotlinHashCode
 import io.github.raginlundf.extensions.kotlinToString
-import io.github.raginlundf.solarcalc.domain.models.profile.EnergyProfile
+import io.github.raginlundf.solarcalc.domain.models.profile.EnergyProfileEntity
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -14,10 +14,11 @@ import jakarta.persistence.Id
 import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 import java.time.LocalDateTime
+import kotlin.reflect.KProperty1
 
 @Entity
 @Table(name = "solarcalc_user")
-class User {
+class UserEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,7 +31,7 @@ class User {
     var passwordHash: String = ""
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
-    var profiles: MutableList<EnergyProfile> = mutableListOf()
+    var profiles: MutableList<EnergyProfileEntity> = mutableListOf()
 
     @Column(name = "setup_step", nullable = false)
     var setupStep: Int = 0
@@ -42,14 +43,29 @@ class User {
     var createdAt: LocalDateTime = LocalDateTime.now()
 
     override fun equals(other: Any?): Boolean {
-        return kotlinEquals(other, arrayOf(User::id))
+        return kotlinEquals(other, properties)
     }
 
     override fun hashCode(): Int {
-        return kotlinHashCode(arrayOf(User::id))
+        return kotlinHashCode(properties)
     }
 
     override fun toString(): String {
-        return kotlinToString(arrayOf(User::id, User::username))
+        return kotlinToString(properties)
+    }
+
+    private companion object {
+        /**
+         * The fields that make up this entity's identity, shared by equals, hashCode and toString so the
+         * three can never disagree. Excludes [profiles], a lazy collection that comparing or printing
+         * would force to load, and [passwordHash], which must never reach a log line.
+         */
+        val properties: Array<KProperty1<UserEntity, Any?>> = arrayOf(
+            UserEntity::id,
+            UserEntity::username,
+            UserEntity::setupStep,
+            UserEntity::lastProfileUuid,
+            UserEntity::createdAt,
+        )
     }
 }

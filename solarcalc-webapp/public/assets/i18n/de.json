@@ -101,18 +101,12 @@
   },
   "prices": {
     "title": "Preise",
-    "defaultPrices": "Standardpreise",
-    "period": "Periode (optional)",
     "electricityPrice": "Strompreis (€/kWh)",
     "feedInTariff": "Einspeisevergütung (€/kWh)",
     "petrolPrice": "Benzinpreis (€/L)",
     "oilReferenceCost": "Öl-Referenzkosten (€/Jahr)",
     "gasReferenceCost": "Gas-Referenzkosten (€/Jahr)",
-    "electricityPricePerKwh": "Strompreis (€/kWh)",
-    "feedInTariffPerKwh": "Einspeisevergütung (€/kWh)",
-    "petrolPricePerLiter": "Benzinpreis (€/L)",
-    "oilReferenceCostPerMonth": "Öl-Referenzkosten (€/Monat)",
-    "gasReferenceCostPerMonth": "Gas-Referenzkosten (€/Monat)"
+    "validFrom": "Gültig ab"
   },
   "allocation": {
     "title": "Allokationspolitik",
@@ -156,7 +150,8 @@
       "total": "Gesamtabrechnung",
       "data": "Daten",
       "settings": "Einstellungen",
-      "grid": "Netzbezug & Tarif"
+      "grid": "Netzbezug & Tarif",
+      "prices": "Preise"
     },
     "title": {
       "overview": "Übersicht",
@@ -167,7 +162,8 @@
       "total": "Gesamtabrechnung",
       "data": "Daten",
       "settings": "Einstellungen",
-      "grid": "Netzbezug & Tarif"
+      "grid": "Netzbezug & Tarif",
+      "prices": "Preise"
     },
     "subtitle": {
       "overview": "Ersparnis und Amortisation auf einen Blick",
@@ -178,7 +174,8 @@
       "total": "Alle Ersparnisse zusammengefasst",
       "data": "Monatswerte erfassen und Heizungsverteilung",
       "settings": "Allokation, Profil und Preise",
-      "grid": "Dynamischer Tarif im Vergleich zum Festpreisvertrag"
+      "grid": "Dynamischer Tarif im Vergleich zum Festpreisvertrag",
+      "prices": "Preisverlauf über die Zeit"
     },
     "filter": {
       "ytd": "Dieses Jahr",
@@ -248,7 +245,8 @@
       "purchasePrice": "Ø Preis",
       "gridCost": "Tatsächlich",
       "gridCostAtReference": "Zum Festpreis",
-      "tariffDelta": "Differenz"
+      "tariffDelta": "Differenz",
+      "feedInTariff": "Einspeisung (€/kWh)"
     },
     "ks": {
       "production": {
@@ -330,7 +328,10 @@
       "distTitle": "Heizungsverteilung über das Jahr",
       "distHelp": "Die 12 Werte müssen zusammen 100 % ergeben. Sie verteilen die jährlichen Referenz-Heizkosten auf die Monate für den Öl-Vergleich.",
       "electricityPrice": "Ø Strompreis (€/kWh)",
-      "electricityPriceHelp": "Durchschnittlich gezahlter Arbeitspreis in diesem Monat. Leer lassen, um den Strompreis aus den Einstellungen zu verwenden."
+      "electricityPriceHelp": "Durchschnittlich gezahlter Arbeitspreis in diesem Monat. Leer lassen, um den Strompreis aus den Einstellungen zu verwenden.",
+      "feedInTariff": "Einspeisevergütung (€/kWh)",
+      "feedInTariffHelp": "Vergütung in diesem Monat. Wird aus dem Preisverlauf vorbelegt; leeren, um sie wieder zu erben.",
+      "clear": "Zurücksetzen"
     },
     "settings": {
       "allocationTitle": "Energie-Allokation",
@@ -351,6 +352,17 @@
       "efficiencyUnit": "kWh/(m²·a)",
       "efficiencyBasis": "Basis: {{kwh}} kWh Wärme in den letzten 12 Monaten",
       "efficiencyIncomplete": "Noch keine Bewertung möglich: {{months}} von 12 Monaten erfasst, oder Wohnfläche/JAZ fehlt."
+    },
+    "prices": {
+      "newEntry": "Neuer Preiseintrag",
+      "editEntry": "Preiseintrag bearbeiten",
+      "help": "Ein Eintrag gilt ab dem angegebenen Monat, bis ein späterer Eintrag ihn ablöst. Leere Felder behalten den bisherigen Preis. Was hier nicht hinterlegt ist, kommt aus den Einstellungen.",
+      "timelineTitle": "Preisverlauf",
+      "timelineHelp": "Monate mit einem eigenen Preis in den Daten behalten diesen Preis — der Verlauf ändert sie nicht.",
+      "inEffect": "aktuell gültig",
+      "empty": "Noch keine Preiseinträge. Es gelten die Preise aus den Einstellungen.",
+      "confirmDelete": "Diesen Preiseintrag wirklich löschen?",
+      "duplicate": "Für diesen Monat gibt es bereits einen Eintrag."
     }
   },
   "energyClass": {

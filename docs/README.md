@@ -103,6 +103,23 @@ page. Months left empty fall back to the electricity price in **Settings**, so t
 zero. This comparison is reported on its own — it never feeds total savings or the payback
 projection, which measure what the PV system earns rather than what the tariff choice earns.
 
+## Prices
+
+How your prices changed over time.
+
+- **Price entry** — each entry states the prices that apply **from** a given month, and stays in
+  effect until a later entry supersedes it. Entries therefore cannot overlap, and a price that holds
+  for a whole year is simply one nothing supersedes for twelve months — which suits petrol and the
+  heating reference cost, where a yearly figure is the realistic level of detail.
+- **Timeline** — every entry, newest first, with the one currently in effect marked.
+
+Each price resolves independently, so an entry that records only a new petrol price leaves the
+electricity price on its previous value. Anything the timeline never sets falls back to **Settings**.
+Months that carry their own price on the **Data** page keep it — the timeline does not overwrite them.
+
+Recording a contract change here is what makes historical months cost what they actually cost, which
+is what the savings totals and the payback projection are built on.
+
 ## Data
 
 ![Data](07_data.png)
@@ -110,8 +127,11 @@ projection, which measure what the PV system earns rather than what the tariff c
 Where you enter everything.
 
 - **Capture new month** — add a period with generation, feed-in, household, heat
-  pump, and wallbox readings (all in kWh), plus an optional average electricity price
-  (€/kWh) for that month. Leave the price empty to use the one from **Settings**.
+  pump, and wallbox readings (all in kWh), plus the average electricity price (€/kWh) actually paid
+  that month and the feed-in tariff that applied. The feed-in tariff is prefilled from the price in
+  effect for that month and stored with the reading; ✕ clears it so the month inherits again. Leave
+  the electricity price empty to use the price in effect — it is the field that records what a
+  dynamic tariff really cost.
 - **Recorded months** — table of all entered months, editable and deletable.
 - **Heating distribution over the year** — twelve percentages that must sum to
   100%, used to spread the annual reference oil cost across the months for the
@@ -129,8 +149,9 @@ Allocation, profile, and prices.
   the heating reference type.
 - **Prices & investment** — electricity price, feed-in tariff, petrol price, car
   consumption (L/100km), EV efficiency (km/kWh), heating reference cost (€/year),
-  and total system investment cost used for the payback calculation. The electricity
-  price doubles as the fixed-contract reference on the **Grid & tariff** page.
+  and total system investment cost used for the payback calculation. These are the base prices:
+  they apply wherever the **Prices** timeline does not override them, and the electricity price
+  doubles as the fixed-contract reference on the **Grid & tariff** page.
 - **Building & energy efficiency** — living area (m²) and the heat pump's seasonal
   performance factor (SCOP/JAZ). From the last twelve months of heat-pump readings these
   give a rough German energy efficiency class (A+…H), shown here and as a KPI on the

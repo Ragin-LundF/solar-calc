@@ -1,7 +1,7 @@
 package io.github.raginlundf.solarcalc.domain.services.input
 
-import io.github.raginlundf.solarcalc.domain.models.input.MonthlyEnergyInput
-import io.github.raginlundf.solarcalc.domain.models.profile.EnergyProfile
+import io.github.raginlundf.solarcalc.domain.models.input.MonthlyEnergyInputEntity
+import io.github.raginlundf.solarcalc.domain.models.profile.EnergyProfileEntity
 import io.github.raginlundf.solarcalc.domain.models.repository.EnergyProfileRepository
 import io.github.raginlundf.solarcalc.domain.models.repository.MonthlyEnergyInputRepository
 import io.github.raginlundf.solarcalc.dtos.error.DuplicateInputException
@@ -46,7 +46,7 @@ class MonthlyEnergyInputDomainControllerImpl(
             throw DuplicateInputException(message = "Input for period ${request.period} already exists.")
         }
 
-        val input = MonthlyEnergyInput().apply {
+        val input = MonthlyEnergyInputEntity().apply {
             this.energyProfile = profile
             applyRequest(request = request)
         }
@@ -73,18 +73,18 @@ class MonthlyEnergyInputDomainControllerImpl(
         inputRepository.delete(input)
     }
 
-    private fun requireProfile(profileUuid: String, username: String): EnergyProfile {
+    private fun requireProfile(profileUuid: String, username: String): EnergyProfileEntity {
         return profileRepository.findByUuidAndUserUsername(uuid = profileUuid, userUsername = username)
             ?: throw ResourceNotFoundException(message = "Profile $profileUuid not found")
     }
 
-    private fun requireInput(inputUuid: String, profileId: Long): MonthlyEnergyInput {
+    private fun requireInput(inputUuid: String, profileId: Long): MonthlyEnergyInputEntity {
         return inputRepository.findByUuidAndEnergyProfileId(uuid = inputUuid, energyProfileId = profileId)
             ?: throw ResourceNotFoundException(message = "MonthlyInput $inputUuid not found")
     }
 }
 
-private fun MonthlyEnergyInput.applyRequest(request: UpsertMonthlyEnergyInputRequest) {
+private fun MonthlyEnergyInputEntity.applyRequest(request: UpsertMonthlyEnergyInputRequest) {
     period = request.period
     consumptionKwh = (request.householdConsumptionKwh ?: BigDecimal.ZERO)
         .add(request.heatPumpConsumptionKwh ?: BigDecimal.ZERO)
@@ -100,7 +100,7 @@ private fun MonthlyEnergyInput.applyRequest(request: UpsertMonthlyEnergyInputReq
     heatingReferenceCostOverride = request.heatingReferenceCostOverride
 }
 
-private fun MonthlyEnergyInput.toResponse(energyProfileUuid: String): MonthlyEnergyInputResponse {
+private fun MonthlyEnergyInputEntity.toResponse(energyProfileUuid: String): MonthlyEnergyInputResponse {
     return MonthlyEnergyInputResponse(
         id = uuid,
         energyProfileUuid = energyProfileUuid,

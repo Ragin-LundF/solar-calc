@@ -1,7 +1,7 @@
 package io.github.raginlundf.solarcalc.domain.services.summary
 
-import io.github.raginlundf.solarcalc.domain.models.profile.EnergyEfficiencyClass
-import io.github.raginlundf.solarcalc.domain.models.profile.EnergyProfile
+import io.github.raginlundf.solarcalc.domain.models.profile.EnergyEfficiencyClassEnum
+import io.github.raginlundf.solarcalc.domain.models.profile.EnergyProfileEntity
 import java.math.BigDecimal
 import java.time.YearMonth
 import kotlin.test.Test
@@ -16,8 +16,8 @@ class EnergyEfficiencyCalculatorTest {
         hasHeatPump: Boolean = true,
         usableAreaSqm: String? = "100",
         heatPumpScop: String? = "1",
-    ): EnergyProfile {
-        return EnergyProfile().apply {
+    ): EnergyProfileEntity {
+        return EnergyProfileEntity().apply {
             this.hasHeatPump = hasHeatPump
             this.usableAreaSqm = usableAreaSqm?.let { BigDecimal(it) }
             this.heatPumpScop = heatPumpScop?.let { BigDecimal(it) }
@@ -33,7 +33,7 @@ class EnergyEfficiencyCalculatorTest {
         }
     }
 
-    private fun classFor(totalKwh: String): EnergyEfficiencyClass? {
+    private fun classFor(totalKwh: String): EnergyEfficiencyClassEnum? {
         return calculator.rate(profile = profile(), heatPumpKwhByPeriod = readings(totalKwh)).energyClass
     }
 
@@ -47,7 +47,7 @@ class EnergyEfficiencyCalculatorTest {
 
         assertEquals(expected = BigDecimal("14000.00"), actual = rating.heatingEnergyKwh)
         assertEquals(expected = BigDecimal("100.00"), actual = rating.kwhPerSqmPerYear)
-        assertEquals(expected = EnergyEfficiencyClass.C, actual = rating.energyClass)
+        assertEquals(expected = EnergyEfficiencyClassEnum.C, actual = rating.energyClass)
         assertEquals(expected = 12, actual = rating.monthsConsidered)
     }
 
@@ -62,31 +62,31 @@ class EnergyEfficiencyCalculatorTest {
         // 12 * 500 = 6000 kWh at SCOP 1 over 100 m2 = 60 kWh per m2 and year.
         assertEquals(expected = BigDecimal("6000.00"), actual = rating.heatingEnergyKwh)
         assertEquals(expected = BigDecimal("60.00"), actual = rating.kwhPerSqmPerYear)
-        assertEquals(expected = EnergyEfficiencyClass.B, actual = rating.energyClass)
+        assertEquals(expected = EnergyEfficiencyClassEnum.B, actual = rating.energyClass)
     }
 
     @Test
     fun `places each band at its inclusive upper bound`() {
-        assertEquals(expected = EnergyEfficiencyClass.A_PLUS, actual = classFor("3000"))
-        assertEquals(expected = EnergyEfficiencyClass.A, actual = classFor("5000"))
-        assertEquals(expected = EnergyEfficiencyClass.B, actual = classFor("7500"))
-        assertEquals(expected = EnergyEfficiencyClass.C, actual = classFor("10000"))
-        assertEquals(expected = EnergyEfficiencyClass.D, actual = classFor("13000"))
-        assertEquals(expected = EnergyEfficiencyClass.E, actual = classFor("16000"))
-        assertEquals(expected = EnergyEfficiencyClass.F, actual = classFor("20000"))
-        assertEquals(expected = EnergyEfficiencyClass.G, actual = classFor("25000"))
+        assertEquals(expected = EnergyEfficiencyClassEnum.A_PLUS, actual = classFor("3000"))
+        assertEquals(expected = EnergyEfficiencyClassEnum.A, actual = classFor("5000"))
+        assertEquals(expected = EnergyEfficiencyClassEnum.B, actual = classFor("7500"))
+        assertEquals(expected = EnergyEfficiencyClassEnum.C, actual = classFor("10000"))
+        assertEquals(expected = EnergyEfficiencyClassEnum.D, actual = classFor("13000"))
+        assertEquals(expected = EnergyEfficiencyClassEnum.E, actual = classFor("16000"))
+        assertEquals(expected = EnergyEfficiencyClassEnum.F, actual = classFor("20000"))
+        assertEquals(expected = EnergyEfficiencyClassEnum.G, actual = classFor("25000"))
     }
 
     @Test
     fun `moves to the next band just above each bound`() {
-        assertEquals(expected = EnergyEfficiencyClass.A, actual = classFor("3001"))
-        assertEquals(expected = EnergyEfficiencyClass.B, actual = classFor("5001"))
-        assertEquals(expected = EnergyEfficiencyClass.C, actual = classFor("7501"))
-        assertEquals(expected = EnergyEfficiencyClass.D, actual = classFor("10001"))
-        assertEquals(expected = EnergyEfficiencyClass.E, actual = classFor("13001"))
-        assertEquals(expected = EnergyEfficiencyClass.F, actual = classFor("16001"))
-        assertEquals(expected = EnergyEfficiencyClass.G, actual = classFor("20001"))
-        assertEquals(expected = EnergyEfficiencyClass.H, actual = classFor("25001"))
+        assertEquals(expected = EnergyEfficiencyClassEnum.A, actual = classFor("3001"))
+        assertEquals(expected = EnergyEfficiencyClassEnum.B, actual = classFor("5001"))
+        assertEquals(expected = EnergyEfficiencyClassEnum.C, actual = classFor("7501"))
+        assertEquals(expected = EnergyEfficiencyClassEnum.D, actual = classFor("10001"))
+        assertEquals(expected = EnergyEfficiencyClassEnum.E, actual = classFor("13001"))
+        assertEquals(expected = EnergyEfficiencyClassEnum.F, actual = classFor("16001"))
+        assertEquals(expected = EnergyEfficiencyClassEnum.G, actual = classFor("20001"))
+        assertEquals(expected = EnergyEfficiencyClassEnum.H, actual = classFor("25001"))
     }
 
     @Test
@@ -117,7 +117,7 @@ class EnergyEfficiencyCalculatorTest {
         val rating = calculator.rate(profile = profile(), heatPumpKwhByPeriod = withAncientHistory)
 
         assertEquals(expected = BigDecimal("30.00"), actual = rating.kwhPerSqmPerYear)
-        assertEquals(expected = EnergyEfficiencyClass.A_PLUS, actual = rating.energyClass)
+        assertEquals(expected = EnergyEfficiencyClassEnum.A_PLUS, actual = rating.energyClass)
     }
 
     @Test

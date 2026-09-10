@@ -1,15 +1,15 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucidePencil, lucideTrash2 } from '@ng-icons/lucide';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { firstValueFrom } from 'rxjs';
-import { ApiService } from '@/core/api/api.service';
-import { AppStateService } from '@/core/state/app-state.service';
-import { SummaryStore } from '@/core/api/summary.store';
-import { ProfileStore } from '@/core/api/profile.store';
-import { MonthlyInput } from '@/core/api/models';
-import { monthNames, fmtKWh, fmtEURperKwh, monthLongLabel } from '@/shared/utils/format';
+import {ChangeDetectionStrategy, Component, computed, effect, inject, signal} from '@angular/core';
+import {FormsModule} from '@angular/forms';
+import {NgIcon, provideIcons} from '@ng-icons/core';
+import {lucidePencil, lucideTrash2} from '@ng-icons/lucide';
+import {TranslatePipe, TranslateService} from '@ngx-translate/core';
+import {firstValueFrom} from 'rxjs';
+import {ApiService} from '@/core/api/api.service';
+import {AppStateService} from '@/core/state/app-state.service';
+import {SummaryStore} from '@/core/api/summary.store';
+import {ProfileStore} from '@/core/api/profile.store';
+import {EffectivePrices, MonthlyInput} from '@/core/api/models';
+import {fmtEURperKwh, fmtKWh, monthLongLabel, monthNames} from '@/shared/utils/format';
 
 interface EntryForm {
   period: string;
@@ -19,10 +19,12 @@ interface EntryForm {
   heatPump: string;
   wallbox: string;
   electricityPrice: string;
+  feedInTariff: string;
 }
 
 const EMPTY_FORM: EntryForm = {
-  period: '', generation: '', feedIn: '', household: '', heatPump: '', wallbox: '', electricityPrice: '',
+  period: '', generation: '', feedIn: '', household: '', heatPump: '', wallbox: '',
+  electricityPrice: '', feedInTariff: '',
 };
 
 @Component({
@@ -49,6 +51,8 @@ export class DataComponent {
   readonly months = signal<MonthlyInput[]>([]);
   readonly saving = signal(false);
   readonly error = signal<string | null>(null);
+  /** Guards against an out-of-order effective-price response overwriting a newer one. */
+  private pricesReqId = 0;
 
   readonly dist = signal<number[]>(Array(12).fill(0));
   readonly distSum = computed(() => this.dist().reduce((a, b) => a + b, 0));
@@ -78,6 +82,35 @@ export class DataComponent {
 
   patch(field: keyof EntryForm, value: string): void {
     this.form.update(f => ({ ...f, [field]: value }));
+    // Picking a month decides which contract prices apply, so re-seed the inherited ones.
+    if (field === 'period') this.prefillFromPrices(value);
+  }
+
+  /** Clears a field so the month inherits the price from the timeline again. */
+  clear(field: keyof EntryForm): void {
+    this.form.update(f => ({ ...f, [field]: '' }));
+  }
+
+  /**
+   * Seeds the feed-in tariff with the price the server would use for this month. Only the feed-in
+   * tariff: the electricity price is the dynamic price actually paid, and prefilling it with the
+   * contract price would make every month's tariff comparison come out as exactly zero.
+   */
+  private async prefillFromPrices(period: string, force = false): Promise<void> {
+    const pid = this.state.profileId();
+    if (!pid || !period) return;
+    const id = ++this.pricesReqId;
+    try {
+      const effective = await firstValueFrom(
+        this.api.get<EffectivePrices>(`/profiles/${pid}/prices/effective?period=${period}`),
+      );
+      if (id !== this.pricesReqId) return;
+      if (!force && this.form().feedInTariff.trim() !== '') return;
+      const tariff = effective.feedInTariff;
+      this.form.update(f => ({ ...f, feedInTariff: tariff === null ? '' : String(tariff) }));
+    } catch {
+      // A missing price is not an error worth interrupting data entry for.
+    }
   }
 
   startEdit(m: MonthlyInput): void {
@@ -90,9 +123,14 @@ export class DataComponent {
       heatPump: str(m.heatPumpConsumptionKwh),
       wallbox: str(m.wallboxConsumptionKwh),
       electricityPrice: str(m.electricityPriceOverride),
+      feedInTariff: str(m.feedInTariffOverride),
     });
     this.editingId.set(m.id);
     this.error.set(null);
+    // A month that never stored a tariff inherits one; show which.
+    if (m.feedInTariffOverride === null || m.feedInTariffOverride === undefined) {
+      this.prefillFromPrices(m.period);
+    }
   }
 
   cancelEdit(): void {
@@ -143,7 +181,7 @@ export class DataComponent {
       heatPumpConsumptionKwh: this.num(f.heatPump),
       wallboxConsumptionKwh: this.num(f.wallbox),
       electricityPriceOverride: this.num(f.electricityPrice),
-      feedInTariffOverride: existing?.feedInTariffOverride ?? null,
+      feedInTariffOverride: this.num(f.feedInTariff),
       petrolPriceOverride: existing?.petrolPriceOverride ?? null,
       heatingReferenceCostOverride: existing?.heatingReferenceCostOverride ?? null,
     };

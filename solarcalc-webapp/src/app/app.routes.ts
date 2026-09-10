@@ -1,5 +1,5 @@
-import { Routes } from '@angular/router';
-import { authGuard } from '@/core/auth/auth.guard';
+import {Routes} from '@angular/router';
+import {authGuard} from '@/core/auth/auth.guard';
 
 export const routes: Routes = [
   {
@@ -22,6 +22,7 @@ export const routes: Routes = [
       { path: 'wallbox', loadComponent: () => import('@/features/wallbox/wallbox.component').then(m => m.WallboxComponent) },
       { path: 'total', loadComponent: () => import('@/features/total/total.component').then(m => m.TotalComponent) },
       { path: 'grid', loadComponent: () => import('@/features/grid/grid.component').then(m => m.GridComponent) },
+      { path: 'prices', loadComponent: () => import('@/features/prices/prices.component').then(m => m.PricesComponent) },
       { path: 'data', loadComponent: () => import('@/features/data/data.component').then(m => m.DataComponent) },
       { path: 'settings', loadComponent: () => import('@/features/settings/settings.component').then(m => m.SettingsComponent) },
       { path: 'setup', loadComponent: () => import('@/features/setup-wizard/setup-wizard.component').then(m => m.SetupWizardComponent) },

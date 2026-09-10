@@ -1,13 +1,14 @@
 package io.github.raginlundf.solarcalc.domain.services.summary
 
-import io.github.raginlundf.solarcalc.domain.models.allocation.AllocationCategory
-import io.github.raginlundf.solarcalc.domain.models.input.MonthlyEnergyInput
+import io.github.raginlundf.solarcalc.domain.models.allocation.AllocationCategoryEnum
+import io.github.raginlundf.solarcalc.domain.models.input.MonthlyEnergyInputEntity
 import io.github.raginlundf.solarcalc.domain.models.profile.DEFAULT_HEATING_DISTRIBUTION
-import io.github.raginlundf.solarcalc.domain.models.profile.EnergyProfile
+import io.github.raginlundf.solarcalc.domain.models.profile.EnergyProfileEntity
 import io.github.raginlundf.solarcalc.domain.models.repository.AllocationPolicyRepository
 import io.github.raginlundf.solarcalc.domain.models.repository.EnergyProfileRepository
 import io.github.raginlundf.solarcalc.domain.models.repository.MonthlyEnergyInputRepository
 import io.github.raginlundf.solarcalc.domain.services.price.PriceResolver
+import io.github.raginlundf.solarcalc.domain.services.price.PriceTimeline
 import io.github.raginlundf.solarcalc.dtos.error.ResourceNotFoundException
 import io.github.raginlundf.solarcalc.dtos.summary.SummaryResponse
 import org.springframework.stereotype.Service
@@ -41,9 +42,13 @@ class SummaryDomainControllerImpl(
         val inputs = inputRepository.findAllByEnergyProfileId(energyProfileId = profile.id!!)
         val priority = policyRepository.findAllByEnergyProfileId(energyProfileId = profile.id!!)
             .firstOrNull()?.priorityOrder
-            ?: AllocationCategory.entries.toList()
+            ?: AllocationCategoryEnum.entries.toList()
 
-        val monthInputs = inputs.map { input -> toMonthInput(profile = profile, input = input) }
+        // One query for the whole price timeline, then resolved in memory per month.
+        val prices = priceResolver.timeline(profile = profile)
+        val monthInputs = inputs.map { input ->
+            toMonthInput(prices = prices, input = input)
+        }
 
         // Rated from the raw readings, so the estimate is independent of allocation and prices.
         val heatPumpKwhByPeriod = inputs.associate { input ->
@@ -62,8 +67,8 @@ class SummaryDomainControllerImpl(
         )
     }
 
-    private fun toMonthInput(profile: EnergyProfile, input: MonthlyEnergyInput): SummaryMonthInput {
-        val prices = priceResolver.resolve(profile = profile, period = input.period)
+    private fun toMonthInput(prices: PriceTimeline, input: MonthlyEnergyInputEntity): SummaryMonthInput {
+        val effective = prices.at(period = input.period)
         return SummaryMonthInput(
             period = input.period,
             generationKwh = input.generationKwh,
@@ -72,15 +77,15 @@ class SummaryDomainControllerImpl(
             householdKwh = input.householdConsumptionKwh,
             heatPumpKwh = input.heatPumpConsumptionKwh ?: BigDecimal.ZERO,
             wallboxKwh = input.wallboxConsumptionKwh ?: BigDecimal.ZERO,
-            gridPrice = input.electricityPriceOverride ?: prices.electricityPrice ?: BigDecimal.ZERO,
-            referencePrice = prices.electricityPrice,
-            feedInTariff = input.feedInTariffOverride ?: prices.feedInTariff ?: BigDecimal.ZERO,
-            petrolPrice = input.petrolPriceOverride ?: prices.petrolPrice ?: BigDecimal.ZERO,
-            heizReferenzJahr = input.heatingReferenceCostOverride ?: prices.heatingReferenceCost ?: BigDecimal.ZERO,
+            gridPrice = input.electricityPriceOverride ?: effective.electricityPrice ?: BigDecimal.ZERO,
+            referencePrice = effective.electricityPrice,
+            feedInTariff = input.feedInTariffOverride ?: effective.feedInTariff ?: BigDecimal.ZERO,
+            petrolPrice = input.petrolPriceOverride ?: effective.petrolPrice ?: BigDecimal.ZERO,
+            heizReferenzJahr = input.heatingReferenceCostOverride ?: effective.heatingReferenceCost ?: BigDecimal.ZERO,
         )
     }
 
-    private fun params(profile: EnergyProfile, priority: List<AllocationCategory>): SummaryParams {
+    private fun params(profile: EnergyProfileEntity, priority: List<AllocationCategoryEnum>): SummaryParams {
         val distribution = profile.heatingMonthlyDistribution.takeIf { it.size == 12 } ?: DEFAULT_HEATING_DISTRIBUTION
         return SummaryParams(
             allocationPriority = priority,
