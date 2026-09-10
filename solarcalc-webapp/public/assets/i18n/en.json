@@ -349,12 +349,18 @@
       "heatingRefCost": "Heating reference cost (€/year)",
       "invest": "System investment cost (€)",
       "efficiencyTitle": "Building & energy efficiency",
-      "efficiencyHelp": "Rough estimate: heat-pump electricity × seasonal performance factor gives the delivered heat, rated per m² and year. This estimates the building envelope — it is not an Energieausweis and ignores the hot-water share and primary energy factors.",
+      "efficiencyHelp": "Rough estimate: heat-pump electricity, less the hot-water share, × seasonal performance factor gives the delivered heat, rated per m² and year. It uses the last 12 complete months that carry a reading. This estimates the building envelope — it is not an Energieausweis and ignores primary energy factors.",
       "usableArea": "Living area (m²)",
       "heatPumpScop": "Seasonal performance factor (SCOP)",
+      "heatPumpCoversHotWater": "Heat pump also makes hot water",
+      "heatPumpHotWaterShare": "Hot-water share (%)",
       "efficiencyUnit": "kWh/(m²·a)",
-      "efficiencyBasis": "Based on {{kwh}} kWh of heat over the last 12 months",
-      "efficiencyIncomplete": "Not enough to rate yet: {{months}} of 12 months recorded, or living area/SCOP missing."
+      "efficiencyEnvelope": "Building envelope (delivered heat)",
+      "efficiencyFinalEnergy": "Final energy (electricity)",
+      "efficiencyMeter": "{{electricity}} kWh of heat-pump electricity ({{from}} to {{to}})",
+      "efficiencyHotWater": "− {{share}} % hot water = {{heating}} kWh of heating electricity",
+      "efficiencyHeat": "× SCOP {{scop}} = {{heat}} kWh of heat",
+      "efficiencyIncomplete": "Not enough to rate yet: {{months}} of 12 months carry a heat-pump reading, or the living area, SCOP or hot-water share is missing."
     },
     "prices": {
       "newEntry": "New price entry",

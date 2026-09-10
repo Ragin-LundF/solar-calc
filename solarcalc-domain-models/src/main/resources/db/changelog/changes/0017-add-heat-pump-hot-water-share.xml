@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        logicalFilePath="0017-add-heat-pump-hot-water-share.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="0017-add-heat-pump-hot-water-share" author="solarcalc">
+        <addColumn tableName="energy_profile">
+            <column name="heat_pump_covers_hot_water" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false" />
+            </column>
+            <column name="heat_pump_hot_water_share_percent" type="DECIMAL(5,2)">
+                <constraints nullable="true" />
+            </column>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>

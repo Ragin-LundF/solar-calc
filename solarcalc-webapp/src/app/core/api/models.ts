@@ -58,8 +58,21 @@ export interface MonthlySummary {
 export interface EnergyEfficiencyRating {
   usableAreaSqm: number | null;
   heatPumpScop: number | null;
+  /** The hot-water share actually deducted, or null when the heat pump is heating-only. */
+  hotWaterSharePercent: number | null;
+  /** Rated window as YYYY-MM, null when there is nothing to rate. */
+  windowStart: string | null;
+  windowEnd: string | null;
+  /** Metered heat-pump electricity over the window. */
+  heatPumpElectricityKwh: number;
+  /** Its space-heating part, after the hot-water deduction. */
+  heatingElectricityKwh: number;
+  /** Heat delivered for space heating (heating electricity x SCOP). */
   heatingEnergyKwh: number;
+  /** Delivered heat per m2 and year — the envelope figure the class is drawn from. */
   kwhPerSqmPerYear: number;
+  /** Heating electricity per m2 and year — the final energy figure. */
+  finalEnergyKwhPerSqmPerYear: number;
   energyClass: EnergyEfficiencyClass | null;
   monthsConsidered: number;
 }
@@ -141,6 +154,8 @@ export interface EnergyProfile {
   investKosten: number | null;
   usableAreaSqm: number | null;
   heatPumpScop: number | null;
+  heatPumpCoversHotWater: boolean;
+  heatPumpHotWaterSharePercent: number | null;
   heatingMonthlyDistribution: number[];
   overviewLayout: OverviewLayout;
 }

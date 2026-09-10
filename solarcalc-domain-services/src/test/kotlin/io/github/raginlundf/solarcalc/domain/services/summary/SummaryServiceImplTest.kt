@@ -16,8 +16,14 @@ class SummaryServiceImplTest {
     private val notRated = EnergyEfficiencyRating(
         usableAreaSqm = null,
         heatPumpScop = null,
+        hotWaterSharePercent = null,
+        windowStart = null,
+        windowEnd = null,
+        heatPumpElectricityKwh = BigDecimal("0.00"),
+        heatingElectricityKwh = BigDecimal("0.00"),
         heatingEnergyKwh = BigDecimal("0.00"),
         kwhPerSqmPerYear = BigDecimal("0.00"),
+        finalEnergyKwhPerSqmPerYear = BigDecimal("0.00"),
         energyClass = null,
         monthsConsidered = 0,
     )

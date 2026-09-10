@@ -2,6 +2,7 @@ package io.github.raginlundf.solarcalc.domain.services.summary
 
 import io.github.raginlundf.solarcalc.domain.models.input.MonthlyEnergyInputEntity
 import io.github.raginlundf.solarcalc.domain.models.price.PriceSnapshotEntity
+import io.github.raginlundf.solarcalc.domain.models.profile.EnergyEfficiencyClassEnum
 import io.github.raginlundf.solarcalc.domain.models.profile.EnergyProfileEntity
 import io.github.raginlundf.solarcalc.domain.models.profile.HeatingReferenceTypeEnum
 import io.github.raginlundf.solarcalc.domain.models.repository.AllocationPolicyRepository
@@ -9,16 +10,25 @@ import io.github.raginlundf.solarcalc.domain.models.repository.EnergyProfileRepo
 import io.github.raginlundf.solarcalc.domain.models.repository.MonthlyEnergyInputRepository
 import io.github.raginlundf.solarcalc.domain.models.repository.PriceSnapshotRepository
 import io.github.raginlundf.solarcalc.domain.services.price.PriceResolver
+import io.github.raginlundf.solarcalc.dtos.summary.EnergyEfficiencyRating
 import io.github.raginlundf.solarcalc.dtos.summary.MonthlySummary
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import java.math.BigDecimal
+import java.time.Clock
+import java.time.Instant
+import java.time.ZoneOffset
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
 /** Covers how the price timeline, the per-month overrides and the profile defaults combine. */
 class SummaryDomainControllerImplTest {
+
+    private companion object {
+        val FIXED_CLOCK: Clock = Clock.fixed(Instant.parse("2026-01-15T00:00:00Z"), ZoneOffset.UTC)
+    }
 
     private val profileRepository = mockk<EnergyProfileRepository>(relaxed = true)
     private val inputRepository = mockk<MonthlyEnergyInputRepository>(relaxed = true)
@@ -32,7 +42,8 @@ class SummaryDomainControllerImplTest {
         // A real resolver over a mocked repository, so the actual resolution chain is exercised.
         priceResolver = PriceResolver(priceSnapshotRepository = priceRepository),
         summaryService = SummaryServiceImpl(),
-        efficiencyCalculator = EnergyEfficiencyCalculator(),
+        // Fixed just after the readings below, so the rated window is deterministic.
+        efficiencyCalculator = EnergyEfficiencyCalculator(clock = FIXED_CLOCK),
     )
 
     private val profile = EnergyProfileEntity().apply {
@@ -143,5 +154,57 @@ class SummaryDomainControllerImplTest {
 
         // One query for the timeline, not one (or two) per month.
         verify(exactly = 1) { priceRepository.findAllByEnergyProfileIdOrderByValidFromDesc(energyProfileId = 1L) }
+    }
+
+    /** A profile the efficiency rating can actually be computed for. */
+    private fun ratedProfile(): EnergyProfileEntity {
+        return EnergyProfileEntity().apply {
+            id = 1L
+            uuid = "p1"
+            heatingReferenceType = HeatingReferenceTypeEnum.NONE
+            hasHeatPump = true
+            usableAreaSqm = BigDecimal("100")
+            heatPumpScop = BigDecimal("1")
+        }
+    }
+
+    /** The 12 months of 2025, each carrying [kwh] of heat-pump electricity unless listed in [without]. */
+    private fun heatPumpYear(kwh: String, without: Set<String> = emptySet()): List<MonthlyEnergyInputEntity> {
+        return (1..12).map { monthOfYear ->
+            val period = "2025-%02d".format(monthOfYear)
+            month(period).apply {
+                heatPumpConsumptionKwh = if (period in without) null else BigDecimal(kwh)
+            }
+        }
+    }
+
+    private fun rate(months: List<MonthlyEnergyInputEntity>, profile: EnergyProfileEntity): EnergyEfficiencyRating {
+        every { profileRepository.findByUuidAndUserUsername(uuid = "p1", userUsername = "alice") } returns profile
+        every { inputRepository.findAllByEnergyProfileId(energyProfileId = 1L) } returns months
+        every { policyRepository.findAllByEnergyProfileId(energyProfileId = 1L) } returns emptyList()
+        every { priceRepository.findAllByEnergyProfileIdOrderByValidFromDesc(energyProfileId = 1L) } returns emptyList()
+
+        return controller.summarize(profileUuid = "p1", username = "alice", startDate = null, endDate = null)
+            .efficiency
+    }
+
+    @Test
+    fun `rates a full year of heat-pump readings`() {
+        val rating = rate(months = heatPumpYear(kwh = "500"), profile = ratedProfile())
+
+        assertEquals(expected = 12, actual = rating.monthsConsidered)
+        assertEquals(expected = "2025-01", actual = rating.windowStart)
+        assertEquals(expected = "2025-12", actual = rating.windowEnd)
+        assertEquals(expected = BigDecimal("6000.00"), actual = rating.heatPumpElectricityKwh)
+        assertEquals(expected = EnergyEfficiencyClassEnum.B, actual = rating.energyClass)
+    }
+
+    @Test
+    fun `treats a month without a heat-pump reading as a gap, not as zero`() {
+        // The month row exists (it carries household consumption), it just has no heat-pump value.
+        val rating = rate(months = heatPumpYear(kwh = "500", without = setOf("2025-06")), profile = ratedProfile())
+
+        assertEquals(expected = 11, actual = rating.monthsConsidered)
+        assertNull(actual = rating.energyClass)
     }
 }

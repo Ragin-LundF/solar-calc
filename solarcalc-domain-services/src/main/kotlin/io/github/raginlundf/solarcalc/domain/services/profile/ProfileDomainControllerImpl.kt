@@ -46,6 +46,8 @@ class ProfileDomainControllerImpl(
             investCost = request.investKosten
             usableAreaSqm = request.usableAreaSqm
             heatPumpScop = request.heatPumpScop
+            heatPumpCoversHotWater = request.heatPumpCoversHotWater
+            heatPumpHotWaterSharePercent = request.heatPumpHotWaterSharePercent
         }
         val saved = profileRepository.save(profile)
         user.lastProfileUuid = saved.uuid
@@ -73,6 +75,8 @@ class ProfileDomainControllerImpl(
         profile.investCost = request.investKosten
         profile.usableAreaSqm = request.usableAreaSqm
         profile.heatPumpScop = request.heatPumpScop
+        profile.heatPumpCoversHotWater = request.heatPumpCoversHotWater
+        profile.heatPumpHotWaterSharePercent = request.heatPumpHotWaterSharePercent
         request.heatingMonthlyDistribution?.let { profile.heatingMonthlyDistribution = it }
         request.overviewLayout?.let { profile.overviewLayout = it }
         profile.updatedAt = LocalDateTime.now()
@@ -114,6 +118,8 @@ private fun EnergyProfileEntity.toResponse(): EnergyProfileResponse {
         investKosten = investCost,
         usableAreaSqm = usableAreaSqm,
         heatPumpScop = heatPumpScop,
+        heatPumpCoversHotWater = heatPumpCoversHotWater,
+        heatPumpHotWaterSharePercent = heatPumpHotWaterSharePercent,
         heatingMonthlyDistribution = heatingMonthlyDistribution,
         overviewLayout = overviewLayout,
     )

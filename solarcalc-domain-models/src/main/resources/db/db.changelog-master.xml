@@ -18,5 +18,6 @@
     <include file="changelog/changes/0014-add-profile-building-fields.xml" relativeToChangelogFile="true" />
     <include file="changelog/changes/0015-price-snapshot-valid-from.xml" relativeToChangelogFile="true" />
     <include file="changelog/changes/0016-price-snapshot-heating-type.xml" relativeToChangelogFile="true" />
+    <include file="changelog/changes/0017-add-heat-pump-hot-water-share.xml" relativeToChangelogFile="true" />
 
 </databaseChangeLog>

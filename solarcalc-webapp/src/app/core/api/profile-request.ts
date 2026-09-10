@@ -1,4 +1,4 @@
-import { EnergyProfile } from '@/core/api/models';
+import {EnergyProfile} from '@/core/api/models';
 
 /**
  * Serialises a profile for POST/PUT `/profiles`.
@@ -24,6 +24,8 @@ export function toProfileRequest(p: EnergyProfile): Record<string, unknown> {
     investKosten: p.investKosten,
     usableAreaSqm: p.usableAreaSqm,
     heatPumpScop: p.heatPumpScop,
+    heatPumpCoversHotWater: p.heatPumpCoversHotWater,
+    heatPumpHotWaterSharePercent: p.heatPumpHotWaterSharePercent,
     heatingMonthlyDistribution: p.heatingMonthlyDistribution,
     overviewLayout: p.overviewLayout,
   };

@@ -20,6 +20,8 @@ data class EnergyProfileResponse(
     val investKosten: BigDecimal?,
     val usableAreaSqm: BigDecimal?,
     val heatPumpScop: BigDecimal?,
+    val heatPumpCoversHotWater: Boolean,
+    val heatPumpHotWaterSharePercent: BigDecimal?,
     val heatingMonthlyDistribution: List<Int>,
     val overviewLayout: OverviewLayoutEnum,
 )

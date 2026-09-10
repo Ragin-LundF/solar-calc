@@ -349,12 +349,18 @@
       "heatingRefCost": "Heizkosten Referenz (€/Jahr)",
       "invest": "Investitionskosten Anlage (€)",
       "efficiencyTitle": "Gebäude & Energieeffizienz",
-      "efficiencyHelp": "Grobe Schätzung: Wärmepumpenstrom × Jahresarbeitszahl ergibt die gelieferte Wärme, bewertet je m² und Jahr. Das schätzt die Gebäudehülle — es ist kein Energieausweis und berücksichtigt weder Warmwasseranteil noch Primärenergiefaktoren.",
+      "efficiencyHelp": "Grobe Schätzung: Wärmepumpenstrom, abzüglich des Warmwasseranteils, × Jahresarbeitszahl ergibt die gelieferte Wärme, bewertet je m² und Jahr. Gewertet werden die letzten 12 vollständigen Monate mit Ablesung. Das schätzt die Gebäudehülle — es ist kein Energieausweis und berücksichtigt keine Primärenergiefaktoren.",
       "usableArea": "Wohnfläche (m²)",
       "heatPumpScop": "Jahresarbeitszahl (JAZ)",
+      "heatPumpCoversHotWater": "Wärmepumpe macht auch Warmwasser",
+      "heatPumpHotWaterShare": "Warmwasseranteil (%)",
       "efficiencyUnit": "kWh/(m²·a)",
-      "efficiencyBasis": "Basis: {{kwh}} kWh Wärme in den letzten 12 Monaten",
-      "efficiencyIncomplete": "Noch keine Bewertung möglich: {{months}} von 12 Monaten erfasst, oder Wohnfläche/JAZ fehlt."
+      "efficiencyEnvelope": "Gebäudehülle (gelieferte Wärme)",
+      "efficiencyFinalEnergy": "Endenergie (Strom)",
+      "efficiencyMeter": "{{electricity}} kWh Wärmepumpenstrom ({{from}} bis {{to}})",
+      "efficiencyHotWater": "− {{share}} % Warmwasser = {{heating}} kWh Heizstrom",
+      "efficiencyHeat": "× JAZ {{scop}} = {{heat}} kWh Wärme",
+      "efficiencyIncomplete": "Noch keine Bewertung möglich: {{months}} von 12 Monaten mit Wärmepumpen-Ablesung, oder Wohnfläche, JAZ bzw. Warmwasseranteil fehlt."
     },
     "prices": {
       "newEntry": "Neuer Preiseintrag",

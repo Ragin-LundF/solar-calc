@@ -1,12 +1,21 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
-import { TranslatePipe } from '@ngx-translate/core';
-import { firstValueFrom } from 'rxjs';
-import { ApiService } from '@/core/api/api.service';
-import { AppStateService } from '@/core/state/app-state.service';
-import { ProfileStore } from '@/core/api/profile.store';
-import { SummaryStore } from '@/core/api/summary.store';
-import { AllocationCategory, AllocationPolicy, EnergyEfficiencyRating, EnergyProfile, HeatingReferenceType } from '@/core/api/models';
+import {ChangeDetectionStrategy, Component, computed, effect, inject, signal} from '@angular/core';
+import {RouterLink} from '@angular/router';
+import {TranslatePipe} from '@ngx-translate/core';
+import {firstValueFrom} from 'rxjs';
+import {ApiService} from '@/core/api/api.service';
+import {AppStateService} from '@/core/state/app-state.service';
+import {ProfileStore} from '@/core/api/profile.store';
+import {SummaryStore} from '@/core/api/summary.store';
+import {
+  AllocationCategory,
+  AllocationPolicy,
+  EnergyEfficiencyRating,
+  EnergyProfile,
+  HeatingReferenceType
+} from '@/core/api/models';
+
+/** Typical share of heat-pump electricity that goes into hot water, used as a starting point. */
+const DEFAULT_HOT_WATER_SHARE_PERCENT = 20;
 
 @Component({
   selector: 'app-settings',
@@ -96,6 +105,19 @@ export class SettingsComponent {
   setInvest(v: string): void { this.patch({ investKosten: this.num(v) }); }
   setUsableArea(v: string): void { this.patch({ usableAreaSqm: this.num(v) }); }
   setHeatPumpScop(v: string): void { this.patch({ heatPumpScop: this.num(v) }); }
+
+  /**
+   * Switching the split on without a share would leave the rating unrateable, so seed the usual
+   * German rule of thumb; the user can correct it right away.
+   */
+  setHeatPumpCoversHotWater(v: boolean): void {
+    const share = this.profile()?.heatPumpHotWaterSharePercent ?? null;
+    this.patch(v && share === null
+      ? { heatPumpCoversHotWater: true, heatPumpHotWaterSharePercent: DEFAULT_HOT_WATER_SHARE_PERCENT }
+      : { heatPumpCoversHotWater: v });
+  }
+
+  setHeatPumpHotWaterShare(v: string): void { this.patch({ heatPumpHotWaterSharePercent: this.num(v) }); }
 
   setHeatingRefCost(v: string): void {
     const value = this.num(v);

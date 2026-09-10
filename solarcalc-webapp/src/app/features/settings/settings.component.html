@@ -106,15 +106,40 @@
             [disabled]="!p.hasHeatPump"
             class="mt-1 w-full bg-solar-input border border-solar-border rounded-lg px-2.5 py-2 text-[13px] text-solar-text disabled:opacity-50" />
         </label>
+        <label class="flex items-center gap-2 self-end pb-2 text-[13px]" [class.opacity-50]="!p.hasHeatPump">
+          <input type="checkbox" [checked]="p.heatPumpCoversHotWater" [disabled]="!p.hasHeatPump"
+            (change)="setHeatPumpCoversHotWater($any($event.target).checked)" />
+          {{ 'solar.settings.heatPumpCoversHotWater' | translate }}
+        </label>
+        <label class="block text-[12px] text-solar-text2">
+          {{ 'solar.settings.heatPumpHotWaterShare' | translate }}
+          <input type="number" step="1" min="0" max="99" [value]="p.heatPumpHotWaterSharePercent"
+            (change)="setHeatPumpHotWaterShare($any($event.target).value)"
+            [disabled]="!p.hasHeatPump || !p.heatPumpCoversHotWater"
+            class="mt-1 w-full bg-solar-input border border-solar-border rounded-lg px-2.5 py-2 text-[13px] text-solar-text disabled:opacity-50" />
+        </label>
       </div>
 
       @if (efficiency(); as e) {
-        <div class="mt-4 flex items-center gap-4 bg-solar-input border border-solar-border rounded-lg px-4 py-3">
+        <div class="mt-4 flex items-start gap-4 bg-solar-input border border-solar-border rounded-lg px-4 py-3">
           @if (e.energyClass) {
-            <span class="text-[28px] font-bold text-solar-green">{{ 'energyClass.' + e.energyClass | translate }}</span>
-            <div class="text-[12px] text-solar-text2">
-              <div class="text-solar-text">{{ e.kwhPerSqmPerYear }} {{ 'solar.settings.efficiencyUnit' | translate }}</div>
-              <div>{{ 'solar.settings.efficiencyBasis' | translate:{ kwh: e.heatingEnergyKwh } }}</div>
+            <span class="text-[28px] font-bold text-solar-green leading-none">{{ 'energyClass.' + e.energyClass | translate }}</span>
+            <div class="text-[12px] text-solar-text2 space-y-0.5">
+              <div class="text-solar-text">
+                {{ e.kwhPerSqmPerYear }} {{ 'solar.settings.efficiencyUnit' | translate }}
+                — {{ 'solar.settings.efficiencyEnvelope' | translate }}
+              </div>
+              <div>
+                {{ e.finalEnergyKwhPerSqmPerYear }} {{ 'solar.settings.efficiencyUnit' | translate }}
+                — {{ 'solar.settings.efficiencyFinalEnergy' | translate }}
+              </div>
+              <div class="pt-1">
+                {{ 'solar.settings.efficiencyMeter' | translate:{ electricity: e.heatPumpElectricityKwh, from: e.windowStart, to: e.windowEnd } }}
+              </div>
+              @if (e.hotWaterSharePercent !== null) {
+                <div>{{ 'solar.settings.efficiencyHotWater' | translate:{ share: e.hotWaterSharePercent, heating: e.heatingElectricityKwh } }}</div>
+              }
+              <div>{{ 'solar.settings.efficiencyHeat' | translate:{ scop: e.heatPumpScop, heat: e.heatingEnergyKwh } }}</div>
             </div>
           } @else {
             <div class="text-[12px] text-solar-text2">

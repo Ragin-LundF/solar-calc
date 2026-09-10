@@ -1,12 +1,12 @@
-import { TestBed } from '@angular/core/testing';
-import { signal } from '@angular/core';
-import { provideRouter } from '@angular/router';
-import { provideHttpClient } from '@angular/common/http';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { provideTranslateService } from '@ngx-translate/core';
-import { SettingsComponent } from './settings.component';
-import { ProfileStore } from '@/core/api/profile.store';
-import { EnergyProfile, HeatingReferenceType } from '@/core/api/models';
+import {TestBed} from '@angular/core/testing';
+import {signal} from '@angular/core';
+import {provideRouter} from '@angular/router';
+import {provideHttpClient} from '@angular/common/http';
+import {provideHttpClientTesting} from '@angular/common/http/testing';
+import {provideTranslateService} from '@ngx-translate/core';
+import {SettingsComponent} from './settings.component';
+import {ProfileStore} from '@/core/api/profile.store';
+import {EnergyProfile, HeatingReferenceType} from '@/core/api/models';
 
 function profile(heatingReferenceType: HeatingReferenceType): EnergyProfile {
   return {
@@ -27,6 +27,8 @@ function profile(heatingReferenceType: HeatingReferenceType): EnergyProfile {
     overviewLayout: 'KPI',
     usableAreaSqm: 140,
     heatPumpScop: 3.5,
+    heatPumpCoversHotWater: false,
+    heatPumpHotWaterSharePercent: null,
   };
 }
 
@@ -90,5 +92,75 @@ describe('SettingsComponent heating reference select', () => {
     fixture.detectChanges();
 
     expect(select.value).toBe('OIL');
+  });
+});
+
+describe('SettingsComponent hot-water split', () => {
+  afterEach(() => TestBed.resetTestingModule());
+
+  function storeSpy(p: EnergyProfile) {
+    const saved: Partial<EnergyProfile>[] = [];
+    return {
+      saved,
+      store: {
+        profile: signal<EnergyProfile | null>(p),
+        save: (patch: Partial<EnergyProfile>) => saved.push(patch),
+        reload: () => undefined,
+      },
+    };
+  }
+
+  async function renderWithStore(store: unknown) {
+    await TestBed.configureTestingModule({
+      imports: [SettingsComponent],
+      providers: [
+        provideRouter([]),
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideTranslateService({ lang: 'de', fallbackLang: 'de' }),
+        { provide: ProfileStore, useValue: store },
+      ],
+    }).compileComponents();
+
+    const fixture = TestBed.createComponent(SettingsComponent);
+    fixture.detectChanges();
+    return fixture;
+  }
+
+  // Without a share the server cannot rate the building at all, so flipping the toggle on has to
+  // bring a usable starting value with it.
+  it('seeds a default share when the split is switched on for the first time', async () => {
+    const { saved, store } = storeSpy(profile('NONE'));
+    const fixture = await renderWithStore(store);
+
+    fixture.componentInstance.setHeatPumpCoversHotWater(true);
+
+    expect(saved).toEqual([{ heatPumpCoversHotWater: true, heatPumpHotWaterSharePercent: 20 }]);
+  });
+
+  it('keeps a share the user already set', async () => {
+    const { saved, store } = storeSpy({ ...profile('NONE'), heatPumpHotWaterSharePercent: 35 });
+    const fixture = await renderWithStore(store);
+
+    fixture.componentInstance.setHeatPumpCoversHotWater(true);
+
+    expect(saved).toEqual([{ heatPumpCoversHotWater: true }]);
+  });
+
+  it('leaves the share untouched when the split is switched off', async () => {
+    const { saved, store } = storeSpy({ ...profile('NONE'), heatPumpCoversHotWater: true, heatPumpHotWaterSharePercent: 20 });
+    const fixture = await renderWithStore(store);
+
+    fixture.componentInstance.setHeatPumpCoversHotWater(false);
+
+    expect(saved).toEqual([{ heatPumpCoversHotWater: false }]);
+  });
+
+  it('disables the share input while the heat pump is heating only', async () => {
+    const { store } = storeSpy(profile('NONE'));
+    const fixture = await renderWithStore(store);
+
+    const share: HTMLInputElement = fixture.nativeElement.querySelector('input[max="99"]');
+    expect(share.disabled).toBe(true);
   });
 });

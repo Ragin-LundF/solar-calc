@@ -1,13 +1,13 @@
-import { TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
-import { provideHttpClient } from '@angular/common/http';
-import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { provideTranslateService } from '@ngx-translate/core';
-import { SetupWizardComponent } from './setup-wizard.component';
-import { AuthService } from '@/core/auth/auth.service';
-import { AppStateService } from '@/core/state/app-state.service';
-import { SetupStep } from '@/core/auth/setup-step.enum';
-import { EnergyProfile } from '@/core/api/models';
+import {TestBed} from '@angular/core/testing';
+import {provideRouter} from '@angular/router';
+import {provideHttpClient} from '@angular/common/http';
+import {HttpTestingController, provideHttpClientTesting} from '@angular/common/http/testing';
+import {provideTranslateService} from '@ngx-translate/core';
+import {SetupWizardComponent} from './setup-wizard.component';
+import {AuthService} from '@/core/auth/auth.service';
+import {AppStateService} from '@/core/state/app-state.service';
+import {SetupStep} from '@/core/auth/setup-step.enum';
+import {EnergyProfile} from '@/core/api/models';
 
 const STORED_PROFILE: EnergyProfile = {
   id: 'p1',
@@ -25,6 +25,8 @@ const STORED_PROFILE: EnergyProfile = {
   investKosten: 20000,
   usableAreaSqm: 140,
   heatPumpScop: 3.5,
+  heatPumpCoversHotWater: true,
+  heatPumpHotWaterSharePercent: 20,
   heatingMonthlyDistribution: [22, 18, 12, 5, 3, 1, 1, 1, 2, 3, 13, 19],
   overviewLayout: 'KPI',
 };
@@ -79,6 +81,8 @@ describe('SetupWizardComponent', () => {
     expect(put.request.body.investKosten).toBe(20000);
     expect(put.request.body.usableAreaSqm).toBe(140);
     expect(put.request.body.heatPumpScop).toBe(3.5);
+    expect(put.request.body.heatPumpCoversHotWater).toBe(true);
+    expect(put.request.body.heatPumpHotWaterSharePercent).toBe(20);
     expect(put.request.body.kmPerKwh).toBe(5);
     expect(put.request.body.litersPer100km).toBe(8);
     expect(put.request.body.defaultOilReferenceCost).toBe(2400);

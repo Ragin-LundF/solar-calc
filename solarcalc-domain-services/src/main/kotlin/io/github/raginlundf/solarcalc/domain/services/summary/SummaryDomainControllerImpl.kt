@@ -51,9 +51,11 @@ class SummaryDomainControllerImpl(
         }
 
         // Rated from the raw readings, so the estimate is independent of allocation and prices.
-        val heatPumpKwhByPeriod = inputs.associate { input ->
-            input.period to (input.heatPumpConsumptionKwh ?: BigDecimal.ZERO)
-        }
+        // Months without a heat-pump reading are left out rather than mapped to zero: the rating
+        // has to see them as gaps, otherwise it rates an incomplete year as if it were complete.
+        val heatPumpKwhByPeriod = inputs.mapNotNull { input ->
+            input.heatPumpConsumptionKwh?.let { kwh -> input.period to kwh }
+        }.toMap()
 
         return summaryService.summarize(
             months = monthInputs,

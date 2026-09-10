@@ -91,6 +91,20 @@ class EnergyProfileEntity {
     @Column(name = "heat_pump_scop", precision = 4, scale = 2)
     var heatPumpScop: BigDecimal? = null
 
+    /**
+     * True when the heat pump also produces domestic hot water, so part of its metered electricity
+     * is not space heating and must be taken out before the building is rated.
+     */
+    @Column(name = "heat_pump_covers_hot_water", nullable = false)
+    var heatPumpCoversHotWater: Boolean = false
+
+    /**
+     * Share of the heat-pump electricity spent on hot water, in percent within [0, 100).
+     * Only read when [heatPumpCoversHotWater] is set.
+     */
+    @Column(name = "heat_pump_hot_water_share_percent", precision = 5, scale = 2)
+    var heatPumpHotWaterSharePercent: BigDecimal? = null
+
     /** 12 percentages (Jan..Dec) of the annual heating cost, must sum to 100. */
     @Convert(converter = IntListConverter::class)
     @Column(name = "heating_monthly_distribution", length = 100, nullable = false)
@@ -148,6 +162,8 @@ class EnergyProfileEntity {
             EnergyProfileEntity::investCost,
             EnergyProfileEntity::usableAreaSqm,
             EnergyProfileEntity::heatPumpScop,
+            EnergyProfileEntity::heatPumpCoversHotWater,
+            EnergyProfileEntity::heatPumpHotWaterSharePercent,
             EnergyProfileEntity::heatingMonthlyDistribution,
             EnergyProfileEntity::overviewLayout,
             EnergyProfileEntity::createdAt,

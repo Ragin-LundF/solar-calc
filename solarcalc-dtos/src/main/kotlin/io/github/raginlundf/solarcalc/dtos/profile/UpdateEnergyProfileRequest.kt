@@ -2,6 +2,8 @@ package io.github.raginlundf.solarcalc.dtos.profile
 
 import io.github.raginlundf.solarcalc.domain.models.profile.HeatingReferenceTypeEnum
 import io.github.raginlundf.solarcalc.domain.models.profile.OverviewLayoutEnum
+import jakarta.validation.constraints.DecimalMax
+import jakarta.validation.constraints.DecimalMin
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Positive
 import jakarta.validation.constraints.PositiveOrZero
@@ -22,6 +24,10 @@ data class UpdateEnergyProfileRequest(
     val investKosten: BigDecimal? = null,
     @field:PositiveOrZero val usableAreaSqm: BigDecimal? = null,
     @field:Positive val heatPumpScop: BigDecimal? = null,
+    val heatPumpCoversHotWater: Boolean = false,
+    @field:DecimalMin("0")
+    @field:DecimalMax(value = "100", inclusive = false)
+    val heatPumpHotWaterSharePercent: BigDecimal? = null,
     val heatingMonthlyDistribution: List<Int>? = null,
     val overviewLayout: OverviewLayoutEnum? = null,
 )
