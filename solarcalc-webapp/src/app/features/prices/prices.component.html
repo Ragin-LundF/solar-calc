@@ -89,14 +89,14 @@
               <span class="ml-2 text-[11px] text-solar-green">{{ 'solar.prices.inEffect' | translate }}</span>
             }
           </td>
-          <td class="px-4 py-2.5 text-right">{{ e.electricityPrice === null ? '—' : fmtEURperKwh(e.electricityPrice) }}</td>
-          <td class="px-4 py-2.5 text-right">{{ e.feedInTariff === null ? '—' : fmtEURperKwh(e.feedInTariff) }}</td>
-          <td class="px-4 py-2.5 text-right">{{ e.petrolPrice === null ? '—' : fmtEUR(e.petrolPrice) }}</td>
+          <td class="px-4 py-2.5 text-right">{{ e.electricityPrice == null ? '—' : fmtEURperKwh(e.electricityPrice) }}</td>
+          <td class="px-4 py-2.5 text-right">{{ e.feedInTariff == null ? '—' : fmtEURperKwh(e.feedInTariff) }}</td>
+          <td class="px-4 py-2.5 text-right">{{ e.petrolPrice == null ? '—' : fmtEUR(e.petrolPrice) }}</td>
           <td class="px-4 py-2.5 text-right">
-            {{ e.heatingReferenceType === null ? '—' : ('profile.heatingReferenceType_' + e.heatingReferenceType | translate) }}
+            {{ e.heatingReferenceType == null ? '—' : ('profile.heatingReferenceType_' + e.heatingReferenceType | translate) }}
           </td>
-          <td class="px-4 py-2.5 text-right">{{ e.oilReferenceCost === null ? '—' : fmtEUR(e.oilReferenceCost) }}</td>
-          <td class="px-4 py-2.5 text-right">{{ e.gasReferenceCost === null ? '—' : fmtEUR(e.gasReferenceCost) }}</td>
+          <td class="px-4 py-2.5 text-right">{{ e.oilReferenceCost == null ? '—' : fmtEUR(e.oilReferenceCost) }}</td>
+          <td class="px-4 py-2.5 text-right">{{ e.gasReferenceCost == null ? '—' : fmtEUR(e.gasReferenceCost) }}</td>
           <td class="px-4 py-2.5 text-right whitespace-nowrap">
             <button (click)="startEdit(e)" [title]="'common.edit' | translate" [attr.aria-label]="'common.edit' | translate"
               class="text-solar-text2 hover:text-solar-blue align-middle">

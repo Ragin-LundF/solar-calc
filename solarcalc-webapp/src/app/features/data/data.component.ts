@@ -112,7 +112,7 @@ export class DataComponent {
       if (id !== this.pricesReqId) return;
       if (!force && this.form().feedInTariff.trim() !== '') return;
       const tariff = effective.feedInTariff;
-      this.form.update(f => ({ ...f, feedInTariff: tariff === null ? '' : String(tariff) }));
+      this.form.update(f => ({ ...f, feedInTariff: tariff == null ? '' : String(tariff) }));
     } catch {
       // A missing price is not an error worth interrupting data entry for.
     }
@@ -160,8 +160,8 @@ export class DataComponent {
     this.dist.update(d => d.map((v, i) => (i === index ? (Number.isFinite(value) ? value : 0) : v)));
   }
 
-  private num(value: string | number | null): number | null {
-    if (value === null || value === '') return null;
+  private num(value: string | number | null | undefined): number | null {
+    if (value == null || value === '') return null;
     const n = Number(value);
     return Number.isFinite(n) ? n : null;
   }

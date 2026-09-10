@@ -173,6 +173,22 @@ describe('PricesComponent', () => {
     req.flush({});
   });
 
+  it('shows a dash for prices the server omitted from the response', async () => {
+    // The server uses Jackson NON_EMPTY, so null fields are absent from the JSON rather than
+    // being sent as null. Mirror that payload exactly instead of a hand-written null.
+    const sparse = [{ id: 9, validFrom: '2025-03' }] as unknown as PriceSnapshot[];
+    const fixture = await render(sparse);
+    await fixture.whenStable();
+    fixture.detectChanges();
+    const row = fixture.nativeElement.querySelector('tbody tr') as HTMLTableRowElement;
+    const cells = [...row.querySelectorAll('td')].map(td => td.textContent!.trim());
+
+    // Every unset column reads as a dash: no raw translation key, no 0,00 € standing in for "not set".
+    expect(cells.slice(1, 7)).toEqual(['—', '—', '—', '—', '—', '—']);
+    expect(row.textContent).not.toContain('heatingReferenceType_');
+    expect(row.textContent).not.toContain('undefined');
+  });
+
   it('loads an entry into the form for editing', async () => {
     const fixture = await render();
     const prices = fixture.componentInstance;

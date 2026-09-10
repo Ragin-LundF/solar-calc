@@ -119,6 +119,17 @@ describe('DataComponent price fields', () => {
     expect(data.form().generation).toBe('');
   });
 
+  it('shows a dash for overrides the server omitted from the response', async () => {
+    const sparse = [{ id: 9, period: '2025-03' }] as unknown as MonthlyInput[];
+    const fixture = await render(sparse);
+    const row = fixture.nativeElement.querySelector('tbody tr') as HTMLTableRowElement;
+    const cells = [...row.querySelectorAll('td')].map(td => td.textContent!.trim());
+
+    // The two price-override columns are the ones that distinguish "not set" from a real value.
+    expect(cells[6]).toBe('—');
+    expect(cells[7]).toBe('—');
+  });
+
   it('clears the feed-in tariff so the month inherits again', async () => {
     const fixture = await render();
     const data = fixture.componentInstance;

@@ -93,10 +93,10 @@
             <td class="px-4 py-2.5 text-right">{{ fmtKWh(m.heatPumpConsumptionKwh) }}</td>
             <td class="px-4 py-2.5 text-right">{{ fmtKWh(m.wallboxConsumptionKwh) }}</td>
             <td class="px-4 py-2.5 text-right text-solar-text2">
-              {{ m.electricityPriceOverride === null ? '—' : fmtEURperKwh(m.electricityPriceOverride) }}
+              {{ m.electricityPriceOverride == null ? '—' : fmtEURperKwh(m.electricityPriceOverride) }}
             </td>
             <td class="px-4 py-2.5 text-right text-solar-text2">
-              {{ m.feedInTariffOverride === null ? '—' : fmtEURperKwh(m.feedInTariffOverride) }}
+              {{ m.feedInTariffOverride == null ? '—' : fmtEURperKwh(m.feedInTariffOverride) }}
             </td>
             <td class="px-4 py-2.5 text-right whitespace-nowrap">
               <button (click)="startEdit(m)" [title]="'common.edit' | translate" [attr.aria-label]="'common.edit' | translate"

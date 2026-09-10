@@ -1,3 +1,10 @@
+/**
+ * Wire types for the REST API.
+ *
+ * The server serialises with Jackson's NON_EMPTY inclusion, so a field whose value is null is
+ * omitted from the JSON entirely and arrives here as `undefined`, not `null`. A `| null` below
+ * therefore means "may be null or absent": test these with `== null`, never `=== null`.
+ */
 export type AllocationCategory = 'HOUSEHOLD' | 'HEAT_PUMP' | 'WALLBOX';
 export type OverviewLayout = 'KPI' | 'STORY';
 export type HeatingReferenceType = 'NONE' | 'OIL' | 'GAS';
