@@ -359,7 +359,7 @@
     "prices": {
       "newEntry": "Neuer Preiseintrag",
       "editEntry": "Preiseintrag bearbeiten",
-      "help": "Ein Eintrag gilt ab dem angegebenen Monat, bis ein späterer Eintrag ihn ablöst. Leere Felder behalten den bisherigen Preis. Was hier nicht hinterlegt ist, kommt aus den Einstellungen.",
+      "help": "Ein Eintrag gilt ab dem angegebenen Monat, bis ein späterer Eintrag ihn ablöst. Ein neuer Eintrag startet mit den heute gültigen Preisen: Ändern Sie nur, was sich geändert hat. Leere Felder behalten den bisherigen Preis. Was hier nicht hinterlegt ist, kommt aus den Einstellungen.",
       "timelineTitle": "Preisverlauf",
       "timelineHelp": "Monate mit einem eigenen Preis in den Daten behalten diesen Preis — der Verlauf ändert sie nicht.",
       "inEffect": "aktuell gültig",

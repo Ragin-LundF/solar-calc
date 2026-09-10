@@ -73,15 +73,56 @@ describe('DataComponent price fields', () => {
     expect(fixture.componentInstance.form().feedInTariff).toBe('0.081');
   });
 
-  it('never prefills the electricity price', async () => {
+  it('never prefills the electricity price from the contract price', async () => {
     const fixture = await render();
     fixture.componentInstance.patch('period', '2025-07');
 
+    // 0.28 is the contract price for that month, and it must not reach the form: the summary
+    // derives gridCost from this override and gridCostAtReferencePrice from the contract price,
+    // so seeding both to the same number would zero out every tariff delta.
     await flushEffective(0.081, 0.28);
 
-    // The electricity field records the dynamic price actually paid. Seeding it with the contract
-    // price would make gridCost equal gridCostAtReferencePrice and zero out every tariff delta.
+    // The only recorded month stored no price of its own, so there is nothing to carry over.
     expect(fixture.componentInstance.form().electricityPrice).toBe('');
+  });
+
+  it('carries the electricity price over from the most recent month that recorded one', async () => {
+    const fixture = await render([
+      { ...STORED_MONTH, id: 'm1', period: '2025-05', electricityPriceOverride: 0.271 },
+      { ...STORED_MONTH, id: 'm2', period: '2025-06', electricityPriceOverride: 0.294 },
+    ]);
+
+    // June is the latest recorded month, so its price is the one worth correcting from.
+    expect(fixture.componentInstance.form().electricityPrice).toBe('0.294');
+    // The energy readings are specific to a month and stay empty.
+    expect(fixture.componentInstance.form().generation).toBe('');
+    expect(fixture.componentInstance.form().period).toBe('');
+  });
+
+  it('skips months that recorded no price of their own when carrying one over', async () => {
+    const fixture = await render([
+      { ...STORED_MONTH, id: 'm1', period: '2025-05', electricityPriceOverride: 0.271 },
+      { ...STORED_MONTH, id: 'm2', period: '2025-06', electricityPriceOverride: null },
+    ]);
+
+    expect(fixture.componentInstance.form().electricityPrice).toBe('0.271');
+  });
+
+  it('does not overwrite an electricity price the user already typed', async () => {
+    const fixture = await render([
+      { ...STORED_MONTH, id: 'm1', period: '2025-05', electricityPriceOverride: 0.271 },
+    ]);
+    const data = fixture.componentInstance;
+    data.patch('electricityPrice', 0.35);
+
+    // A reload must not clobber what is already half-entered.
+    TestBed.inject(AppStateService).profileId.set('p2');
+    await fixture.whenStable();
+    http.match(r => r.url === '/api/v1/profiles/p2/monthly-inputs')
+      .forEach(r => r.flush([{ ...STORED_MONTH, id: 'm9', period: '2025-08', electricityPriceOverride: 0.9 }]));
+    await fixture.whenStable();
+
+    expect(data.form().electricityPrice).toBe('0.35');
   });
 
   it('does not overwrite a feed-in tariff the user already typed', async () => {

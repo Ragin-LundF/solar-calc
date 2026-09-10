@@ -26,6 +26,17 @@ const EMPTY_FORM: EntryForm = {
   heatingReferenceType: '', oilReferenceCost: '', gasReferenceCost: '',
 };
 
+/** Every field of an entry except the start month, which is never carried over. */
+const PRICE_FIELDS = [
+  'electricityPrice', 'feedInTariff', 'petrolPrice',
+  'heatingReferenceType', 'oilReferenceCost', 'gasReferenceCost',
+] as const;
+
+type PriceField = (typeof PRICE_FIELDS)[number];
+
+/** Null and absent both mean "not set"; the server omits null fields entirely. */
+const str = (v: string | number | null | undefined): string => (v == null ? '' : String(v));
+
 @Component({
   selector: 'app-prices',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -63,6 +74,35 @@ export class PricesComponent {
     return this.rows().find(e => e.validFrom <= today)?.id ?? null;
   });
 
+  /**
+   * The prices actually in force today. A null field in a snapshot means "unchanged", so the
+   * timeline is replayed oldest first and each field keeps the last value that was actually set —
+   * the newest entry alone would leave the inherited fields looking empty.
+   */
+  private readonly inForceToday = computed<Partial<Record<PriceField, string>>>(() => {
+    const today = new Date().toISOString().slice(0, 7);
+    const upToToday = this.entries()
+      .filter(e => e.validFrom <= today)
+      .sort((a, b) => a.validFrom.localeCompare(b.validFrom));
+
+    const resolved: Partial<Record<PriceField, string>> = {};
+    for (const entry of upToToday) {
+      for (const field of PRICE_FIELDS) {
+        if (entry[field] != null) resolved[field] = String(entry[field]);
+      }
+    }
+    return resolved;
+  });
+
+  /**
+   * A new entry opens as a copy of the prices in force today, so only the values that actually
+   * changed have to be touched; clearing a field still stores it as null. The start month is
+   * deliberately left empty — it is the one value that must be chosen per entry.
+   */
+  private newEntryForm(): EntryForm {
+    return { ...EMPTY_FORM, ...this.inForceToday() };
+  }
+
   constructor() {
     effect(() => {
       if (this.state.profileId()) this.load();
@@ -77,6 +117,8 @@ export class PricesComponent {
     } catch {
       this.entries.set([]);
     }
+    // Reseed the new-entry form from the timeline that just arrived, unless an edit is open.
+    if (this.editingId() === null) this.form.set(this.newEntryForm());
   }
 
   /**
@@ -88,13 +130,12 @@ export class PricesComponent {
   }
 
   startEdit(entry: PriceSnapshot): void {
-    const str = (n: number | null): string => (n === null || n === undefined ? '' : String(n));
     this.form.set({
       validFrom: entry.validFrom,
       electricityPrice: str(entry.electricityPrice),
       feedInTariff: str(entry.feedInTariff),
       petrolPrice: str(entry.petrolPrice),
-      heatingReferenceType: entry.heatingReferenceType ?? '',
+      heatingReferenceType: str(entry.heatingReferenceType),
       oilReferenceCost: str(entry.oilReferenceCost),
       gasReferenceCost: str(entry.gasReferenceCost),
     });
@@ -103,8 +144,8 @@ export class PricesComponent {
   }
 
   cancelEdit(): void {
-    this.form.set({ ...EMPTY_FORM });
     this.editingId.set(null);
+    this.form.set(this.newEntryForm());
     this.error.set(null);
   }
 

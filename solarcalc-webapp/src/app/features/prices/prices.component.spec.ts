@@ -83,8 +83,61 @@ describe('PricesComponent', () => {
     expect(fixture.componentInstance.currentId()).toBeNull();
   });
 
-  it('refuses to submit an entry that sets no price', async () => {
+  it('carries over a price inherited from an older entry, not just the newest row', async () => {
+    // The 2025 entry leaves feedInTariff null, meaning "unchanged": it still comes from 2024.
     const fixture = await render();
+
+    expect(fixture.componentInstance.form().feedInTariff).toBe('0.08');
+    expect(fixture.componentInstance.form().electricityPrice).toBe('0.28');
+    // Nothing to carry over for the start month; it must be chosen each time.
+    expect(fixture.componentInstance.form().validFrom).toBe('');
+  });
+
+  it('ignores an entry that has not started yet when carrying prices over', async () => {
+    const fixture = await render([
+      {
+        id: 1, validFrom: '2024-01', electricityPrice: 0.32, feedInTariff: 0.08, petrolPrice: 1.72,
+        heatingReferenceType: 'OIL', oilReferenceCost: 2400, gasReferenceCost: null,
+      },
+      {
+        id: 5, validFrom: '2999-01', electricityPrice: 0.99, feedInTariff: null, petrolPrice: null,
+        heatingReferenceType: null, oilReferenceCost: null, gasReferenceCost: null,
+      },
+    ]);
+
+    // A price that only starts in 2999 is not in force today, so it must not be the seed.
+    expect(fixture.componentInstance.form().electricityPrice).toBe('0.32');
+  });
+
+  it('keeps Add disabled until a start month is chosen, even when prices carried over', async () => {
+    const fixture = await render();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    const button = (): HTMLButtonElement => fixture.nativeElement.querySelector('button');
+
+    expect(fixture.componentInstance.formHasPrice()).toBe(true);
+    expect(button().disabled).toBe(true);
+
+    setValue(fixture, 'input[type=month]', '2026-05');
+    expect(button().disabled).toBe(false);
+  });
+
+  it('returns to a freshly carried-over form after cancelling an edit', async () => {
+    const fixture = await render();
+    const prices = fixture.componentInstance;
+    prices.startEdit(ENTRIES[1]);
+    expect(prices.form().validFrom).toBe('2024-01');
+
+    prices.cancelEdit();
+
+    expect(prices.editingId()).toBeNull();
+    expect(prices.form().validFrom).toBe('');
+    expect(prices.form().electricityPrice).toBe('0.28');
+  });
+
+  it('refuses to submit an entry that sets no price', async () => {
+    // Nothing on the timeline yet, so there is nothing to carry over either.
+    const fixture = await render([]);
     const prices = fixture.componentInstance;
     prices.patch('validFrom', '2026-01');
 
@@ -93,7 +146,21 @@ describe('PricesComponent', () => {
     http.expectNone(r => r.method === 'POST');
   });
 
-  it('creates an entry with only the prices that were filled in', async () => {
+  it('refuses to submit once every carried-over price has been cleared', async () => {
+    const fixture = await render();
+    const prices = fixture.componentInstance;
+    prices.patch('validFrom', '2026-01');
+    for (const field of ['electricityPrice', 'feedInTariff', 'petrolPrice',
+      'heatingReferenceType', 'oilReferenceCost', 'gasReferenceCost'] as const) {
+      prices.patch(field, '');
+    }
+
+    expect(prices.formHasPrice()).toBe(false);
+    prices.submit();
+    http.expectNone(r => r.method === 'POST');
+  });
+
+  it('sends the carried-over prices alongside the one that was changed', async () => {
     const fixture = await render();
     const prices = fixture.componentInstance;
     prices.patch('validFrom', '2026-01');
@@ -104,10 +171,23 @@ describe('PricesComponent', () => {
     const post = http.expectOne(r => r.method === 'POST' && r.url === '/api/v1/profiles/p1/prices');
     expect(post.request.body.validFrom).toBe('2026-01');
     expect(post.request.body.petrolPrice).toBe(1.9);
-    // Untouched prices stay null so the older entry keeps supplying them.
+    // The prices in force today come along unchanged, so the user only had to touch the petrol price.
+    expect(post.request.body.electricityPrice).toBe(0.28);
+    expect(post.request.body.heatingReferenceType).toBe('GAS');
+  });
+
+  it('stores a cleared field as null so the entry drops that price', async () => {
+    const fixture = await render();
+    const prices = fixture.componentInstance;
+    prices.patch('validFrom', '2026-01');
+    prices.patch('electricityPrice', '');
+
+    prices.submit();
+
+    const post = http.expectOne(r => r.method === 'POST');
     expect(post.request.body.electricityPrice).toBeNull();
-    // No fuel chosen means "unchanged", not "no heating".
-    expect(post.request.body.heatingReferenceType).toBeNull();
+    // Clearing one field leaves the rest of the carried-over entry intact.
+    expect(post.request.body.feedInTariff).toBe(0.08);
   });
 
   it('records a fuel switch even when no cost is entered with it', async () => {

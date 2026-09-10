@@ -60,6 +60,22 @@ export class DataComponent {
 
   readonly rows = computed(() => [...this.months()].sort((a, b) => b.period.localeCompare(a.period)));
 
+  /**
+   * The electricity price actually paid in the most recent month that recorded one. A new month
+   * starts from it so the figure only has to be corrected rather than retyped.
+   *
+   * Deliberately not the contract price from the timeline: the summary derives gridCost from this
+   * override and gridCostAtReferencePrice from the contract price, so seeding the two to the same
+   * number would make every month's tariff delta come out as exactly zero.
+   */
+  private readonly lastRecordedElectricityPrice = computed<string>(() => {
+    const recorded = this.months()
+      .filter(m => m.electricityPriceOverride != null)
+      .sort((a, b) => a.period.localeCompare(b.period));
+    const latest = recorded.at(-1)?.electricityPriceOverride;
+    return latest == null ? '' : String(latest);
+  });
+
   constructor() {
     effect(() => {
       const d = this.profileStore.profile()?.heatingMonthlyDistribution;
@@ -77,6 +93,10 @@ export class DataComponent {
       this.months.set(await firstValueFrom(this.api.get<MonthlyInput[]>(`/profiles/${pid}/monthly-inputs`)));
     } catch {
       this.months.set([]);
+    }
+    // Seed the new-month form from what just arrived, without touching an edit or typed-in value.
+    if (this.editingId() === null && this.form().electricityPrice === '') {
+      this.form.update(f => ({ ...f, electricityPrice: this.lastRecordedElectricityPrice() }));
     }
   }
 
@@ -139,7 +159,7 @@ export class DataComponent {
   }
 
   cancelEdit(): void {
-    this.form.set({ ...EMPTY_FORM });
+    this.form.set({ ...EMPTY_FORM, electricityPrice: this.lastRecordedElectricityPrice() });
     this.editingId.set(null);
   }
 

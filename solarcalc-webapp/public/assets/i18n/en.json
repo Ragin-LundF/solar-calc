@@ -359,7 +359,7 @@
     "prices": {
       "newEntry": "New price entry",
       "editEntry": "Edit price entry",
-      "help": "An entry applies from the given month until a later entry supersedes it. Empty fields keep the previous price. Anything not set here comes from Settings.",
+      "help": "An entry applies from the given month until a later entry supersedes it. A new entry starts from the prices in force today: change only what actually changed. Empty fields keep the previous price. Anything not set here comes from Settings.",
       "timelineTitle": "Price history",
       "timelineHelp": "Months that carry their own price in the data keep it — the history does not change them.",
       "inEffect": "in effect",
