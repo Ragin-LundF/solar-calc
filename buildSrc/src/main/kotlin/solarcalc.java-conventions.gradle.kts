@@ -12,6 +12,7 @@ plugins {
 val libs = the<LibrariesForLibs>()
 
 tasks.register<CreateStartScripts>("createStartScripts") {
+    description = "start scripts for the application"
     mainClass.set("io.github.raginlundf.solarcalc.Application")
     applicationName = rootProject.name
 }
