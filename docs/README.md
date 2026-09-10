@@ -45,7 +45,7 @@ Solar production and what goes to the grid.
 Heat pump versus a reference oil heating.
 
 - **KPI cards** — reference oil cost, actual heat pump cost, savings vs. reference,
-  and the distribution sum (must equal 100%).
+  the distribution sum (must equal 100%), and the rough energy efficiency class.
 - **Grouped chart** — oil reference cost, heat pump cost, and savings per month.
 - **Table** — monthly heating-cost distribution (%), solar share, grid draw, oil
   cost, heat pump cost, and savings. The annual oil cost is spread across months
@@ -86,6 +86,23 @@ All savings combined.
 - **Stacked chart** — feed-in, heating, household, and wallbox stacked per month.
 - **Table** — monthly savings per category with a combined total column.
 
+## Grid & tariff
+
+Grid purchases against a fixed-price contract.
+
+- **KPI cards** — energy bought from the grid (kWh), the average unit price actually paid
+  (weighted by kWh), the resulting cost, and the difference against the electricity price
+  configured in **Settings**. A positive difference means the dynamic tariff came out cheaper.
+- **Grouped chart** — actual grid cost vs. what the same energy would have cost at the fixed
+  contract price, per month.
+- **Table** — per-month grid draw, average price, actual cost, cost at the fixed price, and the
+  difference.
+
+The average price per month comes from the optional **Ø electricity price** field on the **Data**
+page. Months left empty fall back to the electricity price in **Settings**, so their difference is
+zero. This comparison is reported on its own — it never feeds total savings or the payback
+projection, which measure what the PV system earns rather than what the tariff choice earns.
+
 ## Data
 
 ![Data](07_data.png)
@@ -93,7 +110,8 @@ All savings combined.
 Where you enter everything.
 
 - **Capture new month** — add a period with generation, feed-in, household, heat
-  pump, and wallbox readings (all in kWh).
+  pump, and wallbox readings (all in kWh), plus an optional average electricity price
+  (€/kWh) for that month. Leave the price empty to use the one from **Settings**.
 - **Recorded months** — table of all entered months, editable and deletable.
 - **Heating distribution over the year** — twelve percentages that must sum to
   100%, used to spread the annual reference oil cost across the months for the
@@ -111,4 +129,12 @@ Allocation, profile, and prices.
   the heating reference type.
 - **Prices & investment** — electricity price, feed-in tariff, petrol price, car
   consumption (L/100km), EV efficiency (km/kWh), heating reference cost (€/year),
-  and total system investment cost used for the payback calculation.
+  and total system investment cost used for the payback calculation. The electricity
+  price doubles as the fixed-contract reference on the **Grid & tariff** page.
+- **Building & energy efficiency** — living area (m²) and the heat pump's seasonal
+  performance factor (SCOP/JAZ). From the last twelve months of heat-pump readings these
+  give a rough German energy efficiency class (A+…H), shown here and as a KPI on the
+  **Heating** page. It needs twelve consecutive months of data; until then it says so
+  instead of guessing. It estimates the building envelope by converting heat-pump
+  electricity into delivered heat — it is not an Energieausweis, and it ignores the
+  hot-water share and primary energy factors.

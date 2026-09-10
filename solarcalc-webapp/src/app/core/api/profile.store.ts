@@ -52,6 +52,8 @@ export class ProfileStore {
       kmPerKwh: p.kmPerKwh,
       litersPer100km: p.litersPer100km,
       investKosten: p.investKosten,
+      usableAreaSqm: p.usableAreaSqm,
+      heatPumpScop: p.heatPumpScop,
       heatingMonthlyDistribution: p.heatingMonthlyDistribution,
       overviewLayout: p.overviewLayout,
     };

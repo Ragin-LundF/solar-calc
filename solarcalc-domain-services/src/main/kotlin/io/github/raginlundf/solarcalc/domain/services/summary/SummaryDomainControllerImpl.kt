@@ -1,6 +1,7 @@
 package io.github.raginlundf.solarcalc.domain.services.summary
 
 import io.github.raginlundf.solarcalc.domain.models.allocation.AllocationCategory
+import io.github.raginlundf.solarcalc.domain.models.input.MonthlyEnergyInput
 import io.github.raginlundf.solarcalc.domain.models.profile.DEFAULT_HEATING_DISTRIBUTION
 import io.github.raginlundf.solarcalc.domain.models.profile.EnergyProfile
 import io.github.raginlundf.solarcalc.domain.models.repository.AllocationPolicyRepository
@@ -22,6 +23,7 @@ class SummaryDomainControllerImpl(
     private val policyRepository: AllocationPolicyRepository,
     private val priceResolver: PriceResolver,
     private val summaryService: SummaryService,
+    private val efficiencyCalculator: EnergyEfficiencyCalculator,
 ) : SummaryDomainController {
 
     private val periodFormatter = DateTimeFormatter.ofPattern("yyyy-MM")
@@ -41,22 +43,11 @@ class SummaryDomainControllerImpl(
             .firstOrNull()?.priorityOrder
             ?: AllocationCategory.entries.toList()
 
-        val monthInputs = inputs.map { input ->
-            val prices = priceResolver.resolve(profile = profile, period = input.period)
-            val gridPrice = input.electricityPriceOverride ?: prices.electricityPrice ?: BigDecimal.ZERO
-            SummaryMonthInput(
-                period = input.period,
-                generationKwh = input.generationKwh,
-                feedInKwh = input.feedInKwh ?: BigDecimal.ZERO,
-                consumptionKwh = input.consumptionKwh,
-                householdKwh = input.householdConsumptionKwh,
-                heatPumpKwh = input.heatPumpConsumptionKwh ?: BigDecimal.ZERO,
-                wallboxKwh = input.wallboxConsumptionKwh ?: BigDecimal.ZERO,
-                gridPrice = gridPrice,
-                feedInTariff = input.feedInTariffOverride ?: prices.feedInTariff ?: BigDecimal.ZERO,
-                petrolPrice = input.petrolPriceOverride ?: prices.petrolPrice ?: BigDecimal.ZERO,
-                heizReferenzJahr = input.heatingReferenceCostOverride ?: prices.heatingReferenceCost ?: BigDecimal.ZERO,
-            )
+        val monthInputs = inputs.map { input -> toMonthInput(profile = profile, input = input) }
+
+        // Rated from the raw readings, so the estimate is independent of allocation and prices.
+        val heatPumpKwhByPeriod = inputs.associate { input ->
+            input.period to (input.heatPumpConsumptionKwh ?: BigDecimal.ZERO)
         }
 
         return summaryService.summarize(
@@ -64,6 +55,28 @@ class SummaryDomainControllerImpl(
             params = params(profile = profile, priority = priority),
             rangeStart = startDate?.format(periodFormatter),
             rangeEnd = endDate?.format(periodFormatter),
+            efficiency = efficiencyCalculator.rate(
+                profile = profile,
+                heatPumpKwhByPeriod = heatPumpKwhByPeriod,
+            ),
+        )
+    }
+
+    private fun toMonthInput(profile: EnergyProfile, input: MonthlyEnergyInput): SummaryMonthInput {
+        val prices = priceResolver.resolve(profile = profile, period = input.period)
+        return SummaryMonthInput(
+            period = input.period,
+            generationKwh = input.generationKwh,
+            feedInKwh = input.feedInKwh ?: BigDecimal.ZERO,
+            consumptionKwh = input.consumptionKwh,
+            householdKwh = input.householdConsumptionKwh,
+            heatPumpKwh = input.heatPumpConsumptionKwh ?: BigDecimal.ZERO,
+            wallboxKwh = input.wallboxConsumptionKwh ?: BigDecimal.ZERO,
+            gridPrice = input.electricityPriceOverride ?: prices.electricityPrice ?: BigDecimal.ZERO,
+            referencePrice = prices.electricityPrice,
+            feedInTariff = input.feedInTariffOverride ?: prices.feedInTariff ?: BigDecimal.ZERO,
+            petrolPrice = input.petrolPriceOverride ?: prices.petrolPrice ?: BigDecimal.ZERO,
+            heizReferenzJahr = input.heatingReferenceCostOverride ?: prices.heatingReferenceCost ?: BigDecimal.ZERO,
         )
     }
 

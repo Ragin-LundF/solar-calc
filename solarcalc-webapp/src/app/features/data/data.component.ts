@@ -9,7 +9,7 @@ import { AppStateService } from '@/core/state/app-state.service';
 import { SummaryStore } from '@/core/api/summary.store';
 import { ProfileStore } from '@/core/api/profile.store';
 import { MonthlyInput } from '@/core/api/models';
-import { monthNames, fmtKWh, monthLongLabel } from '@/shared/utils/format';
+import { monthNames, fmtKWh, fmtEURperKwh, monthLongLabel } from '@/shared/utils/format';
 
 interface EntryForm {
   period: string;
@@ -18,9 +18,12 @@ interface EntryForm {
   household: string;
   heatPump: string;
   wallbox: string;
+  electricityPrice: string;
 }
 
-const EMPTY_FORM: EntryForm = { period: '', generation: '', feedIn: '', household: '', heatPump: '', wallbox: '' };
+const EMPTY_FORM: EntryForm = {
+  period: '', generation: '', feedIn: '', household: '', heatPump: '', wallbox: '', electricityPrice: '',
+};
 
 @Component({
   selector: 'app-data',
@@ -37,6 +40,7 @@ export class DataComponent {
   private readonly translate = inject(TranslateService);
 
   readonly fmtKWh = fmtKWh;
+  readonly fmtEURperKwh = fmtEURperKwh;
   readonly monthLongLabel = monthLongLabel;
   readonly monthNames = monthNames;
 
@@ -85,6 +89,7 @@ export class DataComponent {
       household: str(m.householdConsumptionKwh),
       heatPump: str(m.heatPumpConsumptionKwh),
       wallbox: str(m.wallboxConsumptionKwh),
+      electricityPrice: str(m.electricityPriceOverride),
     });
     this.editingId.set(m.id);
     this.error.set(null);
@@ -125,6 +130,11 @@ export class DataComponent {
     this.saving.set(true);
     this.error.set(null);
 
+    const targetId = this.editingId() ?? this.months().find(m => m.period === f.period)?.id;
+    // The server replaces every override on write, so the ones this form does not edit
+    // have to be sent back unchanged or they would be wiped.
+    const existing = this.months().find(m => m.id === targetId);
+
     const body = {
       period: f.period,
       generationKwh: this.num(f.generation) ?? 0,
@@ -132,9 +142,12 @@ export class DataComponent {
       householdConsumptionKwh: this.num(f.household),
       heatPumpConsumptionKwh: this.num(f.heatPump),
       wallboxConsumptionKwh: this.num(f.wallbox),
+      electricityPriceOverride: this.num(f.electricityPrice),
+      feedInTariffOverride: existing?.feedInTariffOverride ?? null,
+      petrolPriceOverride: existing?.petrolPriceOverride ?? null,
+      heatingReferenceCostOverride: existing?.heatingReferenceCostOverride ?? null,
     };
 
-    const targetId = this.editingId() ?? this.months().find(m => m.period === f.period)?.id;
     const call = targetId
       ? this.api.put(`/profiles/${pid}/monthly-inputs/${targetId}`, body)
       : this.api.post(`/profiles/${pid}/monthly-inputs`, body);

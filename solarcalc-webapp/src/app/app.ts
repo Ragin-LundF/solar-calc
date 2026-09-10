@@ -36,6 +36,7 @@ export class App {
     { id: 'household', route: '/household' },
     { id: 'wallbox', route: '/wallbox' },
     { id: 'total', route: '/total' },
+    { id: 'grid', route: '/grid' },
     { id: 'data', route: '/data' },
     { id: 'settings', route: '/settings' },
   ];

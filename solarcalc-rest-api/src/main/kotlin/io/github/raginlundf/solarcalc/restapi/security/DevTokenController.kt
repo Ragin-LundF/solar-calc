@@ -23,5 +23,3 @@ class DevTokenController(private val tokenIssuer: JwtTokenIssuer) {
         return DevTokenResponse(token = issued.token, expiresInSeconds = issued.expiresInSeconds)
     }
 }
-
-data class DevTokenResponse(val token: String, val expiresInSeconds: Long)

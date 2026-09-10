@@ -7,13 +7,6 @@ import io.github.raginlundf.solarcalc.domain.models.profile.HeatingReferenceType
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 
-data class ResolvedPrices(
-    val electricityPrice: BigDecimal?,
-    val feedInTariff: BigDecimal?,
-    val petrolPrice: BigDecimal?,
-    val heatingReferenceCost: BigDecimal?,
-)
-
 @Service
 class PriceResolver(
     private val priceSnapshotRepository: PriceSnapshotRepository,

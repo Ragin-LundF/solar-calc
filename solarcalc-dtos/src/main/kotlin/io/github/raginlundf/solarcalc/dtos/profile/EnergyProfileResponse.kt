@@ -18,6 +18,8 @@ data class EnergyProfileResponse(
     val kmPerKwh: BigDecimal?,
     val litersPer100km: BigDecimal?,
     val investKosten: BigDecimal?,
+    val usableAreaSqm: BigDecimal?,
+    val heatPumpScop: BigDecimal?,
     val heatingMonthlyDistribution: List<Int>,
     val overviewLayout: OverviewLayout,
 )

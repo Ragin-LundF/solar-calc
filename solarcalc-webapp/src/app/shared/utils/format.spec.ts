@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { monthLang, monthLongLabel, monthNames, monthShortLabel } from './format';
+import { fmtEUR, fmtEURperKwh, monthLang, monthLongLabel, monthNames, monthShortLabel } from './format';
 
 describe('month labels', () => {
   afterEach(() => monthLang.set('de'));
@@ -45,5 +45,22 @@ describe('month labels', () => {
     monthLang.set('en');
     fixture.detectChanges();
     expect(fixture.nativeElement.textContent.trim()).toBe('January 2026');
+  });
+});
+
+describe('fmtEURperKwh', () => {
+  it('keeps the third decimal that fmtEUR would round away', () => {
+    // Dynamic tariffs differ in the third decimal, so 0,284 must not collapse to 0,28.
+    expect(fmtEUR(0.284)).toBe('0,28\u00a0€');
+    expect(fmtEURperKwh(0.284)).toBe('0,284 €/kWh');
+  });
+
+  it('pads to three decimals so a column of prices lines up', () => {
+    expect(fmtEURperKwh(0.3)).toBe('0,300 €/kWh');
+  });
+
+  it('renders a missing price as zero rather than NaN', () => {
+    expect(fmtEURperKwh(null)).toBe('0,000 €/kWh');
+    expect(fmtEURperKwh(undefined)).toBe('0,000 €/kWh');
   });
 });

@@ -1,6 +1,7 @@
 export type AllocationCategory = 'HOUSEHOLD' | 'HEAT_PUMP' | 'WALLBOX';
 export type OverviewLayout = 'KPI' | 'STORY';
 export type HeatingReferenceType = 'NONE' | 'OIL' | 'GAS';
+export type EnergyEfficiencyClass = 'A_PLUS' | 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H';
 
 export interface MonthlySummary {
   period: string;
@@ -30,7 +31,30 @@ export interface MonthlySummary {
   gasolineEquivalentCost: number;
   wallboxSavingsVsGasoline: number;
   totalSavings: number;
+  /** Total energy bought from the grid: household + heat pump + wallbox. */
+  gridKwh: number;
+  /** Price actually paid per kWh this month. */
+  purchasePricePerKwh: number;
+  gridCost: number;
+  /** What the same gridKwh would have cost at the standing contract price. */
+  gridCostAtReferencePrice: number;
+  /** gridCostAtReferencePrice - gridCost; positive means the dynamic tariff was cheaper. */
+  dynamicTariffDelta: number;
   cumulativeSavings: number;
+}
+
+/**
+ * Rough German energy efficiency estimate, computed over the last 12 calendar months of all
+ * history. `energyClass` is null when it cannot be estimated; `monthsConsidered` says how many
+ * of those 12 months carry data.
+ */
+export interface EnergyEfficiencyRating {
+  usableAreaSqm: number | null;
+  heatPumpScop: number | null;
+  heatingEnergyKwh: number;
+  kwhPerSqmPerYear: number;
+  energyClass: EnergyEfficiencyClass | null;
+  monthsConsidered: number;
 }
 
 export interface PaybackProjection {
@@ -46,6 +70,7 @@ export interface SummaryResponse {
   months: MonthlySummary[];
   aggregates: unknown;
   payback: PaybackProjection;
+  efficiency: EnergyEfficiencyRating;
 }
 
 export interface AllocationPolicy {
@@ -62,6 +87,11 @@ export interface MonthlyInput {
   householdConsumptionKwh: number | null;
   heatPumpConsumptionKwh: number | null;
   wallboxConsumptionKwh: number | null;
+  /** Average price actually paid per kWh this month; null falls back to the contract price. */
+  electricityPriceOverride: number | null;
+  feedInTariffOverride: number | null;
+  petrolPriceOverride: number | null;
+  heatingReferenceCostOverride: number | null;
 }
 
 export interface EnergyProfile {
@@ -78,6 +108,8 @@ export interface EnergyProfile {
   kmPerKwh: number | null;
   litersPer100km: number | null;
   investKosten: number | null;
+  usableAreaSqm: number | null;
+  heatPumpScop: number | null;
   heatingMonthlyDistribution: number[];
   overviewLayout: OverviewLayout;
 }

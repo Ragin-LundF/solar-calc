@@ -155,7 +155,8 @@
       "wallbox": "Wallbox",
       "total": "Total",
       "data": "Data",
-      "settings": "Settings"
+      "settings": "Settings",
+      "grid": "Grid & tariff"
     },
     "title": {
       "overview": "Overview",
@@ -165,7 +166,8 @@
       "wallbox": "Wallbox",
       "total": "Total",
       "data": "Data",
-      "settings": "Settings"
+      "settings": "Settings",
+      "grid": "Grid & tariff"
     },
     "subtitle": {
       "overview": "Savings and payback at a glance",
@@ -175,7 +177,8 @@
       "wallbox": "Charging electrically versus refuelling",
       "total": "All savings combined",
       "data": "Capture monthly readings and heating distribution",
-      "settings": "Allocation, profile and prices"
+      "settings": "Allocation, profile and prices",
+      "grid": "Dynamic tariff compared with a fixed-price contract"
     },
     "filter": {
       "ytd": "This year",
@@ -203,14 +206,21 @@
       "household": "Household",
       "wallbox": "Wallbox",
       "householdWallbox": "Household + wallbox",
-      "totalSavings": "Total savings"
+      "totalSavings": "Total savings",
+      "purchased": "Purchased",
+      "avgPurchasePrice": "Ø unit price",
+      "gridCost": "Actual cost",
+      "gridCostAtReference": "At fixed price",
+      "tariffDelta": "Difference vs. fixed",
+      "energyClass": "Energy efficiency class"
     },
     "ct": {
       "production": "Self-consumption & feed-in",
       "household": "Household electricity: cost & savings",
       "heating": "Oil reference vs. heat pump",
       "wallbox": "Charging vs. refuelling",
-      "total": "All savings per month"
+      "total": "All savings per month",
+      "grid": "Grid cost: actual vs. fixed price"
     },
     "col": {
       "month": "Month",
@@ -233,15 +243,58 @@
       "heating": "Heating",
       "household": "Household",
       "wallbox": "Wallbox",
-      "total": "Total"
+      "total": "Total",
+      "purchased": "Purchased",
+      "purchasePrice": "Ø price",
+      "gridCost": "Actual",
+      "gridCostAtReference": "At fixed price",
+      "tariffDelta": "Difference"
     },
     "ks": {
-      "production": { "totalGeneration": "solar production", "selfConsumption": "self-used", "feedIn": "to grid", "revenue": "tariff" },
-      "household": { "consumption": "household electricity", "withoutSolar": "cost without PV", "withSolar": "cost with PV", "savings": "from self-consumption" },
-      "heating": { "oil": "reference heating", "hp": "actual", "savings": "vs. reference", "sum": "must equal 100%" },
-      "wallbox": { "consumption": "charging", "km": "driven", "gasoline": "fuel cost", "charging": "electric", "savings": "vs. refuelling" },
-      "total": { "feedIn": "grid feed-in", "heating": "vs. reference heating", "householdWallbox": "electricity & charging", "total": "everything combined" },
-      "overview": { "selfConsumption": "self-used solar energy", "feedIn": "grid feed-in tariff", "heating": "savings vs. reference heating", "household": "household electricity savings", "wallbox": "savings vs. refuelling" }
+      "production": {
+        "totalGeneration": "solar production",
+        "selfConsumption": "self-used",
+        "feedIn": "to grid",
+        "revenue": "tariff"
+      },
+      "household": {
+        "consumption": "household electricity",
+        "withoutSolar": "cost without PV",
+        "withSolar": "cost with PV",
+        "savings": "from self-consumption"
+      },
+      "heating": {
+        "oil": "reference heating",
+        "hp": "actual",
+        "savings": "vs. reference",
+        "sum": "must equal 100%"
+      },
+      "wallbox": {
+        "consumption": "charging",
+        "km": "driven",
+        "gasoline": "fuel cost",
+        "charging": "electric",
+        "savings": "vs. refuelling"
+      },
+      "total": {
+        "feedIn": "grid feed-in",
+        "heating": "vs. reference heating",
+        "householdWallbox": "electricity & charging",
+        "total": "everything combined"
+      },
+      "overview": {
+        "selfConsumption": "self-used solar energy",
+        "feedIn": "grid feed-in tariff",
+        "heating": "savings vs. reference heating",
+        "household": "household electricity savings",
+        "wallbox": "savings vs. refuelling"
+      },
+      "grid": {
+        "purchased": "Bought from the grid",
+        "avgPurchasePrice": "Weighted by kWh",
+        "gridCost": "At the price actually paid",
+        "tariffDelta": "Positive = the dynamic tariff was cheaper"
+      }
     },
     "ov": {
       "layoutKpi": "KPI cards",
@@ -275,7 +328,9 @@
       "add": "+ Add",
       "monthsTitle": "Recorded months",
       "distTitle": "Heating distribution over the year",
-      "distHelp": "The 12 values must sum to 100 %. They distribute the annual reference heating cost across the months for the oil comparison."
+      "distHelp": "The 12 values must sum to 100 %. They distribute the annual reference heating cost across the months for the oil comparison.",
+      "electricityPrice": "Ø electricity price (€/kWh)",
+      "electricityPriceHelp": "Average unit price actually paid this month. Leave empty to use the electricity price from Settings."
     },
     "settings": {
       "allocationTitle": "Energy allocation",
@@ -288,7 +343,25 @@
       "liters": "Consumption (L/100km)",
       "kmPerKwh": "EV efficiency (km/kWh)",
       "heatingRefCost": "Heating reference cost (€/year)",
-      "invest": "System investment cost (€)"
+      "invest": "System investment cost (€)",
+      "efficiencyTitle": "Building & energy efficiency",
+      "efficiencyHelp": "Rough estimate: heat-pump electricity × seasonal performance factor gives the delivered heat, rated per m² and year. This estimates the building envelope — it is not an Energieausweis and ignores the hot-water share and primary energy factors.",
+      "usableArea": "Living area (m²)",
+      "heatPumpScop": "Seasonal performance factor (SCOP)",
+      "efficiencyUnit": "kWh/(m²·a)",
+      "efficiencyBasis": "Based on {{kwh}} kWh of heat over the last 12 months",
+      "efficiencyIncomplete": "Not enough to rate yet: {{months}} of 12 months recorded, or living area/SCOP missing."
     }
+  },
+  "energyClass": {
+    "A_PLUS": "A+",
+    "A": "A",
+    "B": "B",
+    "C": "C",
+    "D": "D",
+    "E": "E",
+    "F": "F",
+    "G": "G",
+    "H": "H"
   }
 }

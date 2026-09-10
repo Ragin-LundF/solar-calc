@@ -79,6 +79,17 @@ class EnergyProfile {
     @Column(name = "invest_cost", precision = 12, scale = 2)
     var investCost: BigDecimal? = null
 
+    /** Usable living area (Wohnfläche) in m², used for the rough energy efficiency class. */
+    @Column(name = "usable_area_sqm", precision = 8, scale = 2)
+    var usableAreaSqm: BigDecimal? = null
+
+    /**
+     * Heat-pump seasonal performance factor (JAZ/SCOP). Converts metered heat-pump
+     * electricity into delivered heat for the energy efficiency estimate.
+     */
+    @Column(name = "heat_pump_scop", precision = 4, scale = 2)
+    var heatPumpScop: BigDecimal? = null
+
     /** 12 percentages (Jan..Dec) of the annual heating cost, must sum to 100. */
     @Convert(converter = IntListConverter::class)
     @Column(name = "heating_monthly_distribution", length = 100, nullable = false)

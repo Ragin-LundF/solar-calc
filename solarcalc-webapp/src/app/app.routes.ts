@@ -21,6 +21,7 @@ export const routes: Routes = [
       { path: 'household', loadComponent: () => import('@/features/household/household.component').then(m => m.HouseholdComponent) },
       { path: 'wallbox', loadComponent: () => import('@/features/wallbox/wallbox.component').then(m => m.WallboxComponent) },
       { path: 'total', loadComponent: () => import('@/features/total/total.component').then(m => m.TotalComponent) },
+      { path: 'grid', loadComponent: () => import('@/features/grid/grid.component').then(m => m.GridComponent) },
       { path: 'data', loadComponent: () => import('@/features/data/data.component').then(m => m.DataComponent) },
       { path: 'settings', loadComponent: () => import('@/features/settings/settings.component').then(m => m.SettingsComponent) },
       { path: 'setup', loadComponent: () => import('@/features/setup-wizard/setup-wizard.component').then(m => m.SetupWizardComponent) },
