@@ -267,7 +267,8 @@
         "oil": "reference heating",
         "hp": "actual",
         "savings": "vs. reference",
-        "sum": "must equal 100%"
+        "sum": "must equal 100%",
+        "energyClass": "over 12 months"
       },
       "wallbox": {
         "consumption": "charging",

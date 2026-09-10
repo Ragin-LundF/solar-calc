@@ -1,4 +1,4 @@
-import {TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {provideRouter} from '@angular/router';
 import {provideHttpClient} from '@angular/common/http';
 import {HttpTestingController, provideHttpClientTesting} from '@angular/common/http/testing';
@@ -44,6 +44,14 @@ describe('PricesComponent', () => {
     http.match(r => r.url === '/api/v1/profiles/p1').forEach(r => r.flush({}));
     fixture.detectChanges();
     return fixture;
+  }
+
+  /** Sets a control's value the way a user would, so the real value accessor runs. */
+  function setValue(fixture: ComponentFixture<PricesComponent>, selector: string, value: string): void {
+    const el = fixture.nativeElement.querySelector(selector) as HTMLInputElement;
+    el.value = value;
+    el.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
   }
 
   afterEach(() => {
@@ -127,6 +135,42 @@ describe('PricesComponent', () => {
     await Promise.resolve();
 
     expect(prices.error()).toBe('solar.prices.duplicate');
+  });
+
+  it('enables Add once a start month and a price are typed into the form', async () => {
+    const fixture = await render([]);
+    const button = (): HTMLButtonElement => fixture.nativeElement.querySelector('button');
+    expect(button().disabled).toBe(true);
+
+    // Drive the real controls: a number input emits a number through ngModelChange,
+    // which used to poison the string-typed form and wedge the button as disabled.
+    setValue(fixture, 'input[type=month]', '2026-01');
+    setValue(fixture, 'input[type=number]', '0.30');
+
+    expect(fixture.componentInstance.form().electricityPrice).toBe('0.3');
+    expect(button().disabled).toBe(false);
+  });
+
+  it('disables Add again when the only price typed is cleared', async () => {
+    const fixture = await render([]);
+    setValue(fixture, 'input[type=month]', '2026-01');
+    setValue(fixture, 'input[type=number]', '0.30');
+    setValue(fixture, 'input[type=number]', '');
+
+    expect(fixture.componentInstance.form().electricityPrice).toBe('');
+    expect(fixture.nativeElement.querySelector('button').disabled).toBe(true);
+  });
+
+  it('posts a typed-in price as a number', async () => {
+    const fixture = await render([]);
+    setValue(fixture, 'input[type=month]', '2026-01');
+    setValue(fixture, 'input[type=number]', '0.30');
+    fixture.nativeElement.querySelector('button').click();
+
+    const req = http.expectOne(r => r.method === 'POST' && r.url === '/api/v1/profiles/p1/prices');
+    expect(req.request.body.validFrom).toBe('2026-01');
+    expect(req.request.body.electricityPrice).toBe(0.3);
+    req.flush({});
   });
 
   it('loads an entry into the form for editing', async () => {

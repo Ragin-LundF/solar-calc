@@ -95,6 +95,30 @@ describe('DataComponent price fields', () => {
     expect(data.form().feedInTariff).toBe('0.05');
   });
 
+  it('keeps a tariff typed into the number input when the month is then chosen', async () => {
+    const fixture = await render();
+    const data = fixture.componentInstance;
+
+    // A type="number" input emits a number, not a string; the prefill used to throw on it
+    // and silently overwrite what the user had typed.
+    data.patch('feedInTariff', 0.05);
+    expect(data.form().feedInTariff).toBe('0.05');
+
+    data.patch('period', '2025-07');
+    await flushEffective(0.081);
+
+    expect(data.form().feedInTariff).toBe('0.05');
+  });
+
+  it('treats a cleared number input as empty rather than null text', async () => {
+    const fixture = await render();
+    const data = fixture.componentInstance;
+    data.patch('generation', 1234.5);
+    expect(data.form().generation).toBe('1234.5');
+    data.patch('generation', null);
+    expect(data.form().generation).toBe('');
+  });
+
   it('clears the feed-in tariff so the month inherits again', async () => {
     const fixture = await render();
     const data = fixture.componentInstance;

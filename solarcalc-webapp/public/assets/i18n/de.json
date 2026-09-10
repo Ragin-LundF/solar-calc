@@ -267,7 +267,8 @@
         "oil": "Referenzheizung",
         "hp": "tatsächlich",
         "savings": "vs. Referenz",
-        "sum": "muss 100 % sein"
+        "sum": "muss 100 % sein",
+        "energyClass": "über 12 Monate"
       },
       "wallbox": {
         "consumption": "Ladung",

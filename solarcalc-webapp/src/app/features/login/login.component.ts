@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
-import { TranslatePipe } from '@ngx-translate/core';
-import { AuthService } from '@/core/auth/auth.service';
+import {ChangeDetectionStrategy, Component, inject, OnInit, signal} from '@angular/core';
+import {FormsModule} from '@angular/forms';
+import {Router, RouterLink} from '@angular/router';
+import {TranslatePipe} from '@ngx-translate/core';
+import {AuthService} from '@/core/auth/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -33,7 +33,7 @@ export class LoginComponent implements OnInit {
       await this.auth.login(this.username, this.password);
       this.router.navigate(['/dashboard']);
     } catch {
-      this.error.set('Invalid username or password');
+      this.error.set('auth.error');
     } finally {
       this.loading.set(false);
     }

@@ -1,8 +1,9 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
-import { TranslatePipe } from '@ngx-translate/core';
-import { AuthService } from '@/core/auth/auth.service';
+import {ChangeDetectionStrategy, Component, inject, OnInit, signal} from '@angular/core';
+import {HttpErrorResponse} from '@angular/common/http';
+import {FormsModule} from '@angular/forms';
+import {Router, RouterLink} from '@angular/router';
+import {TranslatePipe} from '@ngx-translate/core';
+import {AuthService} from '@/core/auth/auth.service';
 
 @Component({
   selector: 'app-register',
@@ -32,8 +33,9 @@ export class RegisterComponent implements OnInit {
     try {
       await this.auth.register(this.username, this.password);
       this.router.navigate(['/dashboard']);
-    } catch (e: any) {
-      this.error.set(e.status === 409 ? 'Username already taken' : 'Registration failed');
+    } catch (e: unknown) {
+      const conflict = e instanceof HttpErrorResponse && e.status === 409;
+      this.error.set(conflict ? 'auth.usernameTaken' : 'auth.registerError');
     } finally {
       this.loading.set(false);
     }

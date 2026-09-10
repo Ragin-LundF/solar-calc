@@ -80,10 +80,15 @@ export class DataComponent {
     }
   }
 
-  patch(field: keyof EntryForm, value: string): void {
-    this.form.update(f => ({ ...f, [field]: value }));
+  /**
+   * `ngModelChange` on a `type="number"` input emits a number (or null when cleared), never a
+   * string, so every value is normalised here before it reaches the string-typed form.
+   */
+  patch(field: keyof EntryForm, value: string | number | null): void {
+    const next = value === null ? '' : String(value);
+    this.form.update(f => ({ ...f, [field]: next }));
     // Picking a month decides which contract prices apply, so re-seed the inherited ones.
-    if (field === 'period') this.prefillFromPrices(value);
+    if (field === 'period') this.prefillFromPrices(next);
   }
 
   /** Clears a field so the month inherits the price from the timeline again. */

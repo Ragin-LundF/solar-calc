@@ -79,8 +79,12 @@ export class PricesComponent {
     }
   }
 
-  patch(field: keyof EntryForm, value: string): void {
-    this.form.update(f => ({ ...f, [field]: value }));
+  /**
+   * `ngModelChange` on a `type="number"` input emits a number (or null when cleared), never a
+   * string, so every value is normalised here before it reaches the string-typed form.
+   */
+  patch(field: keyof EntryForm, value: string | number | null): void {
+    this.form.update(f => ({ ...f, [field]: value === null ? '' : String(value) }));
   }
 
   startEdit(entry: PriceSnapshot): void {
