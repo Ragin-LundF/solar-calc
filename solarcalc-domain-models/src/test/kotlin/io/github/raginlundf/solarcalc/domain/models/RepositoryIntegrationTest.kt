@@ -1,30 +1,33 @@
 package io.github.raginlundf.solarcalc.domain.models
 
-import io.github.raginlundf.solarcalc.domain.models.allocation.AllocationCategory
-import io.github.raginlundf.solarcalc.domain.models.allocation.AllocationPolicy
-import io.github.raginlundf.solarcalc.domain.models.input.MonthlyEnergyInput
-import io.github.raginlundf.solarcalc.domain.models.profile.EnergyProfile
-import io.github.raginlundf.solarcalc.domain.models.profile.HeatingReferenceType
+import io.github.raginlundf.solarcalc.domain.models.allocation.AllocationCategoryEnum
+import io.github.raginlundf.solarcalc.domain.models.allocation.AllocationPolicyEntity
+import io.github.raginlundf.solarcalc.domain.models.input.MonthlyEnergyInputEntity
+import io.github.raginlundf.solarcalc.domain.models.price.PriceSnapshotEntity
+import io.github.raginlundf.solarcalc.domain.models.profile.EnergyProfileEntity
 import io.github.raginlundf.solarcalc.domain.models.repository.AllocationPolicyRepository
 import io.github.raginlundf.solarcalc.domain.models.repository.EnergyProfileRepository
 import io.github.raginlundf.solarcalc.domain.models.repository.MonthlyEnergyInputRepository
+import io.github.raginlundf.solarcalc.domain.models.repository.PriceSnapshotRepository
 import io.github.raginlundf.solarcalc.domain.models.repository.UserRepository
-import io.github.raginlundf.solarcalc.domain.models.user.User
+import io.github.raginlundf.solarcalc.domain.models.user.UserEntity
 import jakarta.persistence.EntityManager
 import jakarta.persistence.PersistenceContext
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.transaction.annotation.Transactional
-import org.junit.jupiter.api.extension.ExtendWith
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
 import org.testcontainers.mariadb.MariaDBContainer
 import java.math.BigDecimal
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
@@ -37,13 +40,81 @@ class RepositoryIntegrationTest {
     @Autowired lateinit var profileRepository: EnergyProfileRepository
     @Autowired lateinit var inputRepository: MonthlyEnergyInputRepository
     @Autowired lateinit var policyRepository: AllocationPolicyRepository
+    @Autowired lateinit var priceRepository: PriceSnapshotRepository
 
     @PersistenceContext lateinit var entityManager: EntityManager
 
+    private fun profileFor(username: String): EnergyProfileEntity {
+        val user = userRepository.save(UserEntity().apply { this.username = username })
+        return profileRepository.save(EnergyProfileEntity().apply {
+            name = "Profile"
+            this.user = user
+        })
+    }
+
+    @Test
+    fun `stores a price snapshot against the migrated valid_from column`() {
+        // ddl-auto is none, so nothing validates the entity against the schema. Actually writing
+        // and reading the row is what proves migration 0015 renamed the column as the entity expects.
+        val profile = profileFor(username = "price-owner")
+
+        priceRepository.save(PriceSnapshotEntity().apply {
+            energyProfile = profile
+            validFrom = "2025-01"
+            electricityPrice = BigDecimal("0.280000")
+        })
+        entityManager.flush()
+        entityManager.clear()
+
+        val stored = priceRepository.findAllByEnergyProfileIdOrderByValidFromDesc(profile.id!!)
+        assertEquals(expected = 1, actual = stored.size)
+        assertEquals(expected = "2025-01", actual = stored.first().validFrom)
+    }
+
+    @Test
+    fun `returns the price timeline newest first`() {
+        val profile = profileFor(username = "timeline-owner")
+        listOf("2024-01", "2026-01", "2025-01").forEach { start ->
+            priceRepository.save(PriceSnapshotEntity().apply {
+                energyProfile = profile
+                validFrom = start
+                electricityPrice = BigDecimal("0.300000")
+            })
+        }
+        entityManager.flush()
+        entityManager.clear()
+
+        val stored = priceRepository.findAllByEnergyProfileIdOrderByValidFromDesc(profile.id!!)
+
+        assertEquals(expected = listOf("2026-01", "2025-01", "2024-01"), actual = stored.map { it.validFrom })
+    }
+
+    @Test
+    fun `rejects two price snapshots starting in the same month`() {
+        val profile = profileFor(username = "duplicate-owner")
+        priceRepository.save(PriceSnapshotEntity().apply {
+            energyProfile = profile
+            validFrom = "2025-01"
+            electricityPrice = BigDecimal("0.300000")
+        })
+        entityManager.flush()
+
+        // The unique constraint added by migration 0015; without it the resolver's single-result
+        // lookup would blow up at read time instead.
+        assertFailsWith<DataIntegrityViolationException> {
+            priceRepository.save(PriceSnapshotEntity().apply {
+                energyProfile = profile
+                validFrom = "2025-01"
+                electricityPrice = BigDecimal("0.310000")
+            })
+            entityManager.flush()
+        }
+    }
+
     @Test
     fun `lazy many-to-one loads without a runtime proxy`() {
-        val user = userRepository.save(User().apply { username = "owner" })
-        val profile = profileRepository.save(EnergyProfile().apply {
+        val user = userRepository.save(UserEntity().apply { username = "owner" })
+        val profile = profileRepository.save(EnergyProfileEntity().apply {
             name = "Profile"
             this.user = user
         })
@@ -61,7 +132,7 @@ class RepositoryIntegrationTest {
 
     @Test
     fun `user can be persisted and retrieved`() {
-        val user = User().apply {
+        val user = UserEntity().apply {
             username = "test-user"
         }
 
@@ -73,13 +144,13 @@ class RepositoryIntegrationTest {
 
     @Test
     fun `monthly input is unique by profile and period`() {
-        val user = userRepository.save(User().apply { username = "user" })
-        val profile = profileRepository.save(EnergyProfile().apply {
+        val user = userRepository.save(UserEntity().apply { username = "user" })
+        val profile = profileRepository.save(EnergyProfileEntity().apply {
             name = "Profile"
             this.user = user
         })
 
-        inputRepository.save(MonthlyEnergyInput().apply {
+        inputRepository.save(MonthlyEnergyInputEntity().apply {
             energyProfile = profile
             period = "2024-06"
             consumptionKwh = BigDecimal("500")
@@ -97,10 +168,10 @@ class RepositoryIntegrationTest {
 
     @Test
     fun `cross-profile input lookup returns null`() {
-        val user = userRepository.save(User().apply { username = "u" })
-        val profileA = profileRepository.save(EnergyProfile().apply { name = "A"; this.user = user })
-        val profileB = profileRepository.save(EnergyProfile().apply { name = "B"; this.user = user })
-        inputRepository.save(MonthlyEnergyInput().apply {
+        val user = userRepository.save(UserEntity().apply { username = "u" })
+        val profileA = profileRepository.save(EnergyProfileEntity().apply { name = "A"; this.user = user })
+        val profileB = profileRepository.save(EnergyProfileEntity().apply { name = "B"; this.user = user })
+        inputRepository.save(MonthlyEnergyInputEntity().apply {
             energyProfile = profileA
             period = "2024-07"
             consumptionKwh = BigDecimal("400")
@@ -116,27 +187,31 @@ class RepositoryIntegrationTest {
 
     @Test
     fun `allocation policy priority order round-trips through converter`() {
-        val user = userRepository.save(User().apply { username = "u" })
-        val profile = profileRepository.save(EnergyProfile().apply {
+        val user = userRepository.save(UserEntity().apply { username = "u" })
+        val profile = profileRepository.save(EnergyProfileEntity().apply {
             name = "P"
             this.user = user
             hasWallbox = true
             hasHeatPump = true
         })
 
-        policyRepository.save(AllocationPolicy().apply {
+        policyRepository.save(AllocationPolicyEntity().apply {
             energyProfile = profile
             name = "Wallbox first"
             priorityOrder = listOf(
-                AllocationCategory.WALLBOX,
-                AllocationCategory.HEAT_PUMP,
-                AllocationCategory.HOUSEHOLD,
+                AllocationCategoryEnum.WALLBOX,
+                AllocationCategoryEnum.HEAT_PUMP,
+                AllocationCategoryEnum.HOUSEHOLD,
             )
         })
 
         val found = policyRepository.findAllByEnergyProfileId(profile.id!!).single()
         assertEquals(
-            expected = listOf(AllocationCategory.WALLBOX, AllocationCategory.HEAT_PUMP, AllocationCategory.HOUSEHOLD),
+            expected = listOf(
+                AllocationCategoryEnum.WALLBOX,
+                AllocationCategoryEnum.HEAT_PUMP,
+                AllocationCategoryEnum.HOUSEHOLD,
+            ),
             actual = found.priorityOrder,
         )
     }

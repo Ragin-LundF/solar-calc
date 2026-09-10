@@ -3,7 +3,7 @@ package io.github.raginlundf.solarcalc.domain.models.input
 import io.github.raginlundf.extensions.kotlinEquals
 import io.github.raginlundf.extensions.kotlinHashCode
 import io.github.raginlundf.extensions.kotlinToString
-import io.github.raginlundf.solarcalc.domain.models.profile.EnergyProfile
+import io.github.raginlundf.solarcalc.domain.models.profile.EnergyProfileEntity
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
@@ -17,10 +17,11 @@ import jakarta.persistence.Table
 import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.util.UUID
+import kotlin.reflect.KProperty1
 
 @Entity
 @Table(name = "monthly_energy_input")
-class MonthlyEnergyInput {
+class MonthlyEnergyInputEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,7 +32,7 @@ class MonthlyEnergyInput {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "energy_profile_id", nullable = false)
-    var energyProfile: EnergyProfile? = null
+    var energyProfile: EnergyProfileEntity? = null
 
     @Column(name = "energy_profile_id", insertable = false, updatable = false)
     var energyProfileId: Long? = null
@@ -85,14 +86,40 @@ class MonthlyEnergyInput {
     }
 
     override fun equals(other: Any?): Boolean {
-        return kotlinEquals(other, arrayOf(MonthlyEnergyInput::id))
+        return kotlinEquals(other, properties)
     }
 
     override fun hashCode(): Int {
-        return kotlinHashCode(arrayOf(MonthlyEnergyInput::id))
+        return kotlinHashCode(properties)
     }
 
     override fun toString(): String {
-        return kotlinToString(arrayOf(MonthlyEnergyInput::id, MonthlyEnergyInput::period))
+        return kotlinToString(properties)
+    }
+
+    private companion object {
+        /**
+         * The fields that make up this entity's identity, shared by equals, hashCode and toString so the
+         * three can never disagree. Excludes the lazy [energyProfile] association, which comparing would
+         * force to load; [energyProfileId] identifies the owner without it.
+         */
+        val properties: Array<KProperty1<MonthlyEnergyInputEntity, Any?>> = arrayOf(
+            MonthlyEnergyInputEntity::id,
+            MonthlyEnergyInputEntity::uuid,
+            MonthlyEnergyInputEntity::energyProfileId,
+            MonthlyEnergyInputEntity::period,
+            MonthlyEnergyInputEntity::consumptionKwh,
+            MonthlyEnergyInputEntity::generationKwh,
+            MonthlyEnergyInputEntity::feedInKwh,
+            MonthlyEnergyInputEntity::householdConsumptionKwh,
+            MonthlyEnergyInputEntity::heatPumpConsumptionKwh,
+            MonthlyEnergyInputEntity::wallboxConsumptionKwh,
+            MonthlyEnergyInputEntity::electricityPriceOverride,
+            MonthlyEnergyInputEntity::feedInTariffOverride,
+            MonthlyEnergyInputEntity::petrolPriceOverride,
+            MonthlyEnergyInputEntity::heatingReferenceCostOverride,
+            MonthlyEnergyInputEntity::createdAt,
+            MonthlyEnergyInputEntity::updatedAt,
+        )
     }
 }

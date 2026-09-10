@@ -1,5 +1,6 @@
 package io.github.raginlundf.solarcalc.domain.services.price
 
+import io.github.raginlundf.solarcalc.dtos.price.EffectivePricesResponse
 import io.github.raginlundf.solarcalc.dtos.price.PriceSnapshotResponse
 import io.github.raginlundf.solarcalc.dtos.price.UpsertPriceSnapshotRequest
 
@@ -14,4 +15,7 @@ interface PriceSnapshotDomainController {
         username: String,
     ): PriceSnapshotResponse
     fun delete(profileUuid: String, priceId: Long, username: String)
+
+    /** Prices in effect for [period] (YYYY-MM) after the timeline is applied to the profile defaults. */
+    fun effectivePrices(profileUuid: String, period: String, username: String): EffectivePricesResponse
 }

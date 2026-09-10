@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        logicalFilePath="0016-price-snapshot-heating-type.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="0016-price-snapshot-heating-type" author="solarcalc">
+        <comment>
+            Which fuel the heating reference stands for, versioned alongside its cost. Without this a
+            profile that switched from oil to gas would have its whole oil-heated history repriced
+            with gas costs, because the fuel was only stored once on the profile.
+
+            Null means "unchanged": the fuel keeps whatever an earlier entry set, or the profile's
+            own heating reference type when no entry has set one yet.
+        </comment>
+        <addColumn tableName="price_snapshot">
+            <column name="heating_reference_type" type="VARCHAR(10)">
+                <constraints nullable="true" />
+            </column>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>

@@ -15,5 +15,8 @@
     <include file="changelog/changes/0011-add-user-setup-step.xml" relativeToChangelogFile="true" />
     <include file="changelog/changes/0012-add-monthly-input-uuid.xml" relativeToChangelogFile="true" />
     <include file="changelog/changes/0013-add-user-last-profile.xml" relativeToChangelogFile="true" />
+    <include file="changelog/changes/0014-add-profile-building-fields.xml" relativeToChangelogFile="true" />
+    <include file="changelog/changes/0015-price-snapshot-valid-from.xml" relativeToChangelogFile="true" />
+    <include file="changelog/changes/0016-price-snapshot-heating-type.xml" relativeToChangelogFile="true" />
 
 </databaseChangeLog>

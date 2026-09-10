@@ -101,18 +101,14 @@
   },
   "prices": {
     "title": "Prices",
-    "defaultPrices": "Default Prices",
-    "period": "Period (optional)",
     "electricityPrice": "Electricity Price (€/kWh)",
     "feedInTariff": "Feed-in Tariff (€/kWh)",
     "petrolPrice": "Petrol Price (€/L)",
-    "oilReferenceCost": "Oil Reference Cost (€/month)",
-    "gasReferenceCost": "Gas Reference Cost (€/month)",
-    "electricityPricePerKwh": "Electricity Price (€/kWh)",
-    "feedInTariffPerKwh": "Feed-in Tariff (€/kWh)",
-    "petrolPricePerLiter": "Petrol Price (€/L)",
-    "oilReferenceCostPerMonth": "Oil Reference Cost (€/month)",
-    "gasReferenceCostPerMonth": "Gas Reference Cost (€/month)"
+    "oilReferenceCost": "Oil reference cost (€/year)",
+    "gasReferenceCost": "Gas reference cost (€/year)",
+    "validFrom": "Valid from",
+    "heatingReferenceType": "Heating reference",
+    "heatingUnchanged": "unchanged"
   },
   "allocation": {
     "title": "Allocation Policy",
@@ -155,7 +151,9 @@
       "wallbox": "Wallbox",
       "total": "Total",
       "data": "Data",
-      "settings": "Settings"
+      "settings": "Settings",
+      "grid": "Grid & tariff",
+      "prices": "Prices"
     },
     "title": {
       "overview": "Overview",
@@ -165,7 +163,9 @@
       "wallbox": "Wallbox",
       "total": "Total",
       "data": "Data",
-      "settings": "Settings"
+      "settings": "Settings",
+      "grid": "Grid & tariff",
+      "prices": "Prices"
     },
     "subtitle": {
       "overview": "Savings and payback at a glance",
@@ -175,7 +175,9 @@
       "wallbox": "Charging electrically versus refuelling",
       "total": "All savings combined",
       "data": "Capture monthly readings and heating distribution",
-      "settings": "Allocation, profile and prices"
+      "settings": "Allocation, profile and prices",
+      "grid": "Dynamic tariff compared with a fixed-price contract",
+      "prices": "Price history over time"
     },
     "filter": {
       "ytd": "This year",
@@ -203,14 +205,21 @@
       "household": "Household",
       "wallbox": "Wallbox",
       "householdWallbox": "Household + wallbox",
-      "totalSavings": "Total savings"
+      "totalSavings": "Total savings",
+      "purchased": "Purchased",
+      "avgPurchasePrice": "Ø unit price",
+      "gridCost": "Actual cost",
+      "gridCostAtReference": "At fixed price",
+      "tariffDelta": "Difference vs. fixed",
+      "energyClass": "Energy efficiency class"
     },
     "ct": {
       "production": "Self-consumption & feed-in",
       "household": "Household electricity: cost & savings",
       "heating": "Oil reference vs. heat pump",
       "wallbox": "Charging vs. refuelling",
-      "total": "All savings per month"
+      "total": "All savings per month",
+      "grid": "Grid cost: actual vs. fixed price"
     },
     "col": {
       "month": "Month",
@@ -233,15 +242,60 @@
       "heating": "Heating",
       "household": "Household",
       "wallbox": "Wallbox",
-      "total": "Total"
+      "total": "Total",
+      "purchased": "Purchased",
+      "purchasePrice": "Ø price",
+      "gridCost": "Actual",
+      "gridCostAtReference": "At fixed price",
+      "tariffDelta": "Difference",
+      "feedInTariff": "Feed-in (€/kWh)"
     },
     "ks": {
-      "production": { "totalGeneration": "solar production", "selfConsumption": "self-used", "feedIn": "to grid", "revenue": "tariff" },
-      "household": { "consumption": "household electricity", "withoutSolar": "cost without PV", "withSolar": "cost with PV", "savings": "from self-consumption" },
-      "heating": { "oil": "reference heating", "hp": "actual", "savings": "vs. reference", "sum": "must equal 100%" },
-      "wallbox": { "consumption": "charging", "km": "driven", "gasoline": "fuel cost", "charging": "electric", "savings": "vs. refuelling" },
-      "total": { "feedIn": "grid feed-in", "heating": "vs. reference heating", "householdWallbox": "electricity & charging", "total": "everything combined" },
-      "overview": { "selfConsumption": "self-used solar energy", "feedIn": "grid feed-in tariff", "heating": "savings vs. reference heating", "household": "household electricity savings", "wallbox": "savings vs. refuelling" }
+      "production": {
+        "totalGeneration": "solar production",
+        "selfConsumption": "self-used",
+        "feedIn": "to grid",
+        "revenue": "tariff"
+      },
+      "household": {
+        "consumption": "household electricity",
+        "withoutSolar": "cost without PV",
+        "withSolar": "cost with PV",
+        "savings": "from self-consumption"
+      },
+      "heating": {
+        "oil": "reference heating",
+        "hp": "actual",
+        "savings": "vs. reference",
+        "sum": "must equal 100%",
+        "energyClass": "over 12 months"
+      },
+      "wallbox": {
+        "consumption": "charging",
+        "km": "driven",
+        "gasoline": "fuel cost",
+        "charging": "electric",
+        "savings": "vs. refuelling"
+      },
+      "total": {
+        "feedIn": "grid feed-in",
+        "heating": "vs. reference heating",
+        "householdWallbox": "electricity & charging",
+        "total": "everything combined"
+      },
+      "overview": {
+        "selfConsumption": "self-used solar energy",
+        "feedIn": "grid feed-in tariff",
+        "heating": "savings vs. reference heating",
+        "household": "household electricity savings",
+        "wallbox": "savings vs. refuelling"
+      },
+      "grid": {
+        "purchased": "Bought from the grid",
+        "avgPurchasePrice": "Weighted by kWh",
+        "gridCost": "At the price actually paid",
+        "tariffDelta": "Positive = the dynamic tariff was cheaper"
+      }
     },
     "ov": {
       "layoutKpi": "KPI cards",
@@ -275,7 +329,12 @@
       "add": "+ Add",
       "monthsTitle": "Recorded months",
       "distTitle": "Heating distribution over the year",
-      "distHelp": "The 12 values must sum to 100 %. They distribute the annual reference heating cost across the months for the oil comparison."
+      "distHelp": "The 12 values must sum to 100 %. They distribute the annual reference heating cost across the months for the oil comparison.",
+      "electricityPrice": "Ø electricity price (€/kWh)",
+      "electricityPriceHelp": "Average unit price actually paid this month. Leave empty to use the electricity price from Settings.",
+      "feedInTariff": "Feed-in tariff (€/kWh)",
+      "feedInTariffHelp": "Tariff for this month. Prefilled from the price history; clear it to inherit again.",
+      "clear": "Reset"
     },
     "settings": {
       "allocationTitle": "Energy allocation",
@@ -288,7 +347,36 @@
       "liters": "Consumption (L/100km)",
       "kmPerKwh": "EV efficiency (km/kWh)",
       "heatingRefCost": "Heating reference cost (€/year)",
-      "invest": "System investment cost (€)"
+      "invest": "System investment cost (€)",
+      "efficiencyTitle": "Building & energy efficiency",
+      "efficiencyHelp": "Rough estimate: heat-pump electricity × seasonal performance factor gives the delivered heat, rated per m² and year. This estimates the building envelope — it is not an Energieausweis and ignores the hot-water share and primary energy factors.",
+      "usableArea": "Living area (m²)",
+      "heatPumpScop": "Seasonal performance factor (SCOP)",
+      "efficiencyUnit": "kWh/(m²·a)",
+      "efficiencyBasis": "Based on {{kwh}} kWh of heat over the last 12 months",
+      "efficiencyIncomplete": "Not enough to rate yet: {{months}} of 12 months recorded, or living area/SCOP missing."
+    },
+    "prices": {
+      "newEntry": "New price entry",
+      "editEntry": "Edit price entry",
+      "help": "An entry applies from the given month until a later entry supersedes it. A new entry starts from the prices in force today: change only what actually changed. Empty fields keep the previous price. Anything not set here comes from Settings.",
+      "timelineTitle": "Price history",
+      "timelineHelp": "Months that carry their own price in the data keep it — the history does not change them.",
+      "inEffect": "in effect",
+      "empty": "No price entries yet. The prices from Settings apply.",
+      "confirmDelete": "Really delete this price entry?",
+      "duplicate": "An entry for this month already exists."
     }
+  },
+  "energyClass": {
+    "A_PLUS": "A+",
+    "A": "A",
+    "B": "B",
+    "C": "C",
+    "D": "D",
+    "E": "E",
+    "F": "F",
+    "G": "G",
+    "H": "H"
   }
 }

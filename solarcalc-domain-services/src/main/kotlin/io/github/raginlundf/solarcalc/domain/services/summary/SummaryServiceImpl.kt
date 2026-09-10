@@ -1,7 +1,9 @@
 package io.github.raginlundf.solarcalc.domain.services.summary
 
 import io.github.raginlundf.extensions.scale2
-import io.github.raginlundf.solarcalc.domain.models.allocation.AllocationCategory
+import io.github.raginlundf.extensions.scale3
+import io.github.raginlundf.solarcalc.domain.models.allocation.AllocationCategoryEnum
+import io.github.raginlundf.solarcalc.dtos.summary.EnergyEfficiencyRating
 import io.github.raginlundf.solarcalc.dtos.summary.MonthlySummary
 import io.github.raginlundf.solarcalc.dtos.summary.PaybackProjection
 import io.github.raginlundf.solarcalc.dtos.summary.SummaryAggregates
@@ -16,6 +18,9 @@ class SummaryServiceImpl : SummaryService {
     private companion object {
         val HUNDRED: BigDecimal = BigDecimal(100)
         const val PAYBACK_WINDOW = 6
+
+        /** Prices are reported with three decimals; money stays at two. */
+        const val PRICE_SCALE = 3
     }
 
     override fun summarize(
@@ -23,6 +28,7 @@ class SummaryServiceImpl : SummaryService {
         params: SummaryParams,
         rangeStart: String?,
         rangeEnd: String?,
+        efficiency: EnergyEfficiencyRating,
     ): SummaryResponse {
         val sorted = months.sortedBy { it.period }
 
@@ -42,6 +48,7 @@ class SummaryServiceImpl : SummaryService {
             months = filtered,
             aggregates = aggregate(filtered = filtered, params = params),
             payback = projectPayback(enriched = enriched, investKosten = params.investKosten),
+            efficiency = efficiency,
         )
     }
 
@@ -58,26 +65,36 @@ class SummaryServiceImpl : SummaryService {
             ).max(BigDecimal.ZERO)
 
         val demand = mapOf(
-            AllocationCategory.HOUSEHOLD to householdDemand,
-            AllocationCategory.HEAT_PUMP to heatPumpDemand,
-            AllocationCategory.WALLBOX to wallboxDemand,
+            AllocationCategoryEnum.HOUSEHOLD to householdDemand,
+            AllocationCategoryEnum.HEAT_PUMP to heatPumpDemand,
+            AllocationCategoryEnum.WALLBOX to wallboxDemand,
         )
         val solar = allocate(demand = demand, priority = params.allocationPriority, pool = selfConsumed)
 
         val household = costPair(
             demand = householdDemand,
-            solar = solar.getValue(AllocationCategory.HOUSEHOLD),
+            solar = solar.getValue(AllocationCategoryEnum.HOUSEHOLD),
             gridPrice = month.gridPrice,
         )
         val heatPump = costPair(
             demand = heatPumpDemand,
-            solar = solar.getValue(AllocationCategory.HEAT_PUMP),
+            solar = solar.getValue(AllocationCategoryEnum.HEAT_PUMP),
             gridPrice = month.gridPrice,
         )
         val wallbox = costPair(
             demand = wallboxDemand,
-            solar = solar.getValue(AllocationCategory.WALLBOX),
+            solar = solar.getValue(AllocationCategoryEnum.WALLBOX),
             gridPrice = month.gridPrice,
+        )
+
+        val grid = gridTotals(
+            household = household,
+            heatPump = heatPump,
+            wallbox = wallbox,
+            actualPrice = month.gridPrice,
+            // No contract price configured means there is nothing to compare against, so the
+            // reference is the price actually paid and the delta comes out as exactly zero.
+            referencePrice = month.referencePrice ?: month.gridPrice,
         )
 
         val heizPct = params.heatingDistribution.getOrElse(monthIndex(month.period)) { 0 }
@@ -133,6 +150,11 @@ class SummaryServiceImpl : SummaryService {
             gasolineEquivalentCost = gasolineEquivalentCost.scale2(),
             wallboxSavingsVsGasoline = wallboxSavingsVsGasoline.scale2(),
             totalSavings = totalSavings.scale2(),
+            gridKwh = grid.kwh,
+            purchasePricePerKwh = grid.pricePerKwh,
+            gridCost = grid.cost,
+            gridCostAtReferencePrice = grid.costAtReferencePrice,
+            dynamicTariffDelta = grid.tariffDelta,
             cumulativeSavings = BigDecimal.ZERO,
         )
     }
@@ -163,13 +185,54 @@ class SummaryServiceImpl : SummaryService {
         )
     }
 
+    private data class GridTotals(
+        val kwh: BigDecimal,
+        val pricePerKwh: BigDecimal,
+        val cost: BigDecimal,
+        val costAtReferencePrice: BigDecimal,
+        val tariffDelta: BigDecimal,
+    )
+
+    /**
+     * Rolls the three consumers up into what was actually bought from the grid, and prices that
+     * same energy a second time at the standing contract price. All consumers share one price, so
+     * summing the raw kWh first and rounding once keeps the delta consistent with the two costs it
+     * is derived from — and exactly zero when the two prices are equal.
+     */
+    private fun gridTotals(
+        household: CostPair,
+        heatPump: CostPair,
+        wallbox: CostPair,
+        actualPrice: BigDecimal,
+        referencePrice: BigDecimal,
+    ): GridTotals {
+        val kwh = household.grid + heatPump.grid + wallbox.grid
+        val cost = (kwh * actualPrice).scale2()
+        val costAtReferencePrice = (kwh * referencePrice).scale2()
+        return GridTotals(
+            kwh = kwh.scale2(),
+            pricePerKwh = actualPrice.scale3(),
+            cost = cost,
+            costAtReferencePrice = costAtReferencePrice,
+            tariffDelta = costAtReferencePrice - cost,
+        )
+    }
+
+    /** Weighted price over a range. Returns zero rather than dividing when nothing was purchased. */
+    private fun pricePerKwh(cost: BigDecimal, kwh: BigDecimal): BigDecimal {
+        if (kwh.signum() == 0) {
+            return BigDecimal.ZERO.scale3()
+        }
+        return cost.divide(kwh, PRICE_SCALE, RoundingMode.HALF_UP)
+    }
+
     private fun allocate(
-        demand: Map<AllocationCategory, BigDecimal>,
-        priority: List<AllocationCategory>,
+        demand: Map<AllocationCategoryEnum, BigDecimal>,
+        priority: List<AllocationCategoryEnum>,
         pool: BigDecimal,
-    ): Map<AllocationCategory, BigDecimal> {
+    ): Map<AllocationCategoryEnum, BigDecimal> {
         var remaining = pool
-        val result = AllocationCategory.entries.associateWith { BigDecimal.ZERO }.toMutableMap()
+        val result = AllocationCategoryEnum.entries.associateWith { BigDecimal.ZERO }.toMutableMap()
         for (category in priority) {
             val allocated = remaining.min(demand[category] ?: BigDecimal.ZERO)
             result[category] = allocated
@@ -186,6 +249,9 @@ class SummaryServiceImpl : SummaryService {
         val householdSavings = sum { it.householdSavings }
         val heatingSavings = sum { it.heatingSavings }
         val wallboxSavings = sum { it.wallboxSavingsVsGasoline }
+        val gridKwh = sum { it.gridKwh }
+        val gridCost = sum { it.gridCost }
+        val gridCostAtReferencePrice = sum { it.gridCostAtReferencePrice }
 
         return SummaryAggregates(
             generationKwh = sum { it.generationKwh },
@@ -206,6 +272,12 @@ class SummaryServiceImpl : SummaryService {
             wallboxSavingsVsGasoline = wallboxSavings,
             distributionSumPct = params.heatingDistribution.sum(),
             totalSavings = (feedInRevenue + householdSavings + heatingSavings + wallboxSavings).scale2(),
+            gridKwh = gridKwh,
+            gridCost = gridCost,
+            gridCostAtReferencePrice = gridCostAtReferencePrice,
+            dynamicTariffDelta = (gridCostAtReferencePrice - gridCost).scale2(),
+            averagePurchasePricePerKwh = pricePerKwh(cost = gridCost, kwh = gridKwh),
+            referencePricePerKwh = pricePerKwh(cost = gridCostAtReferencePrice, kwh = gridKwh),
         )
     }
 

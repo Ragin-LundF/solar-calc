@@ -1,6 +1,6 @@
 package io.github.raginlundf.solarcalc.domain.services.profile
 
-import io.github.raginlundf.solarcalc.domain.models.profile.EnergyProfile
+import io.github.raginlundf.solarcalc.domain.models.profile.EnergyProfileEntity
 import io.github.raginlundf.solarcalc.domain.models.repository.EnergyProfileRepository
 import io.github.raginlundf.solarcalc.domain.models.repository.UserRepository
 import io.github.raginlundf.solarcalc.dtos.error.ResourceNotFoundException
@@ -21,8 +21,8 @@ class ProfileDomainControllerImplTest {
         userRepository = userRepository,
     )
 
-    private fun profile(uuid: String): EnergyProfile {
-        return EnergyProfile().apply {
+    private fun profile(uuid: String): EnergyProfileEntity {
+        return EnergyProfileEntity().apply {
             id = 1L
             this.uuid = uuid
             name = "profile"

@@ -1,21 +1,21 @@
 package io.github.raginlundf.solarcalc.domain.models.repository
 
-import io.github.raginlundf.solarcalc.domain.models.input.MonthlyEnergyInput
+import io.github.raginlundf.solarcalc.domain.models.input.MonthlyEnergyInputEntity
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.querydsl.QuerydslPredicateExecutor
 
 interface MonthlyEnergyInputRepository :
-    JpaRepository<MonthlyEnergyInput, Long>,
-    QuerydslPredicateExecutor<MonthlyEnergyInput> {
+    JpaRepository<MonthlyEnergyInputEntity, Long>,
+    QuerydslPredicateExecutor<MonthlyEnergyInputEntity> {
 
-    fun findAllByEnergyProfileId(energyProfileId: Long): List<MonthlyEnergyInput>
+    fun findAllByEnergyProfileId(energyProfileId: Long): List<MonthlyEnergyInputEntity>
 
-    fun findByUuidAndEnergyProfileId(uuid: String, energyProfileId: Long): MonthlyEnergyInput?
+    fun findByUuidAndEnergyProfileId(uuid: String, energyProfileId: Long): MonthlyEnergyInputEntity?
 
-    fun findByIdAndEnergyProfileId(id: Long, energyProfileId: Long): MonthlyEnergyInput?
+    fun findByIdAndEnergyProfileId(id: Long, energyProfileId: Long): MonthlyEnergyInputEntity?
 
     fun findByEnergyProfileIdAndPeriod(
         energyProfileId: Long,
         period: String,
-    ): MonthlyEnergyInput?
+    ): MonthlyEnergyInputEntity?
 }

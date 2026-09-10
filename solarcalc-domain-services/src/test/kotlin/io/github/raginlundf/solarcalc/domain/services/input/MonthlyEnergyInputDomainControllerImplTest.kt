@@ -1,17 +1,17 @@
 package io.github.raginlundf.solarcalc.domain.services.input
 
-import io.github.raginlundf.solarcalc.domain.models.input.MonthlyEnergyInput
-import io.github.raginlundf.solarcalc.domain.models.profile.EnergyProfile
+import io.github.raginlundf.solarcalc.domain.models.input.MonthlyEnergyInputEntity
+import io.github.raginlundf.solarcalc.domain.models.profile.EnergyProfileEntity
 import io.github.raginlundf.solarcalc.domain.models.repository.EnergyProfileRepository
 import io.github.raginlundf.solarcalc.domain.models.repository.MonthlyEnergyInputRepository
 import io.github.raginlundf.solarcalc.dtos.error.ResourceNotFoundException
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import java.util.UUID
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
-import java.util.UUID
 
 class MonthlyEnergyInputDomainControllerImplTest {
 
@@ -25,8 +25,8 @@ class MonthlyEnergyInputDomainControllerImplTest {
     private val profileUuid = UUID.randomUUID().toString()
     private val inputUuid = UUID.randomUUID().toString()
 
-    private fun ownedProfile(): EnergyProfile {
-        return EnergyProfile().apply {
+    private fun ownedProfile(): EnergyProfileEntity {
+        return EnergyProfileEntity().apply {
             id = 7L
             uuid = profileUuid
         }
@@ -62,7 +62,7 @@ class MonthlyEnergyInputDomainControllerImplTest {
             profileRepository.findByUuidAndUserUsername(uuid = profileUuid, userUsername = "alice")
         } returns ownedProfile()
         every { inputRepository.findByUuidAndEnergyProfileId(uuid = inputUuid, energyProfileId = 7L) } returns
-            MonthlyEnergyInput().apply {
+            MonthlyEnergyInputEntity().apply {
                 id = 5L
                 uuid = inputUuid
                 period = "2024-03"

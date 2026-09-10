@@ -1,20 +1,20 @@
 package io.github.raginlundf.solarcalc.domain.models.repository
 
-import io.github.raginlundf.solarcalc.domain.models.price.PriceSnapshot
+import io.github.raginlundf.solarcalc.domain.models.price.PriceSnapshotEntity
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.querydsl.QuerydslPredicateExecutor
 
-interface PriceSnapshotRepository : JpaRepository<PriceSnapshot, Long>, QuerydslPredicateExecutor<PriceSnapshot> {
+interface PriceSnapshotRepository :
+    JpaRepository<PriceSnapshotEntity, Long>,
+    QuerydslPredicateExecutor<PriceSnapshotEntity> {
 
-    /** Returns default (period=null) and all monthly overrides for the given profile. */
-    fun findAllByEnergyProfileId(energyProfileId: Long): List<PriceSnapshot>
+    /** The profile's whole price timeline, newest start month first. */
+    fun findAllByEnergyProfileIdOrderByValidFromDesc(energyProfileId: Long): List<PriceSnapshotEntity>
 
-    fun findByIdAndEnergyProfileId(id: Long, energyProfileId: Long): PriceSnapshot?
+    fun findByIdAndEnergyProfileId(id: Long, energyProfileId: Long): PriceSnapshotEntity?
 
-    fun findByEnergyProfileIdAndPeriodIsNull(energyProfileId: Long): PriceSnapshot?
-
-    fun findByEnergyProfileIdAndPeriod(
+    fun findByEnergyProfileIdAndValidFrom(
         energyProfileId: Long,
-        period: String,
-    ): PriceSnapshot?
+        validFrom: String,
+    ): PriceSnapshotEntity?
 }

@@ -1,7 +1,7 @@
 package io.github.raginlundf.solarcalc.domain.services.allocation
 
-import io.github.raginlundf.solarcalc.domain.models.allocation.AllocationPolicy
-import io.github.raginlundf.solarcalc.domain.models.profile.EnergyProfile
+import io.github.raginlundf.solarcalc.domain.models.allocation.AllocationPolicyEntity
+import io.github.raginlundf.solarcalc.domain.models.profile.EnergyProfileEntity
 import io.github.raginlundf.solarcalc.domain.models.repository.AllocationPolicyRepository
 import io.github.raginlundf.solarcalc.domain.models.repository.EnergyProfileRepository
 import io.github.raginlundf.solarcalc.dtos.allocation.AllocationPolicyResponse
@@ -36,7 +36,7 @@ class AllocationPolicyDomainControllerImpl(
     ): AllocationPolicyResponse {
         val profile = requireProfile(profileUuid = profileUuid, username = username)
 
-        val policy = AllocationPolicy().apply {
+        val policy = AllocationPolicyEntity().apply {
             this.energyProfile = profile
             name = request.name
             priorityOrder = request.priorityOrder
@@ -64,18 +64,18 @@ class AllocationPolicyDomainControllerImpl(
         policyRepository.delete(policy)
     }
 
-    private fun requireProfile(profileUuid: String, username: String): EnergyProfile {
+    private fun requireProfile(profileUuid: String, username: String): EnergyProfileEntity {
         return profileRepository.findByUuidAndUserUsername(uuid = profileUuid, userUsername = username)
             ?: throw ResourceNotFoundException(message = "Profile $profileUuid not found")
     }
 
-    private fun requirePolicy(policyId: Long, profileId: Long): AllocationPolicy {
+    private fun requirePolicy(policyId: Long, profileId: Long): AllocationPolicyEntity {
         return policyRepository.findByIdAndEnergyProfileId(id = policyId, energyProfileId = profileId)
-            ?: throw ResourceNotFoundException(message = "AllocationPolicy $policyId not found")
+            ?: throw ResourceNotFoundException(message = "AllocationPolicyEntity $policyId not found")
     }
 }
 
-private fun AllocationPolicy.toResponse(energyProfileUuid: String): AllocationPolicyResponse {
+private fun AllocationPolicyEntity.toResponse(energyProfileUuid: String): AllocationPolicyResponse {
     return AllocationPolicyResponse(
         id = id!!,
         energyProfileUuid = energyProfileUuid,

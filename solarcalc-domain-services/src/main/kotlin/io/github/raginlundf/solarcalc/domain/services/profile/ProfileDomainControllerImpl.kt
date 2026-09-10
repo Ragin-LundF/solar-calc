@@ -1,6 +1,6 @@
 package io.github.raginlundf.solarcalc.domain.services.profile
 
-import io.github.raginlundf.solarcalc.domain.models.profile.EnergyProfile
+import io.github.raginlundf.solarcalc.domain.models.profile.EnergyProfileEntity
 import io.github.raginlundf.solarcalc.domain.models.repository.EnergyProfileRepository
 import io.github.raginlundf.solarcalc.domain.models.repository.UserRepository
 import io.github.raginlundf.solarcalc.dtos.error.ResourceNotFoundException
@@ -28,9 +28,9 @@ class ProfileDomainControllerImpl(
     @Transactional
     override fun create(request: CreateEnergyProfileRequest, username: String): EnergyProfileResponse {
         val user = userRepository.findByUsername(username).orElseThrow {
-            ResourceNotFoundException("User $username not found")
+            ResourceNotFoundException("UserEntity $username not found")
         }
-        val profile = EnergyProfile().apply {
+        val profile = EnergyProfileEntity().apply {
             this.user = user
             name = request.name
             hasWallbox = request.hasWallbox
@@ -44,6 +44,8 @@ class ProfileDomainControllerImpl(
             kmPerKwh = request.kmPerKwh
             litersPer100km = request.litersPer100km
             investCost = request.investKosten
+            usableAreaSqm = request.usableAreaSqm
+            heatPumpScop = request.heatPumpScop
         }
         val saved = profileRepository.save(profile)
         user.lastProfileUuid = saved.uuid
@@ -69,6 +71,8 @@ class ProfileDomainControllerImpl(
         profile.kmPerKwh = request.kmPerKwh
         profile.litersPer100km = request.litersPer100km
         profile.investCost = request.investKosten
+        profile.usableAreaSqm = request.usableAreaSqm
+        profile.heatPumpScop = request.heatPumpScop
         request.heatingMonthlyDistribution?.let { profile.heatingMonthlyDistribution = it }
         request.overviewLayout?.let { profile.overviewLayout = it }
         profile.updatedAt = LocalDateTime.now()
@@ -87,13 +91,13 @@ class ProfileDomainControllerImpl(
         }
     }
 
-    private fun requireOwnedProfile(profileUuid: String, username: String): EnergyProfile {
+    private fun requireOwnedProfile(profileUuid: String, username: String): EnergyProfileEntity {
         return profileRepository.findByUuidAndUserUsername(uuid = profileUuid, userUsername = username)
             ?: throw ResourceNotFoundException("Profile $profileUuid not found")
     }
 }
 
-private fun EnergyProfile.toResponse(): EnergyProfileResponse {
+private fun EnergyProfileEntity.toResponse(): EnergyProfileResponse {
     return EnergyProfileResponse(
         id = uuid,
         name = name,
@@ -108,6 +112,8 @@ private fun EnergyProfile.toResponse(): EnergyProfileResponse {
         kmPerKwh = kmPerKwh,
         litersPer100km = litersPer100km,
         investKosten = investCost,
+        usableAreaSqm = usableAreaSqm,
+        heatPumpScop = heatPumpScop,
         heatingMonthlyDistribution = heatingMonthlyDistribution,
         overviewLayout = overviewLayout,
     )

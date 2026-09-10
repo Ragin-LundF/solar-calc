@@ -6,6 +6,8 @@ import { ApiService } from '@/core/api/api.service';
 import { AuthService } from '@/core/auth/auth.service';
 import { SetupStep } from '@/core/auth/setup-step.enum';
 import { AppStateService } from '@/core/state/app-state.service';
+import { EnergyProfile, HeatingReferenceType } from '@/core/api/models';
+import { toProfileRequest } from '@/core/api/profile-request';
 import { ZardButtonComponent } from '@/shared/components/button';
 import { ZardInputDirective } from '@/shared/components/input';
 import { ZardCardComponent } from '@/shared/components/card';
@@ -13,28 +15,9 @@ import { ZardBadgeComponent } from '@/shared/components/badge';
 
 type AllocationCategory = 'HOUSEHOLD' | 'HEAT_PUMP' | 'WALLBOX';
 
-interface ProfileDto {
-  id?: string;
-  name: string;
-  hasWallbox: boolean;
-  hasHeatPump: boolean;
-  heatingReferenceType: string;
-  defaultElectricityPrice: number | null;
-  defaultFeedInTariff: number | null;
-  defaultPetrolPrice: number | null;
-}
-
 interface AllocationPolicyDto {
   id?: number;
   priorityOrder: AllocationCategory[];
-}
-
-interface PriceSnapshotDto {
-  electricityPricePerKwh: number;
-  feedInTariffPerKwh: number;
-  petrolPricePerLiter?: number;
-  oilReferenceCostPerMonth?: number;
-  gasReferenceCostPerMonth?: number;
 }
 
 @Component({
@@ -59,6 +42,12 @@ export class SetupWizardComponent implements OnInit {
   readonly priorityOrder = signal<AllocationCategory[]>([...this.allCategories]);
   readonly policyId = signal<number | null>(null);
 
+  /**
+   * The profile as the server last returned it. Both save steps edit a subset of the fields,
+   * so they merge onto this before writing — otherwise the untouched fields would be cleared.
+   */
+  private readonly loadedProfile = signal<EnergyProfile | null>(null);
+
   readonly profileForm = this.fb.group({
     name: ['', Validators.required],
     hasWallbox: [false],
@@ -70,11 +59,11 @@ export class SetupWizardComponent implements OnInit {
   });
 
   readonly pricesForm = this.fb.group({
-    electricityPricePerKwh: [null as number | null, [Validators.required, Validators.min(0)]],
-    feedInTariffPerKwh: [null as number | null, [Validators.required, Validators.min(0)]],
-    petrolPricePerLiter: [null as number | null, Validators.min(0)],
-    oilReferenceCostPerMonth: [null as number | null, Validators.min(0)],
-    gasReferenceCostPerMonth: [null as number | null, Validators.min(0)],
+    defaultElectricityPrice: [null as number | null, [Validators.required, Validators.min(0)]],
+    defaultFeedInTariff: [null as number | null, [Validators.required, Validators.min(0)]],
+    defaultPetrolPrice: [null as number | null, Validators.min(0)],
+    defaultOilReferenceCost: [null as number | null, Validators.min(0)],
+    defaultGasReferenceCost: [null as number | null, Validators.min(0)],
   });
 
   readonly totalSteps = 4;
@@ -98,9 +87,9 @@ export class SetupWizardComponent implements OnInit {
   private loadExistingProfile(): void {
     const pid = this.state.profileId();
     if (!pid) return;
-    this.api.get<ProfileDto>(`/profiles/${pid}`).subscribe({
+    this.api.get<EnergyProfile>(`/profiles/${pid}`).subscribe({
       next: p => {
-        this.profileForm.patchValue(p);
+        this.adoptProfile(p);
         if (this.currentStep() >= 2) {
           this.loadAllocationPolicy(pid);
         }
@@ -120,19 +109,37 @@ export class SetupWizardComponent implements OnInit {
     });
   }
 
+  /** Copies a server profile into both forms and remembers it for the next merge. */
+  private adoptProfile(profile: EnergyProfile): void {
+    this.loadedProfile.set(profile);
+    this.profileForm.patchValue(profile);
+    this.pricesForm.patchValue(profile);
+  }
+
+  /** The loaded profile with the given edits applied, ready to send back in full. */
+  private mergedProfile(edits: Partial<EnergyProfile>): EnergyProfile {
+    return { ...this.loadedProfile(), ...edits } as EnergyProfile;
+  }
+
   saveProfile(): void {
     if (this.profileForm.invalid) return;
     this.saving.set(true);
     this.error.set(null);
 
-    const body = this.profileForm.getRawValue() as ProfileDto;
+    const form = this.profileForm.getRawValue();
+    const body = toProfileRequest(this.mergedProfile({
+      ...form,
+      heatingReferenceType: form.heatingReferenceType as HeatingReferenceType,
+    } as Partial<EnergyProfile>));
+
     const pid = this.state.profileId();
     const call = pid
-      ? this.api.put<ProfileDto>(`/profiles/${pid}`, body)
-      : this.api.post<ProfileDto>('/profiles', body);
+      ? this.api.put<EnergyProfile>(`/profiles/${pid}`, body)
+      : this.api.post<EnergyProfile>('/profiles', body);
 
     call.subscribe({
       next: p => {
+        this.adoptProfile(p);
         this.state.setProfile(p.id ?? null);
         this.saving.set(false);
         this.currentStep.set(2);
@@ -165,6 +172,11 @@ export class SetupWizardComponent implements OnInit {
     });
   }
 
+  /**
+   * Writes the prices onto the profile itself. They used to go to a price_snapshot, which the
+   * price resolver prefers over the profile defaults — so a snapshot here would have shadowed
+   * the very fields the Settings page edits.
+   */
   savePrices(): void {
     if (this.pricesForm.invalid) return;
     const pid = this.state.profileId();
@@ -172,10 +184,11 @@ export class SetupWizardComponent implements OnInit {
 
     this.saving.set(true);
     this.error.set(null);
-    const body = this.pricesForm.getRawValue() as PriceSnapshotDto;
+    const body = toProfileRequest(this.mergedProfile(this.pricesForm.getRawValue()));
 
-    this.api.post<PriceSnapshotDto>(`/profiles/${pid}/prices`, body).subscribe({
-      next: () => {
+    this.api.put<EnergyProfile>(`/profiles/${pid}`, body).subscribe({
+      next: p => {
+        this.adoptProfile(p);
         this.saving.set(false);
         this.finishSetup();
       },

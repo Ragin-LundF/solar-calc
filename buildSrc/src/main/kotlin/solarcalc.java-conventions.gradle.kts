@@ -12,6 +12,7 @@ plugins {
 val libs = the<LibrariesForLibs>()
 
 tasks.register<CreateStartScripts>("createStartScripts") {
+    description = "start scripts for the application"
     mainClass.set("io.github.raginlundf.solarcalc.Application")
     applicationName = rootProject.name
 }
@@ -72,9 +73,11 @@ configurations.configureEach {
 
 // ── from dependencies.gradle ───────────────────────────────────────────────────
 dependencies {
+    /*
     constraints {
         api(libs.bundles.constraints)
     }
+    */
 
     implementation(platform(libs.bom.spring.boot))
     implementation(platform(libs.bom.log4j))

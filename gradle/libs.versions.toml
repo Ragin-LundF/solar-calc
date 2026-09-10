@@ -1,39 +1,33 @@
 [versions]
-kotlin = "2.4.0"
+kotlin = "2.4.20"
 dokka = "2.2.0"
-ksp = "2.3.9"
-spring-boot = "4.1.0"
+ksp = "2.3.12"
+spring-boot = "4.1.1"
 log4j = "2.26.1"
-micrometer = "1.17.0"
-querydsl = "7.4.0"
+micrometer = "1.17.1"
+querydsl = "7.6"
 testcontainers = "2.0.5"
-junit-platform = "6.1.1"
-jackson3 = "3.2.0"
+junit-platform = "6.1.3"
+jackson3 = "3.2.2"
 # Keep in sync with the Hibernate ORM version managed by the Spring Boot BOM (spring-boot above).
-hibernate = "7.4.1.Final"
-kotlinx-coroutines = "1.11.0"
+hibernate = "7.4.7.Final"
 kotlin-logging = "8.0.4"
-konvert = "4.5.0"
-mariadb = "3.5.9"
-commons-configuration2 = "2.15.1"
+konvert = "4.5.1"
+mariadb = "3.5.10"
 jakarta-servlet = "6.1.0"
 password4j = "1.8.4"
 caffeine = "3.2.4"
 springmockk = "5.0.1"
-cucumber-gherkin-lib = "3.3.0"
-tomcat-jdbc = "11.0.23"
+cucumber-gherkin-lib = "3.7.0"
 liquibase-classpath = "5.0.1"
 liquibase-plugin = "3.1.0"
-liquibase = "5.0.3"
-owasp-depcheck = "12.2.2"
-undercouch-download = "5.7.0"
+owasp-depcheck = "13.0.0"
 license-report = "3.1.4"
-detekt = "2.0.0-alpha.5"
-kover = "0.9.8"
-junit = "6.1.0"
+detekt = "2.0.0-alpha.6"
+kover = "0.9.9"
 # Pinned to the version Spring Boot 4.1 manages/tests (native-build-tools-plugin.version).
 # Newer (e.g. 1.1.5) breaks Boot's native binary wiring -> shared library instead of executable.
-graalvm-native = "1.1.1"
+graalvm-native = "1.1.12"
 
 [libraries]
 # ── BOMs (use as platform() dependencies) ──────────────────────────────────────
@@ -152,9 +146,6 @@ testing-springmockk = { module = "com.ninja-squad:springmockk", version.ref = "s
 testing-cucumber-gherkin-lib = { module = "io.github.ragin-lundf:bdd-cucumber-gherkin-lib-rest", version.ref = "cucumber-gherkin-lib" }
 
 [bundles]
-# collection of dependencies to enfore a version because of CVE or duplicates
-constraints = [
-]
 konvert-api = [
     "konvert-api",
     "konvert-spring-annotations",
@@ -166,9 +157,9 @@ micrometer-tracing = [
 jackson = [
     "mapper-jackson-annotations",
     "mapper-jackson-databind",
+    "mapper-jackson-module-blackbird",
     "mapper-jackson-module-jaxb-annotations",
     "mapper-jackson-module-kotlin",
-    "mapper-jackson-module-blackbird"
 ]
 
 [plugins]
@@ -184,5 +175,5 @@ spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
 graalvm-native = { id = "org.graalvm.buildtools.native", version.ref = "graalvm-native" }
 liquibase-gradle = { id = "org.liquibase.gradle", version.ref = "liquibase-plugin" }
 owasp-depcheck = { id = "org.owasp.dependencycheck", version.ref = "owasp-depcheck" }
-version-catalog-update = "nl.littlerobots.version-catalog-update:1.1.0"
+version-catalog-update = "nl.littlerobots.version-catalog-update:1.1.1"
 license-report = { id = "com.github.jk1.dependency-license-report", version.ref = "license-report" }

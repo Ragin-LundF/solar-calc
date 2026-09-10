@@ -3,6 +3,7 @@ package io.github.raginlundf.solarcalc.restapi.price
 import io.github.raginlundf.logging.annotations.LogDuration
 import io.github.raginlundf.solarcalc.domain.services.auth.SolarcalcScopes
 import io.github.raginlundf.solarcalc.domain.services.price.PriceSnapshotDomainController
+import io.github.raginlundf.solarcalc.dtos.price.EffectivePricesResponse
 import io.github.raginlundf.solarcalc.dtos.price.PriceSnapshotResponse
 import io.github.raginlundf.solarcalc.dtos.price.UpsertPriceSnapshotRequest
 import io.github.raginlundf.solarcalc.restapi.security.CurrentUser
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 
@@ -31,6 +33,21 @@ class PriceSnapshotController(
     fun list(@PathVariable profileUuid: String): List<PriceSnapshotResponse> {
         return priceSnapshotDomainController.list(
             profileUuid = profileUuid,
+            username = CurrentUser.requireUsername(),
+        )
+    }
+
+    /** Prices in effect for one month, so a client can prefill with the value the server will use. */
+    @LogDuration
+    @GetMapping("/effective")
+    @PreAuthorize("hasAuthority('${SolarcalcScopes.SCOPE_READ}')")
+    fun effectivePrices(
+        @PathVariable profileUuid: String,
+        @RequestParam period: String,
+    ): EffectivePricesResponse {
+        return priceSnapshotDomainController.effectivePrices(
+            profileUuid = profileUuid,
+            period = period,
             username = CurrentUser.requireUsername(),
         )
     }

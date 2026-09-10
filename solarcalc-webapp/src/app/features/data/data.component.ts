@@ -1,15 +1,15 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucidePencil, lucideTrash2 } from '@ng-icons/lucide';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { firstValueFrom } from 'rxjs';
-import { ApiService } from '@/core/api/api.service';
-import { AppStateService } from '@/core/state/app-state.service';
-import { SummaryStore } from '@/core/api/summary.store';
-import { ProfileStore } from '@/core/api/profile.store';
-import { MonthlyInput } from '@/core/api/models';
-import { monthNames, fmtKWh, monthLongLabel } from '@/shared/utils/format';
+import {ChangeDetectionStrategy, Component, computed, effect, inject, signal} from '@angular/core';
+import {FormsModule} from '@angular/forms';
+import {NgIcon, provideIcons} from '@ng-icons/core';
+import {lucidePencil, lucideTrash2} from '@ng-icons/lucide';
+import {TranslatePipe, TranslateService} from '@ngx-translate/core';
+import {firstValueFrom} from 'rxjs';
+import {ApiService} from '@/core/api/api.service';
+import {AppStateService} from '@/core/state/app-state.service';
+import {SummaryStore} from '@/core/api/summary.store';
+import {ProfileStore} from '@/core/api/profile.store';
+import {EffectivePrices, MonthlyInput} from '@/core/api/models';
+import {fmtEURperKwh, fmtKWh, monthLongLabel, monthNames} from '@/shared/utils/format';
 
 interface EntryForm {
   period: string;
@@ -18,9 +18,14 @@ interface EntryForm {
   household: string;
   heatPump: string;
   wallbox: string;
+  electricityPrice: string;
+  feedInTariff: string;
 }
 
-const EMPTY_FORM: EntryForm = { period: '', generation: '', feedIn: '', household: '', heatPump: '', wallbox: '' };
+const EMPTY_FORM: EntryForm = {
+  period: '', generation: '', feedIn: '', household: '', heatPump: '', wallbox: '',
+  electricityPrice: '', feedInTariff: '',
+};
 
 @Component({
   selector: 'app-data',
@@ -37,6 +42,7 @@ export class DataComponent {
   private readonly translate = inject(TranslateService);
 
   readonly fmtKWh = fmtKWh;
+  readonly fmtEURperKwh = fmtEURperKwh;
   readonly monthLongLabel = monthLongLabel;
   readonly monthNames = monthNames;
 
@@ -45,12 +51,30 @@ export class DataComponent {
   readonly months = signal<MonthlyInput[]>([]);
   readonly saving = signal(false);
   readonly error = signal<string | null>(null);
+  /** Guards against an out-of-order effective-price response overwriting a newer one. */
+  private pricesReqId = 0;
 
   readonly dist = signal<number[]>(Array(12).fill(0));
   readonly distSum = computed(() => this.dist().reduce((a, b) => a + b, 0));
   readonly distValid = computed(() => this.distSum() === 100);
 
   readonly rows = computed(() => [...this.months()].sort((a, b) => b.period.localeCompare(a.period)));
+
+  /**
+   * The electricity price actually paid in the most recent month that recorded one. A new month
+   * starts from it so the figure only has to be corrected rather than retyped.
+   *
+   * Deliberately not the contract price from the timeline: the summary derives gridCost from this
+   * override and gridCostAtReferencePrice from the contract price, so seeding the two to the same
+   * number would make every month's tariff delta come out as exactly zero.
+   */
+  private readonly lastRecordedElectricityPrice = computed<string>(() => {
+    const recorded = this.months()
+      .filter(m => m.electricityPriceOverride != null)
+      .sort((a, b) => a.period.localeCompare(b.period));
+    const latest = recorded.at(-1)?.electricityPriceOverride;
+    return latest == null ? '' : String(latest);
+  });
 
   constructor() {
     effect(() => {
@@ -70,10 +94,48 @@ export class DataComponent {
     } catch {
       this.months.set([]);
     }
+    // Seed the new-month form from what just arrived, without touching an edit or typed-in value.
+    if (this.editingId() === null && this.form().electricityPrice === '') {
+      this.form.update(f => ({ ...f, electricityPrice: this.lastRecordedElectricityPrice() }));
+    }
   }
 
-  patch(field: keyof EntryForm, value: string): void {
-    this.form.update(f => ({ ...f, [field]: value }));
+  /**
+   * `ngModelChange` on a `type="number"` input emits a number (or null when cleared), never a
+   * string, so every value is normalised here before it reaches the string-typed form.
+   */
+  patch(field: keyof EntryForm, value: string | number | null): void {
+    const next = value === null ? '' : String(value);
+    this.form.update(f => ({ ...f, [field]: next }));
+    // Picking a month decides which contract prices apply, so re-seed the inherited ones.
+    if (field === 'period') this.prefillFromPrices(next);
+  }
+
+  /** Clears a field so the month inherits the price from the timeline again. */
+  clear(field: keyof EntryForm): void {
+    this.form.update(f => ({ ...f, [field]: '' }));
+  }
+
+  /**
+   * Seeds the feed-in tariff with the price the server would use for this month. Only the feed-in
+   * tariff: the electricity price is the dynamic price actually paid, and prefilling it with the
+   * contract price would make every month's tariff comparison come out as exactly zero.
+   */
+  private async prefillFromPrices(period: string, force = false): Promise<void> {
+    const pid = this.state.profileId();
+    if (!pid || !period) return;
+    const id = ++this.pricesReqId;
+    try {
+      const effective = await firstValueFrom(
+        this.api.get<EffectivePrices>(`/profiles/${pid}/prices/effective?period=${period}`),
+      );
+      if (id !== this.pricesReqId) return;
+      if (!force && this.form().feedInTariff.trim() !== '') return;
+      const tariff = effective.feedInTariff;
+      this.form.update(f => ({ ...f, feedInTariff: tariff == null ? '' : String(tariff) }));
+    } catch {
+      // A missing price is not an error worth interrupting data entry for.
+    }
   }
 
   startEdit(m: MonthlyInput): void {
@@ -85,13 +147,19 @@ export class DataComponent {
       household: str(m.householdConsumptionKwh),
       heatPump: str(m.heatPumpConsumptionKwh),
       wallbox: str(m.wallboxConsumptionKwh),
+      electricityPrice: str(m.electricityPriceOverride),
+      feedInTariff: str(m.feedInTariffOverride),
     });
     this.editingId.set(m.id);
     this.error.set(null);
+    // A month that never stored a tariff inherits one; show which.
+    if (m.feedInTariffOverride === null || m.feedInTariffOverride === undefined) {
+      this.prefillFromPrices(m.period);
+    }
   }
 
   cancelEdit(): void {
-    this.form.set({ ...EMPTY_FORM });
+    this.form.set({ ...EMPTY_FORM, electricityPrice: this.lastRecordedElectricityPrice() });
     this.editingId.set(null);
   }
 
@@ -112,8 +180,8 @@ export class DataComponent {
     this.dist.update(d => d.map((v, i) => (i === index ? (Number.isFinite(value) ? value : 0) : v)));
   }
 
-  private num(value: string | number | null): number | null {
-    if (value === null || value === '') return null;
+  private num(value: string | number | null | undefined): number | null {
+    if (value == null || value === '') return null;
     const n = Number(value);
     return Number.isFinite(n) ? n : null;
   }
@@ -125,6 +193,11 @@ export class DataComponent {
     this.saving.set(true);
     this.error.set(null);
 
+    const targetId = this.editingId() ?? this.months().find(m => m.period === f.period)?.id;
+    // The server replaces every override on write, so the ones this form does not edit
+    // have to be sent back unchanged or they would be wiped.
+    const existing = this.months().find(m => m.id === targetId);
+
     const body = {
       period: f.period,
       generationKwh: this.num(f.generation) ?? 0,
@@ -132,9 +205,12 @@ export class DataComponent {
       householdConsumptionKwh: this.num(f.household),
       heatPumpConsumptionKwh: this.num(f.heatPump),
       wallboxConsumptionKwh: this.num(f.wallbox),
+      electricityPriceOverride: this.num(f.electricityPrice),
+      feedInTariffOverride: this.num(f.feedInTariff),
+      petrolPriceOverride: existing?.petrolPriceOverride ?? null,
+      heatingReferenceCostOverride: existing?.heatingReferenceCostOverride ?? null,
     };
 
-    const targetId = this.editingId() ?? this.months().find(m => m.period === f.period)?.id;
     const call = targetId
       ? this.api.put(`/profiles/${pid}/monthly-inputs/${targetId}`, body)
       : this.api.post(`/profiles/${pid}/monthly-inputs`, body);

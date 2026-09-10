@@ -3,8 +3,8 @@ import { RouterLink } from '@angular/router';
 import { SummaryStore } from '@/core/api/summary.store';
 import { ProfileStore } from '@/core/api/profile.store';
 import { FilterService } from '@/core/state/filter.service';
-import { MonthlySummary } from '@/core/api/models';
-import { TranslatePipe } from '@ngx-translate/core';
+import { EnergyEfficiencyClass, MonthlySummary } from '@/core/api/models';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { AnalysisKpi, AnalysisLayoutComponent } from '@/shared/components/analysis-layout/analysis-layout.component';
 import { BarSeries } from '@/shared/components/charts/bar-chart.component';
 import { fmtEUR, fmtKWh, fmtPct, monthLongLabel } from '@/shared/utils/format';
@@ -19,6 +19,7 @@ export class HeatingComponent {
   private readonly store = inject(SummaryStore);
   private readonly profileStore = inject(ProfileStore);
   private readonly filterState = inject(FilterService);
+  private readonly translate = inject(TranslateService);
 
   readonly loading = this.store.loading;
   readonly error = this.store.error;
@@ -38,6 +39,20 @@ export class HeatingComponent {
     return this.months().reduce((a, m) => a + fn(m), 0);
   }
 
+  /** All-history rating from the server; null until 12 consecutive months and the building data exist. */
+  readonly energyClass = computed<EnergyEfficiencyClass | null>(
+    () => this.store.summary()?.efficiency?.energyClass ?? null,
+  );
+
+  private readonly energyClassColor = computed(() => {
+    const palette: Record<EnergyEfficiencyClass, string> = {
+      A_PLUS: '#22c55e', A: '#22c55e', B: '#84cc16', C: '#eab308',
+      D: '#eab308', E: '#f59e0b', F: '#f97066', G: '#f04438', H: '#f04438',
+    };
+    const current = this.energyClass();
+    return current ? palette[current] : '#8b93a1';
+  });
+
   readonly distributionSum = computed(() =>
     (this.profileStore.profile()?.heatingMonthlyDistribution ?? []).reduce((a, b) => a + b, 0),
   );
@@ -51,6 +66,12 @@ export class HeatingComponent {
       value: fmtPct(this.distributionSum()),
       sub: 'solar.ks.heating.sum',
       color: this.distributionSum() === 100 ? '#22c55e' : '#f04438',
+    },
+    {
+      label: 'solar.k.energyClass',
+      value: this.energyClass() ? this.translate.instant('energyClass.' + this.energyClass()) : '—',
+      sub: 'solar.ks.heating.energyClass',
+      color: this.energyClassColor(),
     },
   ]);
 

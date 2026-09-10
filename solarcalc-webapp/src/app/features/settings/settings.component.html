@@ -38,10 +38,10 @@
       </div>
       <label class="block text-[12px] text-solar-text2">
         {{ 'profile.heatingReferenceType' | translate }}
-        <select [value]="p.heatingReferenceType" (change)="setHeatingType($any($event.target).value)"
+        <select (change)="setHeatingType($any($event.target).value)"
           class="mt-1 w-full bg-solar-input border border-solar-border rounded-lg px-2.5 py-2 text-[13px] text-solar-text">
           @for (t of heatingTypes; track t) {
-            <option [value]="t">{{ 'profile.heatingReferenceType_' + t | translate }}</option>
+            <option [value]="t" [selected]="t === p.heatingReferenceType">{{ 'profile.heatingReferenceType_' + t | translate }}</option>
           }
         </select>
       </label>
@@ -88,6 +88,41 @@
             class="mt-1 w-full bg-solar-input border border-solar-border rounded-lg px-2.5 py-2 text-[13px] text-solar-text" />
         </label>
       </div>
+    </div>
+
+    <!-- Building & energy efficiency -->
+    <div class="bg-solar-panel border border-solar-border rounded-[14px] p-5 lg:col-span-2">
+      <div class="text-[14px] font-semibold mb-1">{{ 'solar.settings.efficiencyTitle' | translate }}</div>
+      <p class="text-[12px] text-solar-text2 mb-4">{{ 'solar.settings.efficiencyHelp' | translate }}</p>
+      <div class="grid grid-cols-2 gap-3">
+        <label class="block text-[12px] text-solar-text2">
+          {{ 'solar.settings.usableArea' | translate }}
+          <input type="number" step="1" min="0" [value]="p.usableAreaSqm" (change)="setUsableArea($any($event.target).value)"
+            class="mt-1 w-full bg-solar-input border border-solar-border rounded-lg px-2.5 py-2 text-[13px] text-solar-text" />
+        </label>
+        <label class="block text-[12px] text-solar-text2">
+          {{ 'solar.settings.heatPumpScop' | translate }}
+          <input type="number" step="0.1" min="0" [value]="p.heatPumpScop" (change)="setHeatPumpScop($any($event.target).value)"
+            [disabled]="!p.hasHeatPump"
+            class="mt-1 w-full bg-solar-input border border-solar-border rounded-lg px-2.5 py-2 text-[13px] text-solar-text disabled:opacity-50" />
+        </label>
+      </div>
+
+      @if (efficiency(); as e) {
+        <div class="mt-4 flex items-center gap-4 bg-solar-input border border-solar-border rounded-lg px-4 py-3">
+          @if (e.energyClass) {
+            <span class="text-[28px] font-bold text-solar-green">{{ 'energyClass.' + e.energyClass | translate }}</span>
+            <div class="text-[12px] text-solar-text2">
+              <div class="text-solar-text">{{ e.kwhPerSqmPerYear }} {{ 'solar.settings.efficiencyUnit' | translate }}</div>
+              <div>{{ 'solar.settings.efficiencyBasis' | translate:{ kwh: e.heatingEnergyKwh } }}</div>
+            </div>
+          } @else {
+            <div class="text-[12px] text-solar-text2">
+              {{ 'solar.settings.efficiencyIncomplete' | translate:{ months: e.monthsConsidered } }}
+            </div>
+          }
+        </div>
+      }
     </div>
   </div>
 } @else {

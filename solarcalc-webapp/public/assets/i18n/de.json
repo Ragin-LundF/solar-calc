@@ -101,18 +101,14 @@
   },
   "prices": {
     "title": "Preise",
-    "defaultPrices": "Standardpreise",
-    "period": "Periode (optional)",
     "electricityPrice": "Strompreis (€/kWh)",
     "feedInTariff": "Einspeisevergütung (€/kWh)",
     "petrolPrice": "Benzinpreis (€/L)",
-    "oilReferenceCost": "Öl-Referenzkosten (€/Monat)",
-    "gasReferenceCost": "Gas-Referenzkosten (€/Monat)",
-    "electricityPricePerKwh": "Strompreis (€/kWh)",
-    "feedInTariffPerKwh": "Einspeisevergütung (€/kWh)",
-    "petrolPricePerLiter": "Benzinpreis (€/L)",
-    "oilReferenceCostPerMonth": "Öl-Referenzkosten (€/Monat)",
-    "gasReferenceCostPerMonth": "Gas-Referenzkosten (€/Monat)"
+    "oilReferenceCost": "Öl-Referenzkosten (€/Jahr)",
+    "gasReferenceCost": "Gas-Referenzkosten (€/Jahr)",
+    "validFrom": "Gültig ab",
+    "heatingReferenceType": "Heizungsreferenz",
+    "heatingUnchanged": "unverändert"
   },
   "allocation": {
     "title": "Allokationspolitik",
@@ -155,7 +151,9 @@
       "wallbox": "Wallbox",
       "total": "Gesamtabrechnung",
       "data": "Daten",
-      "settings": "Einstellungen"
+      "settings": "Einstellungen",
+      "grid": "Netzbezug & Tarif",
+      "prices": "Preise"
     },
     "title": {
       "overview": "Übersicht",
@@ -165,7 +163,9 @@
       "wallbox": "Wallbox",
       "total": "Gesamtabrechnung",
       "data": "Daten",
-      "settings": "Einstellungen"
+      "settings": "Einstellungen",
+      "grid": "Netzbezug & Tarif",
+      "prices": "Preise"
     },
     "subtitle": {
       "overview": "Ersparnis und Amortisation auf einen Blick",
@@ -175,7 +175,9 @@
       "wallbox": "Elektrisch laden im Vergleich zum Tanken",
       "total": "Alle Ersparnisse zusammengefasst",
       "data": "Monatswerte erfassen und Heizungsverteilung",
-      "settings": "Allokation, Profil und Preise"
+      "settings": "Allokation, Profil und Preise",
+      "grid": "Dynamischer Tarif im Vergleich zum Festpreisvertrag",
+      "prices": "Preisverlauf über die Zeit"
     },
     "filter": {
       "ytd": "Dieses Jahr",
@@ -203,14 +205,21 @@
       "household": "Haushalt",
       "wallbox": "Wallbox",
       "householdWallbox": "Haushalt + Wallbox",
-      "totalSavings": "Gesamtersparnis"
+      "totalSavings": "Gesamtersparnis",
+      "purchased": "Netzbezug",
+      "avgPurchasePrice": "Ø Arbeitspreis",
+      "gridCost": "Tatsächliche Kosten",
+      "gridCostAtReference": "Zum Festpreis",
+      "tariffDelta": "Differenz zum Festpreis",
+      "energyClass": "Energieeffizienzklasse"
     },
     "ct": {
       "production": "Eigenverbrauch & Einspeisung",
       "household": "Haushaltsstrom: Kosten & Ersparnis",
       "heating": "Öl-Referenz vs. Wärmepumpe",
       "wallbox": "Laden vs. Tanken",
-      "total": "Alle Ersparnisse pro Monat"
+      "total": "Alle Ersparnisse pro Monat",
+      "grid": "Netzbezugskosten: tatsächlich vs. Festpreis"
     },
     "col": {
       "month": "Monat",
@@ -233,15 +242,60 @@
       "heating": "Heizung",
       "household": "Haushalt",
       "wallbox": "Wallbox",
-      "total": "Gesamt"
+      "total": "Gesamt",
+      "purchased": "Netzbezug",
+      "purchasePrice": "Ø Preis",
+      "gridCost": "Tatsächlich",
+      "gridCostAtReference": "Zum Festpreis",
+      "tariffDelta": "Differenz",
+      "feedInTariff": "Einspeisung (€/kWh)"
     },
     "ks": {
-      "production": { "totalGeneration": "Solarproduktion", "selfConsumption": "selbst genutzt", "feedIn": "ins Netz", "revenue": "Vergütung" },
-      "household": { "consumption": "Haushaltsstrom", "withoutSolar": "Kosten ohne PV", "withSolar": "Kosten mit PV", "savings": "durch Eigenverbrauch" },
-      "heating": { "oil": "Referenzheizung", "hp": "tatsächlich", "savings": "vs. Referenz", "sum": "muss 100 % sein" },
-      "wallbox": { "consumption": "Ladung", "km": "gefahren", "gasoline": "Tankkosten", "charging": "elektrisch", "savings": "vs. Tanken" },
-      "total": { "feedIn": "Netzeinspeisung", "heating": "vs. Referenzheizung", "householdWallbox": "Strom & Laden", "total": "alles zusammen" },
-      "overview": { "selfConsumption": "selbst genutzte Solarenergie", "feedIn": "Vergütung für Netzeinspeisung", "heating": "Ersparnis vs. Referenzheizung", "household": "Ersparnis Haushaltsstrom", "wallbox": "Ersparnis vs. Tanken" }
+      "production": {
+        "totalGeneration": "Solarproduktion",
+        "selfConsumption": "selbst genutzt",
+        "feedIn": "ins Netz",
+        "revenue": "Vergütung"
+      },
+      "household": {
+        "consumption": "Haushaltsstrom",
+        "withoutSolar": "Kosten ohne PV",
+        "withSolar": "Kosten mit PV",
+        "savings": "durch Eigenverbrauch"
+      },
+      "heating": {
+        "oil": "Referenzheizung",
+        "hp": "tatsächlich",
+        "savings": "vs. Referenz",
+        "sum": "muss 100 % sein",
+        "energyClass": "über 12 Monate"
+      },
+      "wallbox": {
+        "consumption": "Ladung",
+        "km": "gefahren",
+        "gasoline": "Tankkosten",
+        "charging": "elektrisch",
+        "savings": "vs. Tanken"
+      },
+      "total": {
+        "feedIn": "Netzeinspeisung",
+        "heating": "vs. Referenzheizung",
+        "householdWallbox": "Strom & Laden",
+        "total": "alles zusammen"
+      },
+      "overview": {
+        "selfConsumption": "selbst genutzte Solarenergie",
+        "feedIn": "Vergütung für Netzeinspeisung",
+        "heating": "Ersparnis vs. Referenzheizung",
+        "household": "Ersparnis Haushaltsstrom",
+        "wallbox": "Ersparnis vs. Tanken"
+      },
+      "grid": {
+        "purchased": "Aus dem Netz gekauft",
+        "avgPurchasePrice": "Nach kWh gewichtet",
+        "gridCost": "Zum tatsächlich gezahlten Preis",
+        "tariffDelta": "Positiv = dynamischer Tarif war günstiger"
+      }
     },
     "ov": {
       "layoutKpi": "KPI-Karten",
@@ -275,7 +329,12 @@
       "add": "+ Hinzufügen",
       "monthsTitle": "Erfasste Monate",
       "distTitle": "Heizungsverteilung über das Jahr",
-      "distHelp": "Die 12 Werte müssen zusammen 100 % ergeben. Sie verteilen die jährlichen Referenz-Heizkosten auf die Monate für den Öl-Vergleich."
+      "distHelp": "Die 12 Werte müssen zusammen 100 % ergeben. Sie verteilen die jährlichen Referenz-Heizkosten auf die Monate für den Öl-Vergleich.",
+      "electricityPrice": "Ø Strompreis (€/kWh)",
+      "electricityPriceHelp": "Durchschnittlich gezahlter Arbeitspreis in diesem Monat. Leer lassen, um den Strompreis aus den Einstellungen zu verwenden.",
+      "feedInTariff": "Einspeisevergütung (€/kWh)",
+      "feedInTariffHelp": "Vergütung in diesem Monat. Wird aus dem Preisverlauf vorbelegt; leeren, um sie wieder zu erben.",
+      "clear": "Zurücksetzen"
     },
     "settings": {
       "allocationTitle": "Energie-Allokation",
@@ -288,7 +347,36 @@
       "liters": "Verbrauch (L/100km)",
       "kmPerKwh": "EV-Effizienz (km/kWh)",
       "heatingRefCost": "Heizkosten Referenz (€/Jahr)",
-      "invest": "Investitionskosten Anlage (€)"
+      "invest": "Investitionskosten Anlage (€)",
+      "efficiencyTitle": "Gebäude & Energieeffizienz",
+      "efficiencyHelp": "Grobe Schätzung: Wärmepumpenstrom × Jahresarbeitszahl ergibt die gelieferte Wärme, bewertet je m² und Jahr. Das schätzt die Gebäudehülle — es ist kein Energieausweis und berücksichtigt weder Warmwasseranteil noch Primärenergiefaktoren.",
+      "usableArea": "Wohnfläche (m²)",
+      "heatPumpScop": "Jahresarbeitszahl (JAZ)",
+      "efficiencyUnit": "kWh/(m²·a)",
+      "efficiencyBasis": "Basis: {{kwh}} kWh Wärme in den letzten 12 Monaten",
+      "efficiencyIncomplete": "Noch keine Bewertung möglich: {{months}} von 12 Monaten erfasst, oder Wohnfläche/JAZ fehlt."
+    },
+    "prices": {
+      "newEntry": "Neuer Preiseintrag",
+      "editEntry": "Preiseintrag bearbeiten",
+      "help": "Ein Eintrag gilt ab dem angegebenen Monat, bis ein späterer Eintrag ihn ablöst. Ein neuer Eintrag startet mit den heute gültigen Preisen: Ändern Sie nur, was sich geändert hat. Leere Felder behalten den bisherigen Preis. Was hier nicht hinterlegt ist, kommt aus den Einstellungen.",
+      "timelineTitle": "Preisverlauf",
+      "timelineHelp": "Monate mit einem eigenen Preis in den Daten behalten diesen Preis — der Verlauf ändert sie nicht.",
+      "inEffect": "aktuell gültig",
+      "empty": "Noch keine Preiseinträge. Es gelten die Preise aus den Einstellungen.",
+      "confirmDelete": "Diesen Preiseintrag wirklich löschen?",
+      "duplicate": "Für diesen Monat gibt es bereits einen Eintrag."
     }
+  },
+  "energyClass": {
+    "A_PLUS": "A+",
+    "A": "A",
+    "B": "B",
+    "C": "C",
+    "D": "D",
+    "E": "E",
+    "F": "F",
+    "G": "G",
+    "H": "H"
   }
 }

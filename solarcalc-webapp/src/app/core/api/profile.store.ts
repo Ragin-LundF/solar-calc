@@ -2,6 +2,7 @@ import { Injectable, effect, inject, signal, untracked } from '@angular/core';
 import { ApiService } from '@/core/api/api.service';
 import { AppStateService } from '@/core/state/app-state.service';
 import { EnergyProfile } from '@/core/api/models';
+import { toProfileRequest } from '@/core/api/profile-request';
 
 /** Holds the active profile; shared by Settings, Data and the Overview layout toggle. */
 @Injectable({ providedIn: 'root' })
@@ -32,29 +33,10 @@ export class ProfileStore {
     if (!current || !pid) return;
     const next: EnergyProfile = { ...current, ...patch };
     this.profile.set(next);
-    this.api.put<EnergyProfile>(`/profiles/${pid}`, this.toRequest(next)).subscribe({
+    this.api.put<EnergyProfile>(`/profiles/${pid}`, toProfileRequest(next)).subscribe({
       next: r => this.profile.set(r),
       error: () => this.reload(),
     });
-  }
-
-  private toRequest(p: EnergyProfile): Record<string, unknown> {
-    return {
-      name: p.name,
-      hasWallbox: p.hasWallbox,
-      hasHeatPump: p.hasHeatPump,
-      heatingReferenceType: p.heatingReferenceType,
-      defaultElectricityPrice: p.defaultElectricityPrice,
-      defaultFeedInTariff: p.defaultFeedInTariff,
-      defaultPetrolPrice: p.defaultPetrolPrice,
-      defaultOilReferenceCost: p.defaultOilReferenceCost,
-      defaultGasReferenceCost: p.defaultGasReferenceCost,
-      kmPerKwh: p.kmPerKwh,
-      litersPer100km: p.litersPer100km,
-      investKosten: p.investKosten,
-      heatingMonthlyDistribution: p.heatingMonthlyDistribution,
-      overviewLayout: p.overviewLayout,
-    };
   }
 
   private fetch(pid: string | null): void {
