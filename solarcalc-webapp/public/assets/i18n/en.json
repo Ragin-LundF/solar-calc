@@ -308,7 +308,17 @@
       "statusExpected": "Expected {{month}}",
       "statusUnknown": "Projection not possible",
       "heroTitle": "Total savings in period",
-      "development": "Development"
+      "development": "Development",
+      "compare": {
+        "title": "Compare with previous year",
+        "subtitle": "{{current}} compared with {{previous}}",
+        "energy": "Energy",
+        "savings": "Savings",
+        "change": "Change",
+        "noPrevious": "No data recorded for {{month}}.",
+        "selfConsumptionQuote": "Self-consumption rate",
+        "heatPump": "Heat pump"
+      }
     },
     "link": {
       "editDistribution": "Edit monthly distribution →"

@@ -157,10 +157,15 @@ Allocation, profile, and prices.
   and total system investment cost used for the payback calculation. These are the base prices:
   they apply wherever the **Prices** timeline does not override them, and the electricity price
   doubles as the fixed-contract reference on the **Grid & tariff** page.
-- **Building & energy efficiency** — living area (m²) and the heat pump's seasonal
-  performance factor (SCOP/JAZ). From the last twelve months of heat-pump readings these
-  give a rough German energy efficiency class (A+…H), shown here and as a KPI on the
-  **Heating** page. It needs twelve consecutive months of data; until then it says so
-  instead of guessing. It estimates the building envelope by converting heat-pump
-  electricity into delivered heat — it is not an Energieausweis, and it ignores the
-  hot-water share and primary energy factors.
+- **Building & energy efficiency** — living area (m²), the heat pump's seasonal
+  performance factor (SCOP/JAZ), and whether the heat pump also makes hot water. When it
+  does, give the share of its electricity that goes into hot water; only the remaining
+  heating share is rated. From the last twelve complete months that carry a heat-pump
+  reading these give a rough German energy efficiency class (A+…H), shown here and as a
+  KPI on the **Heating** page. It needs twelve consecutive months of readings; until then
+  it says so instead of guessing, and the running month never counts because it is only
+  partially recorded. The box spells the whole chain out — metered electricity, the
+  hot-water deduction, the SCOP, the resulting heat — and reports both figures per m² and
+  year: the building envelope (delivered heat), which decides the class, and the final
+  energy (electricity). It estimates the building envelope, so it is not an Energieausweis
+  and it ignores primary energy factors.

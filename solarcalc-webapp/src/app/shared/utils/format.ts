@@ -1,4 +1,4 @@
-import { signal } from '@angular/core';
+import {signal} from '@angular/core';
 
 const eur = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 2 });
 const int0 = new Intl.NumberFormat('de-DE', { maximumFractionDigits: 0 });
@@ -28,6 +28,14 @@ export const fmtPct = (n: number | null | undefined): string => `${int0.format(n
 export const fmtKm = (n: number | null | undefined): string => `${int0.format(n ?? 0)} km`;
 /** Energy prices need three decimals; fmtEUR would round 0,284 down to 0,28. */
 export const fmtEURperKwh = (n: number | null | undefined): string => `${price3.format(n ?? 0)} €/kWh`;
+
+const signed0 = new Intl.NumberFormat('de-DE', { maximumFractionDigits: 0, signDisplay: 'exceptZero' });
+
+/** Relative change: 12.6 -> "+13 %", null -> "–". */
+export const fmtDeltaPct = (n: number | null | undefined): string => (n == null ? '–' : `${signed0.format(n)} %`);
+/** Change in percentage points: 3.2 -> "+3 Pp." / "+3 pp", null -> "–". */
+export const fmtDeltaPts = (n: number | null | undefined): string =>
+  n == null ? '–' : `${signed0.format(n)} ${monthLang() === 'en' ? 'pp' : 'Pp.'}`;
 
 /** "2026-06" -> "Juni 2026" / "June 2026" */
 export function monthLongLabel(period: string): string {

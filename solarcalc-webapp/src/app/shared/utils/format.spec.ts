@@ -1,6 +1,15 @@
-import { ChangeDetectionStrategy, Component, computed } from '@angular/core';
-import { TestBed } from '@angular/core/testing';
-import { fmtEUR, fmtEURperKwh, monthLang, monthLongLabel, monthNames, monthShortLabel } from './format';
+import {ChangeDetectionStrategy, Component, computed} from '@angular/core';
+import {TestBed} from '@angular/core/testing';
+import {
+  fmtDeltaPct,
+  fmtDeltaPts,
+  fmtEUR,
+  fmtEURperKwh,
+  monthLang,
+  monthLongLabel,
+  monthNames,
+  monthShortLabel
+} from './format';
 
 describe('month labels', () => {
   afterEach(() => monthLang.set('de'));
@@ -62,5 +71,27 @@ describe('fmtEURperKwh', () => {
   it('renders a missing price as zero rather than NaN', () => {
     expect(fmtEURperKwh(null)).toBe('0,000 €/kWh');
     expect(fmtEURperKwh(undefined)).toBe('0,000 €/kWh');
+  });
+});
+
+describe('fmtDeltaPct / fmtDeltaPts', () => {
+  afterEach(() => monthLang.set('de'));
+
+  it('signs a change and rounds to whole numbers', () => {
+    expect(fmtDeltaPct(12.6)).toBe('+13 %');
+    expect(fmtDeltaPct(-5.2)).toBe('-5 %');
+    expect(fmtDeltaPct(0)).toBe('0 %');
+  });
+
+  it('shows a dash when there is nothing to compare', () => {
+    expect(fmtDeltaPct(null)).toBe('–');
+    expect(fmtDeltaPts(undefined)).toBe('–');
+  });
+
+  it('labels percentage points in the active language', () => {
+    monthLang.set('de');
+    expect(fmtDeltaPts(3.2)).toBe('+3 Pp.');
+    monthLang.set('en');
+    expect(fmtDeltaPts(-3.2)).toBe('-3 pp');
   });
 });

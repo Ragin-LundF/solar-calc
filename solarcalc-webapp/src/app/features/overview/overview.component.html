@@ -81,6 +81,8 @@
       }
     </div>
   </div>
+
+  <app-year-compare [months]="allMonths()" class="block mt-4" />
 } @else {
   <!-- ===== Story layout ===== -->
   <div class="bg-gradient-to-br from-solar-panel to-[#0f2a17] border border-solar-border rounded-[14px] p-8 flex flex-wrap items-center justify-between gap-6">
@@ -113,6 +115,8 @@
       </div>
     }
   </div>
+
+  <app-year-compare [months]="allMonths()" class="block mt-4" />
 
   <div class="bg-solar-panel border border-solar-border rounded-[14px] p-5 mt-4">
     <div class="text-[14px] font-semibold mb-3">{{ 'solar.ov.development' | translate }}</div>

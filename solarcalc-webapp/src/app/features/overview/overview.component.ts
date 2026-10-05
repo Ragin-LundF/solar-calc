@@ -1,11 +1,12 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
-import { TranslatePipe } from '@ngx-translate/core';
-import { SummaryStore } from '@/core/api/summary.store';
-import { ProfileStore } from '@/core/api/profile.store';
-import { FilterService } from '@/core/state/filter.service';
-import { MonthlySummary, OverviewLayout } from '@/core/api/models';
-import { KpiCardComponent } from '@/shared/components/kpi-card/kpi-card.component';
-import { fmtEUR, fmtKWh, fmtPct, monthLongLabel, monthShortLabel } from '@/shared/utils/format';
+import {ChangeDetectionStrategy, Component, computed, inject} from '@angular/core';
+import {TranslatePipe} from '@ngx-translate/core';
+import {SummaryStore} from '@/core/api/summary.store';
+import {ProfileStore} from '@/core/api/profile.store';
+import {FilterService} from '@/core/state/filter.service';
+import {MonthlySummary, OverviewLayout} from '@/core/api/models';
+import {KpiCardComponent} from '@/shared/components/kpi-card/kpi-card.component';
+import {YearCompareComponent} from './year-compare/year-compare.component';
+import {fmtEUR, fmtKWh, fmtPct, monthLongLabel, monthShortLabel} from '@/shared/utils/format';
 
 const C = {
   green: '#22c55e',
@@ -24,7 +25,7 @@ interface Kpi {
 @Component({
   selector: 'app-overview',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslatePipe, KpiCardComponent],
+  imports: [TranslatePipe, KpiCardComponent, YearCompareComponent],
   templateUrl: './overview.component.html',
 })
 export class OverviewComponent {
@@ -40,6 +41,9 @@ export class OverviewComponent {
     const s = this.store.summary();
     return s ? this.filterState.select(s.months) : [];
   });
+
+  /** Unfiltered history: the year comparison must reach back past the active time filter. */
+  readonly allMonths = computed<MonthlySummary[]>(() => this.store.summary()?.months ?? []);
 
   readonly layout = computed<OverviewLayout>(() => this.profileStore.profile()?.overviewLayout ?? 'KPI');
 

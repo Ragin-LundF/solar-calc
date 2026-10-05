@@ -308,7 +308,17 @@
       "statusExpected": "Voraussichtlich {{month}}",
       "statusUnknown": "Prognose nicht möglich",
       "heroTitle": "Gesamtersparnis im Zeitraum",
-      "development": "Entwicklung"
+      "development": "Entwicklung",
+      "compare": {
+        "title": "Vergleich zum Vorjahr",
+        "subtitle": "{{current}} im Vergleich zu {{previous}}",
+        "energy": "Energie",
+        "savings": "Ersparnis",
+        "change": "Veränderung",
+        "noPrevious": "Für {{month}} sind keine Daten erfasst.",
+        "selfConsumptionQuote": "Eigenverbrauchsquote",
+        "heatPump": "Wärmepumpe"
+      }
     },
     "link": {
       "editDistribution": "Monatsverteilung bearbeiten →"
