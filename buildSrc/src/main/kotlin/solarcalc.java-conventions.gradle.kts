@@ -39,7 +39,7 @@ kotlin {
     compilerOptions {
         // jvmTarget is driven by the toolchain above; Kotlin 2.4 caps at JVM 24
         // and falls back gracefully, so we do not pin it to javaVersion here.
-        freeCompilerArgs.add("-Xjvm-default=all")
+        freeCompilerArgs.add("-jvm-default=no-compatibility")
         // Emit method parameter names so the logging aspect's signature.parameterNames
         // resolves in native images (which strip the LocalVariableTable).
         javaParameters.set(true)
